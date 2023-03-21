@@ -1,0 +1,26 @@
+{
+  "name": "ec2vsc",
+  "type": "module",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "synth": "cdk synth",
+    "deploy": "cdk deploy"
+  },
+  "keywords": [],
+  "author": "Daniel Jabry <djabry@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@aws-cdk/aws-apigatewayv2-alpha": "2.69.0-alpha.0",
+    "@aws-cdk/aws-redshift-alpha": "2.69.0-alpha.0",
+    "@aws-cdk/aws-synthetics-alpha": "2.69.0-alpha.0",
+    "@types/node": "^18.15.5",
+    "aws-cdk": "^2.69.0",
+    "aws-cdk-lib": "^2.69.0",
+    "cdk-monitoring-constructs": "^3.0.3",
+    "constructs": "^10.1.284",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2"
+  }
+}
