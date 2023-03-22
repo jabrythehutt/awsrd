@@ -26,7 +26,7 @@ const architecture = "arm64"
 const ec2 = new VscInstance(stack, "EC2", {
     vpc,
     securityGroup,
-    instanceType: InstanceType.of(InstanceClass.C6G, InstanceSize.XLARGE),
+    instanceType: InstanceType.of(InstanceClass.C7G, InstanceSize.XLARGE),
     machineImage: MachineImage.fromSsmParameter(
         `/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-${architecture}`, {
         os: OperatingSystemType.LINUX,
