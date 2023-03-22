@@ -37,27 +37,6 @@ export class VscInstance extends Construct {
             period: Duration.minutes(30),
             treatMissingData: TreatMissingData.NOT_BREACHING,
         });
-        this.instance.addToRolePolicy(new PolicyStatement({
-            effect: Effect.ALLOW,
-            actions: [
-                "ssmmessages:CreateControlChannel",
-                "ssmmessages:CreateDataChannel",
-                "ssmmessages:OpenControlChannel",
-                "ssmmessages:OpenDataChannel"
-            ],
-            resources: [
-                "*"
-            ]
-        }))
-        this.instance.addToRolePolicy(new PolicyStatement({
-            effect: Effect.ALLOW,
-            actions: [
-                "s3:GetEncryptionConfiguration"
-            ],
-            resources: [
-                "*"
-            ]
-        }))
         this.instance.role.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"));
     }
 }

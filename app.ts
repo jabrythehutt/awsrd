@@ -54,7 +54,3 @@ const ec2 = new VscInstance(stack, "EC2", {
 new CfnOutput(stack, "InstanceIdOutput", {
     value: ec2.instance.instanceId
 })
-
-new CfnOutput(stack, "InstancePublicDns", {
-    value: ec2.instance.instancePublicDnsName
-});
