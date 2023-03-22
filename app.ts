@@ -21,12 +21,14 @@ const securityGroup = new SecurityGroup(stack, 'SecurityGroup', {
 for (const peer of [Peer.anyIpv4(), Peer.anyIpv6()]) { 
     securityGroup.addIngressRule(peer, Port.tcp(22))
 }
+
+const architecture = "arm64"
 const ec2 = new VscInstance(stack, "EC2", {
     vpc,
     securityGroup,
     instanceType: InstanceType.of(InstanceClass.C6G, InstanceSize.XLARGE),
     machineImage: MachineImage.fromSsmParameter(
-        '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-arm64', {
+        `/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-${architecture}`, {
         os: OperatingSystemType.LINUX,
     }),
     blockDevices: [
@@ -40,6 +42,10 @@ const ec2 = new VscInstance(stack, "EC2", {
         InitPackage.yum('docker'),
         InitCommand.shellCommand('sudo usermod -a -G docker ec2-user'),
         InitService.enable('docker', {
+            ensureRunning: true
+        }),
+        InitPackage.rpm(`https://s3.${stack.region}.amazonaws.com/amazon-ssm-${stack.region}/latest/linux_${architecture}/amazon-ssm-agent.rpm`),
+        InitService.enable('amazon-ssm-agent', {
             ensureRunning: true
         })
     ),
