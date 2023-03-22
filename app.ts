@@ -1,6 +1,6 @@
 import { App, Duration, Stack } from "aws-cdk-lib";
 import { VscInstance } from "./VscInstance";
-import { BlockDeviceVolume, CloudFormationInit, InitCommand, InitPackage, InstanceClass, InstanceSize, InstanceType, MachineImage, OperatingSystemType, Peer, Port, SecurityGroup, UserData, Vpc } from "aws-cdk-lib/aws-ec2";
+import { BlockDeviceVolume, CloudFormationInit, InitCommand, InitPackage, InitService, InstanceClass, InstanceSize, InstanceType, MachineImage, OperatingSystemType, Peer, Port, SecurityGroup, UserData, Vpc } from "aws-cdk-lib/aws-ec2";
 
 const app = new App();
 const stack = new Stack(app, "VscEc2", {
@@ -38,11 +38,10 @@ const ec2 = new VscInstance(stack, "EC2", {
     init: CloudFormationInit.fromElements(
         InitPackage.yum('git'),
         InitPackage.yum('docker'),
-        InitPackage.yum('python3-pip'),
         InitCommand.shellCommand('sudo usermod -a -G docker ec2-user'),
-        InitCommand.shellCommand('sudo pip3 install docker-compose'),
-        InitCommand.shellCommand('sudo systemctl enable docker.service'),
-        InitCommand.shellCommand('sudo systemctl start docker.service')
+        InitService.enable('docker', {
+            ensureRunning: true
+        })
     ),
     initOptions: {
         timeout: Duration.minutes(30)
