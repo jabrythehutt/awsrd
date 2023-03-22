@@ -5,6 +5,7 @@ import { VscInstanceProps } from "./VscInstanceProps";
 import { MetricStatistic, MonitoringFacade } from "cdk-monitoring-constructs";
 import { Duration } from "aws-cdk-lib";
 import { Ec2StopAlarmActionStrategy } from "./Ec2StopAlarmActionStrategy";
+import { Effect, ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
 
 export class VscInstance extends Construct {
     public readonly instance: Instance;
@@ -36,5 +37,27 @@ export class VscInstance extends Construct {
             period: Duration.minutes(30),
             treatMissingData: TreatMissingData.NOT_BREACHING,
         });
+        this.instance.addToRolePolicy(new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel"
+            ],
+            resources: [
+                "*"
+            ]
+        }))
+        this.instance.addToRolePolicy(new PolicyStatement({
+            effect: Effect.ALLOW,
+            actions: [
+                "s3:GetEncryptionConfiguration"
+            ],
+            resources: [
+                "*"
+            ]
+        }))
+        this.instance.role.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"));
     }
 }

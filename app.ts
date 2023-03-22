@@ -1,4 +1,4 @@
-import { App, Duration, Stack } from "aws-cdk-lib";
+import { App, Duration, Stack, CfnOutput } from "aws-cdk-lib";
 import { VscInstance } from "./VscInstance";
 import { BlockDeviceVolume, CloudFormationInit, InitCommand, InitPackage, InitService, InstanceClass, InstanceSize, InstanceType, MachineImage, OperatingSystemType, Peer, Port, SecurityGroup, UserData, Vpc } from "aws-cdk-lib/aws-ec2";
 
@@ -43,14 +43,18 @@ const ec2 = new VscInstance(stack, "EC2", {
         InitCommand.shellCommand('sudo usermod -a -G docker ec2-user'),
         InitService.enable('docker', {
             ensureRunning: true
-        }),
-        InitPackage.rpm(`https://s3.${stack.region}.amazonaws.com/amazon-ssm-${stack.region}/latest/linux_${architecture}/amazon-ssm-agent.rpm`),
-        InitService.enable('amazon-ssm-agent', {
-            ensureRunning: true
         })
     ),
     initOptions: {
         timeout: Duration.minutes(30)
     },
     detailedMonitoring: true
+});
+
+new CfnOutput(stack, "InstanceIdOutput", {
+    value: ec2.instance.instanceId
+})
+
+new CfnOutput(stack, "InstancePublicDns", {
+    value: ec2.instance.instancePublicDnsName
 });
