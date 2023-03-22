@@ -1,6 +1,7 @@
 import { App, Duration, Stack, CfnOutput } from "aws-cdk-lib";
 import { VscInstance } from "./VscInstance";
-import { BlockDeviceVolume, CloudFormationInit, InitCommand, InitPackage, InitService, InstanceClass, InstanceSize, InstanceType, MachineImage, OperatingSystemType, Peer, Port, SecurityGroup, UserData, Vpc } from "aws-cdk-lib/aws-ec2";
+import { BlockDeviceVolume, CloudFormationInit, InitCommand, InitPackage, InitService, InitUser, InstanceClass, InstanceSize, InstanceType, MachineImage, OperatingSystemType, Peer, Port, SecurityGroup, UserData, Vpc } from "aws-cdk-lib/aws-ec2";
+import { user } from "./user";
 
 const app = new App();
 const stack = new Stack(app, "VscEc2", {
@@ -40,7 +41,11 @@ const ec2 = new VscInstance(stack, "EC2", {
     init: CloudFormationInit.fromElements(
         InitPackage.yum('git'),
         InitPackage.yum('docker'),
-        InitCommand.shellCommand('sudo usermod -a -G docker ec2-user'),
+        InitUser.fromName(user, {
+            groups: [
+                "docker"
+            ]
+        }),
         InitService.enable('docker', {
             ensureRunning: true
         })
