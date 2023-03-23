@@ -14,19 +14,11 @@ const stack = new Stack(app, "VscEc2", {
 const vpc = Vpc.fromLookup(stack, "VPC", {
     isDefault: true
 });
-const securityGroup = new SecurityGroup(stack, 'SecurityGroup', {
-    vpc,
-    allowAllOutbound: true
-})
 
-for (const peer of [Peer.anyIpv4(), Peer.anyIpv6()]) { 
-    securityGroup.addIngressRule(peer, Port.tcp(22))
-}
 const instanceType = InstanceType.of(InstanceClass.C7G, InstanceSize.XLARGE);
 const architecture = instanceType.architecture.toString()
 const ec2 = new VscInstance(stack, "EC2", {
     vpc,
-    securityGroup,
     instanceType,
     machineImage: MachineImage.fromSsmParameter(
         `/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-${architecture}`, {

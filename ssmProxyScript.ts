@@ -54,8 +54,8 @@ async function run() {
         JSON.stringify(response),
         region,
         'StartSession',
-        'default', // AWS CLI profile name goes here
-        JSON.stringify(startSessionParams), 
+        '', // AWS CLI profile name goes here
+        JSON.stringify(startSessionParams),
         `https://ssm.${region}.amazonaws.com`
     ];
 
