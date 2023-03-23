@@ -3,3 +3,6 @@ cdk.out
 cdk.context.json
 stack.json
 *.js
+*.mjs
+*.cjs
+*.map
