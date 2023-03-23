@@ -15,12 +15,18 @@
     "@aws-cdk/aws-apigatewayv2-alpha": "2.69.0-alpha.0",
     "@aws-cdk/aws-redshift-alpha": "2.69.0-alpha.0",
     "@aws-cdk/aws-synthetics-alpha": "2.69.0-alpha.0",
+    "@aws-sdk/client-ssm": "^3.297.0",
     "@types/node": "^18.15.5",
     "aws-cdk": "^2.69.0",
     "aws-cdk-lib": "^2.69.0",
     "cdk-monitoring-constructs": "^3.0.3",
     "constructs": "^10.1.284",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.2"
+    "typescript": "^5.0.2",
+    "yargs": "^17.7.1"
+  },
+  "devDependencies": {
+    "@types/yargs": "^17.0.23",
+    "esbuild": "^0.17.12"
   }
 }

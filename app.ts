@@ -1,6 +1,6 @@
 import { App, Duration, Stack, CfnOutput } from "aws-cdk-lib";
 import { VscInstance } from "./VscInstance";
-import { BlockDeviceVolume, CloudFormationInit, InitCommand, InitPackage, InitService, InitUser, InstanceClass, InstanceSize, InstanceType, MachineImage, OperatingSystemType, Peer, Port, SecurityGroup, UserData, Vpc } from "aws-cdk-lib/aws-ec2";
+import { BlockDeviceVolume, CloudFormationInit, InitPackage, InitService, InitUser, InstanceClass, InstanceSize, InstanceType, MachineImage, OperatingSystemType, Peer, Port, SecurityGroup, UserData, Vpc } from "aws-cdk-lib/aws-ec2";
 import { user } from "./user";
 
 const app = new App();
