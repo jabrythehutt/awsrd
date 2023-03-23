@@ -6,3 +6,4 @@ stack.json
 *.mjs
 *.cjs
 *.map
+dist
