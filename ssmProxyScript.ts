@@ -4,16 +4,17 @@ import { EC2Client } from "@aws-sdk/client-ec2";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { InstanceStarter } from "./InstanceStarter";
 import { readFile } from "fs/promises";
+import { hideBin } from "yargs/helpers";
 
 async function run() {
-    const args = await yargs
+    const args = await yargs(hideBin(process.argv))
         .option("instanceId", { type: "string", demand: true })
         .option("port", { type: "number", demand: true })
         .option("publicKeyPath", { type: "string", demand: true })
         .option("user", { type: "string", demand: true })
         .option("pollPeriod", { type: "number", default: 1000 })
         .option("sshKeyTimeoutSeconds", { type: "number", default: 60 })
-        .parse(process.argv);
+        .parse();
 
 
     const ssmClient = new SSMClient({});
