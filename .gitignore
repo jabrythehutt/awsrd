@@ -2,6 +2,7 @@ node_modules
 cdk.out
 cdk.context.json
 stack.json
+session-manager-plugin
 *.js
 *.mjs
 *.cjs

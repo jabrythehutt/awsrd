@@ -6,11 +6,8 @@ export class InstanceStateResolver {
 
     async getInstanceState(instanceId: string): Promise<"running" | string | undefined> {
         const response = await this.ec2Client.send(new DescribeInstanceStatusCommand({
-            InstanceIds: [
-                instanceId
-            ]
+            IncludeAllInstances: true
         }))
-    
         const instanceInfo = response.InstanceStatuses?.find(info => info.InstanceId === instanceId);
         if (!instanceInfo) {
             const errorString = `Instance information not found for instance with ID: ${instanceId}`
