@@ -22,12 +22,12 @@ const securityGroup = new SecurityGroup(stack, 'SecurityGroup', {
 for (const peer of [Peer.anyIpv4(), Peer.anyIpv6()]) { 
     securityGroup.addIngressRule(peer, Port.tcp(22))
 }
-
-const architecture = "arm64"
+const instanceType = InstanceType.of(InstanceClass.C7G, InstanceSize.XLARGE);
+const architecture = instanceType.architecture.toString()
 const ec2 = new VscInstance(stack, "EC2", {
     vpc,
     securityGroup,
-    instanceType: InstanceType.of(InstanceClass.C7G, InstanceSize.XLARGE),
+    instanceType,
     machineImage: MachineImage.fromSsmParameter(
         `/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-${architecture}`, {
         os: OperatingSystemType.LINUX,
