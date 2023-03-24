@@ -20,12 +20,12 @@ async function run() {
         .option("sessionManagerBinPath", { type: "string", demand: true })
         .parse();
     const ec2Client = new EC2Client({});
-    const stateResolver = new InstanceStateResolver(ec2Client);
+    const ssmClient = new SSMClient({});
+    const stateResolver = new InstanceStateResolver(ssmClient);
     const starter = new InstanceStarter(ec2Client, stateResolver);
     await starter.start(args.instanceId, args.pollPeriod);
     const publicKey = await readFile(args.publicKeyPath)
     const userSshDir = `~${args.user}/.ssh`
-    const ssmClient = new SSMClient({});
     await ssmClient.send(new SendCommandCommand({
         InstanceIds: [
             args.instanceId

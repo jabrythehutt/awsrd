@@ -1,25 +1,32 @@
-import { EC2Client, DescribeInstanceStatusCommand } from "@aws-sdk/client-ec2";
+import { DescribeInstanceInformationCommand, PingStatus, SSMClient } from "@aws-sdk/client-ssm";
 
 export class InstanceStateResolver {
-    constructor(private ec2Client: EC2Client) {
+    constructor(private ssmClient: SSMClient) {
     }
 
-    async getInstanceState(instanceId: string): Promise<"running" | string | undefined> {
-        const response = await this.ec2Client.send(new DescribeInstanceStatusCommand({
-            IncludeAllInstances: true
-        }))
-        const instanceInfo = response.InstanceStatuses?.find(info => info.InstanceId === instanceId);
+    async ping(instanceId: string): Promise<PingStatus | undefined> {
+        const response = await this.ssmClient.send(new DescribeInstanceInformationCommand({
+            Filters: [
+                {
+                    Key: "InstanceIds",
+                    Values: [
+                        instanceId
+                    ]
+                }
+            ]
+        }));
+        const instanceInfo = response?.InstanceInformationList?.find(info => info.InstanceId === instanceId);
         if (!instanceInfo) {
             const errorString = `Instance information not found for instance with ID: ${instanceId}`
             throw new Error(errorString);
         }
 
-        return instanceInfo?.InstanceState?.Name;
+        return instanceInfo.PingStatus as PingStatus;
 
     }
 
     async isOnline(instanceId: string): Promise<boolean> {
-        const response = await this.getInstanceState(instanceId);
-        return response === "running"
+        const response = await this.ping(instanceId);
+        return response === PingStatus.ONLINE;
     }
 }
