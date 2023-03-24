@@ -11,10 +11,6 @@ import {
   InstanceType,
   MachineImage,
   OperatingSystemType,
-  Peer,
-  Port,
-  SecurityGroup,
-  UserData,
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
 import { user } from "./user";
