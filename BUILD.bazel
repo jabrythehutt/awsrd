@@ -1,0 +1,10 @@
+load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_extract")
+
+container_run_and_extract(
+    name = "session_manager_bin",
+    image = "@session_manager_image//image:dockerfile_image.tar",
+    extract_file = "/bin",
+    commands = [
+        "make release",
+    ],
+)

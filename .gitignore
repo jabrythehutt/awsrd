@@ -9,3 +9,4 @@ session-manager-plugin
 *.map
 dist
 .pnpm-store
+bazel-*
