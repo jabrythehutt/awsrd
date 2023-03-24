@@ -1,4 +1,4 @@
-node_modules
+node_modules/
 cdk.out
 cdk.context.json
 stack.json
