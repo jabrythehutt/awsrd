@@ -2,6 +2,7 @@ load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_extract")
 load("@io_bazel_rules_docker//container:container.bzl", "container_image")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
+load("index.bzl", "cjs_bundle")
 
 workdir = "/session-manager-plugin"
 
@@ -46,4 +47,14 @@ ts_project(
         "//:node_modules/tslib",
         "//:node_modules/yargs",
     ],
+)
+entry_base = "ssmProxyScript"
+
+cjs_bundle(
+    name = "ssm_proxy_script",
+    deps = [
+        "lib"
+    ],
+    output = entry_base + ".cjs",
+    entry_point = entry_base + ".js",
 )
