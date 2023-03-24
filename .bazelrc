@@ -1,0 +1,5 @@
+startup --output_user_root=bazel-root
+
+run --@aspect_rules_format//format:java_enabled=false
+run --@aspect_rules_format//format:swift_enabled=false
+run --@aspect_rules_format//format:proto_enabled=false
