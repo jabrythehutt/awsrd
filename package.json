@@ -1,6 +1,5 @@
 {
   "name": "ec2vsc",
-  "type": "module",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -30,7 +29,8 @@
     "sshpk": "^1.17.0",
     "ssm-session": "^1.0.6",
     "ws": "^8.13.0",
-    "yargs": "^17.7.1"
+    "yargs": "^17.7.1",
+    "tslib": "2.5.0"
   },
   "devDependencies": {
     "@types/node": "^18.15.5",

@@ -12,7 +12,6 @@
       "module": "esnext",
       "moduleResolution": "node",
       "isolatedModules": true,
-      "resolveJsonModule": true,
       "declaration": true
     },
     "ts-node": {
