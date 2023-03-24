@@ -6,9 +6,6 @@
   "scripts": {
     "synth": "cdk synth",
     "deploy": "cdk deploy",
-    "clean": "rm -rf dist",
-    "build:ssmPlugin": "cd session-manager-plugin && docker build -t session-manager-plugin-image . && docker run -it --rm --name session-manager-plugin -v `pwd`:/session-manager-plugin session-manager-plugin-image make release",
-    "build:ssmPluginDist": "cp -r session-manager-plugin/bin/*_plugin dist/",
     "build:ssmScript": "esbuild ssmProxyScript.ts --bundle --sourcemap --sources-content=true  --platform=node --outdir=dist --out-extension:.js=.cjs",
     "build:keyPair": "ts-node writeSshConfig.ts --privateKeyPath=dist/id_rsa --publicKeyPath=dist/id_rsa.pub --configPath dist/config --proxyScriptPath dist/ssmProxyScript.cjs",
     "deploy:config": "pnpm run build && cp dist/config ~/.ssh/config",
