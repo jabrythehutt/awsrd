@@ -15,7 +15,7 @@ const vpc = Vpc.fromLookup(stack, "VPC", {
     isDefault: true
 });
 
-const instanceType = InstanceType.of(InstanceClass.C7G, InstanceSize.XLARGE);
+const instanceType = InstanceType.of(InstanceClass.C7G, InstanceSize.XLARGE2);
 const architecture = instanceType.architecture.toString()
 const ec2 = new VscInstance(stack, "EC2", {
     vpc,
