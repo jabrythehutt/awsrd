@@ -1,5 +1,7 @@
 load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_extract")
 load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 
 workdir = "/session-manager-plugin"
 
@@ -21,4 +23,13 @@ container_run_and_extract(
         "cd " + workdir,
         "make release",
     ],
+)
+
+npm_link_all_packages(
+    name = "node_modules",
+)
+
+ts_project(
+    name = "lib",
+    srcs = glob(["*.ts"])
 )

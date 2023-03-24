@@ -18,7 +18,7 @@ specifiers:
   sshpk: ^1.17.0
   ssm-session: ^1.0.6
   ts-node: ^10.9.1
-  typescript: ^5.0.2
+  typescript: 4.9.5
   ws: ^8.13.0
   yargs: ^17.7.1
 
@@ -43,8 +43,8 @@ devDependencies:
   '@types/yargs': 17.0.23
   aws-cdk: 2.69.0
   esbuild: 0.17.12
-  ts-node: 10.9.1_zlbzrxdj56n2qhafx752nt3nlm
-  typescript: 5.0.2
+  ts-node: 10.9.1_345kigqis4fipgyy5xb3ndshmq
+  typescript: 4.9.5
 
 packages:
 
@@ -1521,7 +1521,7 @@ packages:
     resolution: {integrity: sha512-J8bbNyKKXl5qYcR36TIO8W3mVGVHrmmxsd5PAItGkmyzwJvybiw2IVq5nqd0i4LSNSkB/sx9VHllbfFdr9k1JA==}
     dev: false
 
-  /ts-node/10.9.1_zlbzrxdj56n2qhafx752nt3nlm:
+  /ts-node/10.9.1_345kigqis4fipgyy5xb3ndshmq:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
     peerDependencies:
@@ -1547,7 +1547,7 @@ packages:
       create-require: 1.1.1
       diff: 4.0.2
       make-error: 1.3.6
-      typescript: 5.0.2
+      typescript: 4.9.5
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
     dev: true
@@ -1564,9 +1564,9 @@ packages:
     resolution: {integrity: sha512-KXXFFdAbFXY4geFIwoyNK+f5Z1b7swfXABfL7HXCmoIWMKU3dmS26672A4EeQtDzLKy7SXmfBu51JolvEKwtGA==}
     dev: false
 
-  /typescript/5.0.2:
-    resolution: {integrity: sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==}
-    engines: {node: '>=12.20'}
+  /typescript/4.9.5:
+    resolution: {integrity: sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==}
+    engines: {node: '>=4.2.0'}
     hasBin: true
     dev: true
 
