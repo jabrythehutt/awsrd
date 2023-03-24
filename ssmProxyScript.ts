@@ -1,13 +1,12 @@
 import yargs from "yargs";
-import { SSMClient, SendCommandCommand, StartSessionCommand } from "@aws-sdk/client-ssm";
+import { SSMClient } from "@aws-sdk/client-ssm";
 import { EC2Client } from "@aws-sdk/client-ec2";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { InstanceStarter } from "./InstanceStarter";
 import { readFile } from "fs/promises";
 import { hideBin } from "yargs/helpers";
-import { arch, platform } from "os"
-import { resolve } from "path"
-import { spawn } from "child_process";
+import { KeyAuthoriser } from "./KeyAuthoriser";
+import { SessionStarter } from "./SessionStarter";
 
 
 async function run() {
@@ -22,52 +21,17 @@ async function run() {
     const ec2Client = new EC2Client({});
     const ssmClient = new SSMClient({});
     const stateResolver = new InstanceStateResolver(ssmClient);
+    const keyAuthoriser = new KeyAuthoriser(ssmClient);
+    const sessionStarter = new SessionStarter(ssmClient, args.sessionManagerBinPath);
     const starter = new InstanceStarter(ec2Client, stateResolver);
     await starter.start(args.instanceId, args.pollPeriod);
-    const publicKey = await readFile(args.publicKeyPath)
-    const userSshDir = `~${args.user}/.ssh`
-    await ssmClient.send(new SendCommandCommand({
-        InstanceIds: [
-            args.instanceId
-        ],
-        DocumentName: "AWS-RunShellScript",
-        Comment: `Add the user's SSH key to the instance: ${args.instanceId}`,
-        Parameters: {
-            commands: [
-                `mkdir -p ${userSshDir} || exit 1`,
-                `echo "${publicKey}" > ${userSshDir}/authorized_keys`,
-            ]
-        }
-    }))
-    console.error("Starting session")
-    const startSessionParams = {
-        DocumentName: "AWS-StartSSHSession",
-        Target: args.instanceId,
-        Parameters: {
-            portNumber: [`${args.port}`]
-        }
-    };
-    const response = await ssmClient.send(new StartSessionCommand(startSessionParams))
-    
-    const region = await ec2Client.config.region();
-    const ssmPluginArgs : string[] = [ 
-        JSON.stringify(response),
-        region,
-        'StartSession',
-        '', // AWS CLI profile name goes here
-        JSON.stringify(startSessionParams),
-        `https://ssm.${region}.amazonaws.com`
-    ];
-
-    process.stdin.pause(); // pause stdin for the child process
-    const nodeArch = arch()
-    const architecture = nodeArch === "x64" ? "amd64" : nodeArch;
-    const binaryPath = resolve(args.sessionManagerBinPath, `${platform()}_${architecture}_plugin/session-manager-plugin`);
-    const child = spawn(binaryPath, ssmPluginArgs, {stdio: 'inherit'});
-
-    child.on('exit', () => {
-        process.stdin.resume();
-    });
+    const publicKey = (await readFile(args.publicKeyPath)).toString()
+    await keyAuthoriser.authorise({
+        user: args.user,
+        instanceId: args.instanceId,
+        publicKey
+    })
+    await sessionStarter.start({ instanceId: args.instanceId, port: args.port })
 
 }
 run();
