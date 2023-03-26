@@ -47,6 +47,7 @@ ts_project(
         "//:node_modules/sshpk",
         "//:node_modules/tslib",
         "//:node_modules/yargs",
+        "//:node_modules/vscode",
     ],
 )
 
@@ -59,4 +60,16 @@ cjs_bundle(
     deps = [
         "lib",
     ],
+)
+
+cjs_bundle(
+    name = "extension",
+    entry_point = "extension.js",
+    output = "extension.cjs",
+    external_libs = [
+        "//:node_modules/vscode",
+    ],
+    deps = [
+        "lib"
+    ]
 )

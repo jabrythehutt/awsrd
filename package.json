@@ -3,14 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {
-    "synth": "cdk synth",
-    "deploy": "cdk deploy",
-    "build:ssmScript": "esbuild ssmProxyScript.ts --bundle --sourcemap --sources-content=true  --platform=node --outdir=dist --out-extension:.js=.cjs",
-    "build:keyPair": "ts-node writeSshConfig.ts --privateKeyPath=dist/id_rsa --publicKeyPath=dist/id_rsa.pub --configPath dist/config --proxyScriptPath dist/ssmProxyScript.cjs",
-    "deploy:config": "pnpm run build && cp dist/config ~/.ssh/config",
-    "build": "tsc --noEmit && pnpm run build:ssmScript && pnpm run build:keyPair"
-  },
   "keywords": [],
   "author": "Daniel Jabry <djabry@gmail.com>",
   "license": "MIT",
@@ -28,7 +20,8 @@
     "ssm-session": "^1.0.6",
     "ws": "^8.13.0",
     "yargs": "^17.7.1",
-    "tslib": "2.5.0"
+    "tslib": "2.5.0",
+    "vscode": "1.1.37"
   },
   "devDependencies": {
     "@types/node": "^18.15.5",
@@ -39,5 +32,8 @@
     "esbuild": "^0.17.12",
     "ts-node": "^10.9.1",
     "typescript": "4.9.5"
-  }
+  },
+  "extensionDependencies": [
+    "ms-vscode-remote.remote-ssh"
+  ]
 }
