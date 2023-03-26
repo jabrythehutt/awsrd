@@ -1,11 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es2022",
+    "target": "es2020",
     "lib": ["ES2022", "DOM"],
     "importHelpers": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
@@ -13,9 +14,5 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "declaration": true
-  },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": "node"
   }
 }

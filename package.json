@@ -1,8 +1,9 @@
 {
   "name": "ec2vsc",
   "version": "1.0.0",
-  "description": "",
-  "main": "extension.cjs",
+  "description": "Display EC2 instances",
+  "main": "./extension.cjs",
+  "publisher": "jabrythehutt",
   "keywords": [],
   "author": "Daniel Jabry <djabry@gmail.com>",
   "license": "MIT",
@@ -20,10 +21,10 @@
     "ssm-session": "^1.0.6",
     "ws": "^8.13.0",
     "yargs": "^17.7.1",
-    "tslib": "2.5.0",
-    "vscode": "1.1.37"
+    "tslib": "2.5.0"
   },
   "devDependencies": {
+    "@types/vscode": "1.76.0",
     "@types/node": "^18.15.5",
     "@types/sshpk": "^1.17.1",
     "@types/ws": "^8.5.4",
@@ -36,9 +37,22 @@
   "extensionDependencies": [
     "ms-vscode-remote.remote-ssh"
   ],
+  "engines": {
+    "vscode": "^1.76.0"
+  },
+  "activationEvents": [],
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ec2-explorer",
+          "title": "EC2 instances",
+          "icon": "media/dep.svg"
+        }
+      ]
+    },
     "views": {
-      "explorer": [
+      "ec2-explorer": [
         {
           "id": "ec2Instances",
           "name": "AWS EC2 instances"

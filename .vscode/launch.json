@@ -13,7 +13,7 @@
 				"--extensionDevelopmentPath=${workspaceFolder}/bazel-bin/dist"
 			],
 			"outFiles": [
-				"${workspaceFolder}/bazel-bin/dist/**/*.*"
+				"${workspaceFolder}/bazel-bin/dist"
 			],
 			"preLaunchTask": "${defaultBuildTask}"
 		}

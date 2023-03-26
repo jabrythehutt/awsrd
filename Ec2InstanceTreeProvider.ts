@@ -1,39 +1,37 @@
 import { ProviderResult, TreeDataProvider, TreeItem } from "vscode";
-import { Ec2Instance } from "./Ec2Instance"
-import { EC2Client, paginateDescribeInstances } from "@aws-sdk/client-ec2";
+import { EC2Client, Instance, paginateDescribeInstances } from "@aws-sdk/client-ec2";
 
-export class Ec2InstanceTreeProvider implements TreeDataProvider<Ec2Instance> {
+export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
 
     constructor(private ec2: EC2Client) {
     }
 
-    // onDidChangeTreeData?: Event<Ec2Instance | null | undefined> | undefined;
+    // onDidChangeTreeData?: Event<Instance | null | undefined> | undefined;
 
-    getTreeItem(element: Ec2Instance): TreeItem | Thenable<TreeItem> {
+    getTreeItem(element: Instance): TreeItem | Thenable<TreeItem> {
         return {
-            
+            label: element.InstanceId,
+            id: element.InstanceId,
         };
     }
 
-    async getRootChildren(): Promise<Ec2Instance[] | null | undefined> {
-        const instances: Ec2Instance[] = [];
+    async getRootChildren(): Promise<Instance[] | null | undefined> {
+        const instances: Instance[] = [];
         for await (const response of paginateDescribeInstances({client: this.ec2}, {})) {
             for (const reservation of response.Reservations || []) {
-                const values = (reservation.Instances || []).map(i => ({
-                    id: i.InstanceId as string
-                }))
-                instances.push(...values);
+                instances.push(...(reservation.Instances || []));
             }
         }
         return instances;
     }
 
-    getChildren(element: Ec2Instance): ProviderResult<Ec2Instance[]> {
+    getChildren(element: Instance): ProviderResult<Instance[]> {
+        console.log("Getting elements for", element);
         return element ? [] : this.getRootChildren();
     }
 
 
-    getParent?(element: Ec2Instance): ProviderResult<Ec2Instance> {
+    getParent?(element: Instance): ProviderResult<Instance> {
         return undefined;
     }
 

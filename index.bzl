@@ -12,7 +12,7 @@ def to_externals(external_libs):
 
 default_target = "es2020"
 
-def cjs_bundle(name, external_libs = [], format = "cjs", output = None, sourcemap = "inline", sources_content = True, target = default_target, **kwargs):
+def cjs_bundle(name, external_libs = [], format = "cjs", output = None, sourcemap = "external", sources_content = True, target = default_target, **kwargs):
     output = output or name + ".cjs"
     esbuild(
         name = name,
