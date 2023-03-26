@@ -2,7 +2,7 @@
   "name": "ec2vsc",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "extension.cjs",
   "keywords": [],
   "author": "Daniel Jabry <djabry@gmail.com>",
   "license": "MIT",

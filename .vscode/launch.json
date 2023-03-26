@@ -10,10 +10,10 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"args": [
-				"--extensionDevelopmentPath=${workspaceFolder}"
+				"--extensionDevelopmentPath=${workspaceFolder}/bazel-bin/dist"
 			],
 			"outFiles": [
-				"${workspaceFolder}/bazel-bin/extension.cjs"
+				"${workspaceFolder}/bazel-bin/dist/**/*.*"
 			],
 			"preLaunchTask": "${defaultBuildTask}"
 		}

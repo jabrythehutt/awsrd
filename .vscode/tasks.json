@@ -7,7 +7,7 @@
 
             "label": "Build extension",
 			"type": "shell",
-			"command": "bazel build extension",
+			"command": "bazel build dist",
 			"group": {
 				"kind": "build",
 				"isDefault": true

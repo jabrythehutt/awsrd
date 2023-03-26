@@ -3,6 +3,7 @@ load("@io_bazel_rules_docker//container:container.bzl", "container_image")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("index.bzl", "cjs_bundle")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 
 workdir = "/session-manager-plugin"
 
@@ -71,5 +72,13 @@ cjs_bundle(
     ],
     deps = [
         "lib"
+    ]
+)
+
+npm_package(
+    name = "dist",
+    srcs = [
+        "package.json",
+        "extension"
     ]
 )
