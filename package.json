@@ -35,5 +35,15 @@
   },
   "extensionDependencies": [
     "ms-vscode-remote.remote-ssh"
-  ]
+  ],
+  "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "ec2Instances",
+          "name": "AWS EC2 instances"
+        }
+      ]
+    }
+  }
 }
