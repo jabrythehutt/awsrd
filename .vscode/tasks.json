@@ -5,9 +5,9 @@
 	"tasks": [
 		{
 
-            "label": "Full build",
+            "label": "Build extension",
 			"type": "shell",
-			"command": "bazel build //...",
+			"command": "bazel build extension",
 			"group": {
 				"kind": "build",
 				"isDefault": true
