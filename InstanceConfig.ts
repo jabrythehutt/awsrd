@@ -1,5 +1,4 @@
 export interface InstanceConfig {
-    rootVolumeSizeGb: number;
-    user: string;
-    
+  rootVolumeSizeGb: number;
+  user: string;
 }

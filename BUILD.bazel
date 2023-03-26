@@ -36,8 +36,8 @@ ts_project(
     declaration = True,
     deps = [
         "//:node_modules/@aws-sdk/client-ec2",
-        "//:node_modules/@aws-sdk/client-ssm",
         "//:node_modules/@aws-sdk/client-ec2-instance-connect",
+        "//:node_modules/@aws-sdk/client-ssm",
         "//:node_modules/@types/node",
         "//:node_modules/@types/sshpk",
         "//:node_modules/@types/yargs",
@@ -49,13 +49,14 @@ ts_project(
         "//:node_modules/yargs",
     ],
 )
+
 entry_base = "ssmProxyScript"
 
 cjs_bundle(
     name = "ssm_proxy_script",
-    deps = [
-        "lib"
-    ],
-    output = entry_base + ".cjs",
     entry_point = entry_base + ".js",
+    output = entry_base + ".cjs",
+    deps = [
+        "lib",
+    ],
 )
