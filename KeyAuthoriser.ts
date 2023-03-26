@@ -1,26 +1,17 @@
-import { SSMClient, SendCommandCommand } from "@aws-sdk/client-ssm";
+import { EC2InstanceConnectClient, SendSSHPublicKeyCommand } from "@aws-sdk/client-ec2-instance-connect";
 
 export class KeyAuthoriser {
-  constructor(private ssmClient: SSMClient) {}
+  constructor(private client: EC2InstanceConnectClient) {}
 
   async authorise(request: {
     user: string;
     instanceId: string;
     publicKey: string;
   }): Promise<void> {
-    const userSshDir = `~${request.user}/.ssh`;
-    await this.ssmClient.send(
-      new SendCommandCommand({
-        InstanceIds: [request.instanceId],
-        DocumentName: "AWS-RunShellScript",
-        Comment: `Add the user's SSH key to the instance: ${request.instanceId}`,
-        Parameters: {
-          commands: [
-            `mkdir -p ${userSshDir} || exit 1`,
-            `echo "${request.publicKey}" > ${userSshDir}/authorized_keys`,
-          ],
-        },
-      })
-    );
+    await this.client.send(new SendSSHPublicKeyCommand({
+      InstanceId: request.instanceId,
+      InstanceOSUser: request.user,
+      SSHPublicKey: request.publicKey
+    }));
   }
 }

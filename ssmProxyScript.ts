@@ -1,6 +1,7 @@
 import yargs from "yargs";
 import { SSMClient } from "@aws-sdk/client-ssm";
 import { EC2Client } from "@aws-sdk/client-ec2";
+import { EC2InstanceConnectClient } from "@aws-sdk/client-ec2-instance-connect";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { InstanceStarter } from "./InstanceStarter";
 import { readFile } from "fs/promises";
@@ -19,8 +20,9 @@ async function run() {
     .parse();
   const ec2Client = new EC2Client({});
   const ssmClient = new SSMClient({});
+  const instanceConnectClient = new EC2InstanceConnectClient({});
   const stateResolver = new InstanceStateResolver(ssmClient);
-  const keyAuthoriser = new KeyAuthoriser(ssmClient);
+  const keyAuthoriser = new KeyAuthoriser(instanceConnectClient);
   const sessionStarter = new SessionStarter(
     ssmClient,
     args.sessionManagerBinPath
