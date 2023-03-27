@@ -39,6 +39,7 @@ ts_project(
     deps = [
         "//:node_modules/@aws-sdk/client-ec2",
         "//:node_modules/@aws-sdk/client-ec2-instance-connect",
+        "//:node_modules/@aws-sdk/credential-providers",
         "//:node_modules/@aws-sdk/client-ssm",
         "//:node_modules/@types/node",
         "//:node_modules/@types/sshpk",
@@ -49,7 +50,7 @@ ts_project(
         "//:node_modules/sshpk",
         "//:node_modules/tslib",
         "//:node_modules/yargs",
-        "//:node_modules/@types/vscode",
+        "//:node_modules/@types/vscode"
     ],
 )
 
@@ -68,7 +69,7 @@ cjs_bundle(
     name = "extension",
     entry_point = "extension.js",
     output = "extension.cjs",
-    minify = True,
+    minify = False,
     external_libs = ["vscode"],
     deps = [
         "lib"

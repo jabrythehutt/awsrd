@@ -14,6 +14,7 @@
     "@aws-sdk/client-ec2": "3.299.0",
     "@aws-sdk/client-ssm": "3.299.0",
     "@aws-sdk/client-ec2-instance-connect": "3.299.0",
+    "@aws-sdk/credential-providers": "3.299.0",
     "aws-cdk-lib": "^2.69.0",
     "cdk-monitoring-constructs": "^3.0.3",
     "constructs": "^10.1.284",
@@ -56,6 +57,21 @@
         {
           "id": "ec2Instances",
           "name": "AWS EC2 instances"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "ec2Instances.open",
+        "title": "Open",
+        "icon": "media/dep.svg"
+      }
+    ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "ec2Instances.open",
+          "group": "inline"
         }
       ]
     }

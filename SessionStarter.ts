@@ -6,6 +6,7 @@ import {
 import { ChildProcess, spawn } from "node:child_process";
 import { arch, platform } from "node:os";
 import { resolve } from "path";
+import { toSessionManagerArgs } from "./toSessionManagerArgs";
 
 export class SessionStarter {
   constructor(
@@ -16,6 +17,7 @@ export class SessionStarter {
   async start(request: {
     instanceId: string;
     port: number;
+    profile: string;
   }): Promise<ChildProcess> {
     const startSessionParams: StartSessionCommandInput = {
       DocumentName: "AWS-StartSSHSession",
@@ -28,15 +30,14 @@ export class SessionStarter {
       new StartSessionCommand(startSessionParams)
     );
 
+    const profile = request.profile;
     const region = await this.ssmClient.config.region();
-    const ssmPluginArgs: string[] = [
-      JSON.stringify(response),
+    const ssmPluginArgs: string[] = toSessionManagerArgs({
       region,
-      "StartSession",
-      "", // AWS CLI profile name goes here
-      JSON.stringify(startSessionParams),
-      `https://ssm.${region}.amazonaws.com`,
-    ];
+      profile,
+      request: startSessionParams,
+      response
+    });
 
     process.stdin.pause();
     const child = spawn(this.sessionManagerPath, ssmPluginArgs, {
