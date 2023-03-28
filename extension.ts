@@ -9,6 +9,10 @@ import { tmpdir, homedir } from "node:os";
 import { createKeyPair } from "./createKeyPair";
 import { toSshConfig } from "./toSshConfig";
 import { fromIni } from "@aws-sdk/credential-providers";
+import { InstanceStarter } from "./InstanceStarter";
+import { InstanceStateResolver } from "./InstanceStateResolver";
+import { DescribeInstanceInformationCommand, SSMClient } from "@aws-sdk/client-ssm";
+import { guessUsernames } from "./guessUsernames";
 
 export async function activate(context: ExtensionContext) {
     const explorerViews = packageJson.contributes.views["ec2-explorer"];
@@ -21,6 +25,7 @@ export async function activate(context: ExtensionContext) {
         credentials
       }
     const ec2 = new EC2Client(clientConfig);
+    const ssmClient = new SSMClient(clientConfig);
     const treeView = window.createTreeView(explorerView.id, { treeDataProvider: new Ec2InstanceTreeProvider(ec2) });
     context.subscriptions.push(treeView);
     const openItemCommand = packageJson.contributes.commands[0].command;
@@ -39,14 +44,21 @@ export async function activate(context: ExtensionContext) {
         const sshConfig = toSshConfig({ ...keyPairPaths, proxyScriptPath, region, profile, sessionManagerBinPath })
         const sshConfigPath = workspace.getConfiguration().get("remote.SSH.configFile") as string || resolve(homedir(), ".ssh", "config")
         await writeFile(sshConfigPath, sshConfig)
-
+        const stateResolver = new InstanceStateResolver(ssmClient, ec2)
+        const instanceStarter = new InstanceStarter(ec2, stateResolver);
+        const instanceId = ec2Instance.InstanceId as string
+        await instanceStarter.start(instanceId, 1000);
+        const instanceInfoResponse = await ssmClient.send(new DescribeInstanceInformationCommand({}))
+        const instanceInfo = instanceInfoResponse.InstanceInformationList?.find(info => info.InstanceId === instanceId);
+        const options = instanceInfo ? guessUsernames(instanceInfo) : [];
+        const guess = options[0]
         const user = await window.showInputBox({
-            placeHolder: "Username",
+            placeHolder: guess || "Username",
             prompt: `The username for the instance: ${ec2Instance.InstanceId}`,
-            value: "ec2-user"
+            value: guess
           });
         if (user) {
-            const uri = Uri.parse(`vscode-remote://ssh-remote+${user}@${ec2Instance.InstanceId}/`)
+            const uri = Uri.parse(`vscode-remote://ssh-remote+${user}@${ec2Instance.InstanceId}/home/${user}`)
             await commands.executeCommand('vscode.openFolder', uri);
         }
 
