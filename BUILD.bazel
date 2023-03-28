@@ -55,11 +55,15 @@ ts_project(
 )
 
 entry_base = "ssmProxyScript"
+proxy_script_file_name = entry_base + ".cjs"
+
+sourcemap = None
 
 cjs_bundle(
     name = "ssm_proxy_script",
     entry_point = entry_base + ".js",
-    output = entry_base + ".cjs",
+    output = proxy_script_file_name,
+    sourcemap = sourcemap,
     deps = [
         "lib",
     ],
@@ -69,10 +73,14 @@ cjs_bundle(
     name = "extension",
     entry_point = "extension.js",
     output = "extension.cjs",
-    minify = False,
     external_libs = ["vscode"],
+    sourcemap = sourcemap,
+    define = {
+        "process.env.PROXY_SCRIPT_FILENAME": '"{proxy_script_file_name}"'.format(proxy_script_file_name = proxy_script_file_name)
+    },
     deps = [
-        "lib"
+        "lib",
+        "ssm_proxy_script"
     ]
 )
 
@@ -80,6 +88,7 @@ npm_package(
     name = "dist",
     srcs = [
         "package.json",
-        "extension"
+        "extension",
+        "ssm_proxy_script"
     ] + glob(["media/*.*"])
 )

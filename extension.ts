@@ -1,18 +1,26 @@
-import { ExtensionContext, commands, window, Uri, workspace } from "vscode";
+import { ExtensionContext, commands, window, Uri, workspace, ConfigurationTarget } from "vscode";
 import packageJson from "./package.json";
 import { Ec2InstanceTreeProvider } from "./Ec2InstanceTreeProvider";
 import { EC2Client, Instance } from "@aws-sdk/client-ec2";
 import { writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
-import { tmpdir } from "node:os";
+import { tmpdir, homedir } from "node:os";
 import { createKeyPair } from "./createKeyPair";
 import { toSshConfig } from "./toSshConfig";
+import { fromIni } from "@aws-sdk/credential-providers";
 
 export async function activate(context: ExtensionContext) {
     const explorerViews = packageJson.contributes.views["ec2-explorer"];
+    const profile = "default"
     const explorerView = explorerViews[0];
-    const ec2 = new EC2Client({});
+    const credentials = fromIni({
+        profile,
+      })
+      const clientConfig = {
+        credentials
+      }
+    const ec2 = new EC2Client(clientConfig);
     const treeView = window.createTreeView(explorerView.id, { treeDataProvider: new Ec2InstanceTreeProvider(ec2) });
     context.subscriptions.push(treeView);
     const openItemCommand = packageJson.contributes.commands[0].command;
@@ -23,15 +31,14 @@ export async function activate(context: ExtensionContext) {
             await mkdir(destination)
         }
         console.log("Storage path:", destination);
-        const proxyScriptPath = "~/foo"
+        const proxyScriptPath = resolve(__dirname, process.env.PROXY_SCRIPT_FILENAME as string);
         const sessionManagerBinPath = "~/baz"
-        const sshConfigPath = resolve(destination, "config");
         const region = await ec2.config.region();
-        const profile = "default"
+        
         const keyPairPaths = await generateKeyPair(destination);
         const sshConfig = toSshConfig({ ...keyPairPaths, proxyScriptPath, region, profile, sessionManagerBinPath })
+        const sshConfigPath = workspace.getConfiguration().get("remote.SSH.configFile") as string || resolve(homedir(), ".ssh", "config")
         await writeFile(sshConfigPath, sshConfig)
-        // await workspace.getConfiguration().update("remote.SSH.configFile", resolve(destination, sshConfigPath));
         const uri = Uri.parse(`vscode-remote://ssh-remote+${ec2Instance.InstanceId}/`)
         await commands.executeCommand('vscode.openFolder', uri);
     })
