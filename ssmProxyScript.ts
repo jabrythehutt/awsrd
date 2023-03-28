@@ -33,7 +33,7 @@ async function run() {
   const ec2Client = new EC2Client(clientConfig);
   const ssmClient = new SSMClient(clientConfig);
   const instanceConnectClient = new EC2InstanceConnectClient(clientConfig);
-  const stateResolver = new InstanceStateResolver(ssmClient);
+  const stateResolver = new InstanceStateResolver(ssmClient, ec2Client);
   const keyAuthoriser = new KeyAuthoriser(instanceConnectClient);
   const sessionStarter = new SessionStarter(
     ssmClient,

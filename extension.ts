@@ -1,4 +1,4 @@
-import { ExtensionContext, commands, window, Uri, workspace, ConfigurationTarget } from "vscode";
+import { ExtensionContext, commands, window, Uri, workspace } from "vscode";
 import packageJson from "./package.json";
 import { Ec2InstanceTreeProvider } from "./Ec2InstanceTreeProvider";
 import { EC2Client, Instance } from "@aws-sdk/client-ec2";
@@ -32,15 +32,24 @@ export async function activate(context: ExtensionContext) {
         }
         console.log("Storage path:", destination);
         const proxyScriptPath = resolve(__dirname, process.env.PROXY_SCRIPT_FILENAME as string);
-        const sessionManagerBinPath = "~/baz"
+        const sessionManagerBinPath = resolve(__dirname, process.env.SESSION_MANAGER_BIN as string)
         const region = await ec2.config.region();
         
         const keyPairPaths = await generateKeyPair(destination);
         const sshConfig = toSshConfig({ ...keyPairPaths, proxyScriptPath, region, profile, sessionManagerBinPath })
         const sshConfigPath = workspace.getConfiguration().get("remote.SSH.configFile") as string || resolve(homedir(), ".ssh", "config")
         await writeFile(sshConfigPath, sshConfig)
-        const uri = Uri.parse(`vscode-remote://ssh-remote+${ec2Instance.InstanceId}/`)
-        await commands.executeCommand('vscode.openFolder', uri);
+
+        const user = await window.showInputBox({
+            placeHolder: "Username",
+            prompt: `The username for the instance: ${ec2Instance.InstanceId}`,
+            value: "ec2-user"
+          });
+        if (user) {
+            const uri = Uri.parse(`vscode-remote://ssh-remote+${user}@${ec2Instance.InstanceId}/`)
+            await commands.executeCommand('vscode.openFolder', uri);
+        }
+
     })
 }
 

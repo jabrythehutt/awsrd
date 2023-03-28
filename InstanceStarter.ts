@@ -7,8 +7,15 @@ export class InstanceStarter {
     private stateResolver: InstanceStateResolver
   ) {}
 
+  async waitFor(condition: () => Promise<boolean>, pollPeriod: number): Promise<void> {
+    while (!await condition()) {
+      await new Promise((resolve) => setTimeout(resolve, pollPeriod));
+    }
+  }
+
   async start(instanceId: string, pollPeriod: number): Promise<void> {
-    let online = await this.stateResolver.isOnline(instanceId);
+    const isRunning = () => this.stateResolver.isRunning(instanceId);
+    let online = await isRunning();
     if (!online) {
       console.log("Attempting to start EC2 instance:", instanceId);
       await this.ec2Client.send(
@@ -17,10 +24,9 @@ export class InstanceStarter {
         })
       );
     }
-    while (!online) {
-      await new Promise((resolve) => setTimeout(resolve, pollPeriod));
-      online = await this.stateResolver.isOnline(instanceId);
-    }
+    await this.waitFor(isRunning, pollPeriod);
     console.log("Instance has started");
+    await this.waitFor(() => this.stateResolver.isOnline(instanceId), pollPeriod);
+    console.log("Instance is online")
   }
 }
