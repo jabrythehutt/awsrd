@@ -43,73 +43,73 @@ export async function activate(context: ExtensionContext) {
   const openItemCommand = packageJson.contributes.commands[0].command;
 
   commands.registerCommand(openItemCommand, async (ec2Instance: Instance) => {
-    window.withProgress({
-      location: ProgressLocation.Notification,
-      title: `Starting a connection to the EC2 instance: ${ec2Instance.InstanceId}`,
-      cancellable: true
-    }, async (progress, token) => {
-
-      const destination = context.globalStorageUri.path;
-      if (!existsSync(destination)) {
-        await mkdir(destination);
-      }
-      console.log("Storage path:", destination);
-      const proxyScriptPath = resolve(
-        __dirname,
-        process.env.PROXY_SCRIPT_FILENAME as string
-      );
-      const sessionManagerBinPath = resolve(
-        __dirname,
-        process.env.SESSION_MANAGER_BIN as string
-      );
-      const region = await ec2.config.region();
-
-      const keyPairPaths = await generateKeyPair(destination);
-      const sshConfig = toSshConfig({
-        ...keyPairPaths,
-        proxyScriptPath,
-        region,
-        profile,
-        sessionManagerBinPath,
-      });
-      const sshConfigPath = resolve(destination, "config");
-      await writeFile(sshConfigPath, sshConfig);
-      await workspace
-        .getConfiguration()
-        .update(
-          "remote.SSH.configFile",
-          sshConfigPath,
-          ConfigurationTarget.Global
+    window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: `Starting a connection to the EC2 instance: ${ec2Instance.InstanceId}`,
+        cancellable: true,
+      },
+      async (progress, token) => {
+        const destination = context.globalStorageUri.path;
+        if (!existsSync(destination)) {
+          await mkdir(destination);
+        }
+        console.log("Storage path:", destination);
+        const proxyScriptPath = resolve(
+          __dirname,
+          process.env.PROXY_SCRIPT_FILENAME as string
         );
-      const stateResolver = new InstanceStateResolver(ssmClient, ec2);
-      const instanceStarter = new InstanceStarter(ec2, stateResolver);
-      const instanceId = ec2Instance.InstanceId as string;
-      progress.report({ message: "Starting instance if necessary..." })
-      await instanceStarter.start(instanceId, 1000);
-      const instanceInfoResponse = await ssmClient.send(
-        new DescribeInstanceInformationCommand({})
-      );
-      const instanceInfo = instanceInfoResponse.InstanceInformationList?.find(
-        (info) => info.InstanceId === instanceId
-      );
-      const options = instanceInfo ? guessUsernames(instanceInfo) : [];
-      const guess = options[0];
-      progress.report({message: ""})
-      const user = await window.showInputBox({
-        placeHolder: guess || "Username",
-        prompt: `The username for the instance: ${ec2Instance.InstanceId}`,
-        value: guess,
-      });
-      if (user) {
-        const uri = Uri.parse(
-          `vscode-remote://ssh-remote+${user}@${ec2Instance.InstanceId}/home/${user}`
+        const sessionManagerBinPath = resolve(
+          __dirname,
+          process.env.SESSION_MANAGER_BIN as string
         );
-        await commands.executeCommand("vscode.openFolder", uri);
-      }
-    });
+        const region = await ec2.config.region();
 
+        const keyPairPaths = await generateKeyPair(destination);
+        const sshConfig = toSshConfig({
+          ...keyPairPaths,
+          proxyScriptPath,
+          region,
+          profile,
+          sessionManagerBinPath,
+        });
+        const sshConfigPath = resolve(destination, "config");
+        await writeFile(sshConfigPath, sshConfig);
+        await workspace
+          .getConfiguration()
+          .update(
+            "remote.SSH.configFile",
+            sshConfigPath,
+            ConfigurationTarget.Global
+          );
+        const stateResolver = new InstanceStateResolver(ssmClient, ec2);
+        const instanceStarter = new InstanceStarter(ec2, stateResolver);
+        const instanceId = ec2Instance.InstanceId as string;
+        progress.report({ message: "Starting instance if necessary..." });
+        await instanceStarter.start(instanceId, 1000);
+        const instanceInfoResponse = await ssmClient.send(
+          new DescribeInstanceInformationCommand({})
+        );
+        const instanceInfo = instanceInfoResponse.InstanceInformationList?.find(
+          (info) => info.InstanceId === instanceId
+        );
+        const options = instanceInfo ? guessUsernames(instanceInfo) : [];
+        const guess = options[0];
+        progress.report({ message: "" });
+        const user = await window.showInputBox({
+          placeHolder: guess || "Username",
+          prompt: `The username for the instance: ${ec2Instance.InstanceId}`,
+          value: guess,
+        });
+        if (user) {
+          const uri = Uri.parse(
+            `vscode-remote://ssh-remote+${user}@${ec2Instance.InstanceId}/home/${user}`
+          );
+          await commands.executeCommand("vscode.openFolder", uri);
+        }
+      }
+    );
   });
-
 }
 
 async function generateKeyPair(
