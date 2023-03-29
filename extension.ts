@@ -59,10 +59,7 @@ export async function activate(context: ExtensionContext) {
           __dirname,
           process.env.PROXY_SCRIPT_FILENAME as string
         );
-        const sessionManagerBinPath = resolve(
-          __dirname,
-          process.env.SESSION_MANAGER_BIN as string
-        );
+        const sessionManagerBinPath = resolve(__dirname);
         const region = await ec2.config.region();
 
         const keyPairPaths = await generateKeyPair(destination);
