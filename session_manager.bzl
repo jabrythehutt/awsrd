@@ -5,8 +5,7 @@ load("@aspect_bazel_lib//lib:output_files.bzl", "output_files")
 load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
 load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
 
-def session_manager(name): 
-    
+def session_manager(name):
     workdir = "/session-manager-plugin"
     base_name = name + "_base"
     container_image(
@@ -34,11 +33,11 @@ def session_manager(name):
 
     archs = {
         "amd64": "x86_64",
-        "arm64": "arm64"
+        "arm64": "arm64",
     }
     oss = {
         "linux": "linux",
-        "darwin": "macos"
+        "darwin": "macos",
     }
     file_name = "session-manager-plugin"
     selected_target = {}
@@ -46,12 +45,12 @@ def session_manager(name):
         for os in oss.keys():
             suffix = os + "_" + arch
             dir_name = name + "_" + suffix
-            platform_name =  dir_name + "_config"
+            platform_name = dir_name + "_config"
             native.config_setting(
                 name = platform_name,
                 constraint_values = [
                     "@platforms//os:" + oss[os],
-                    "@platforms//cpu:" + archs[arch]
+                    "@platforms//cpu:" + archs[arch],
                 ],
             )
 
@@ -59,25 +58,25 @@ def session_manager(name):
             copy_to_directory(
                 name = dir_name,
                 srcs = [
-                    release_name
+                    release_name,
                 ],
                 include_srcs_patterns = [
-                   bin_dir + "/" + file_name
+                    bin_dir + "/" + file_name,
                 ],
                 replace_prefixes = {
-                    bin_dir: ""
-                }
+                    bin_dir: "",
+                },
             )
             dir_path_name = dir_name + "_path"
             directory_path(
                 name = dir_path_name,
                 directory = dir_name,
-                path = file_name
+                path = file_name,
             )
             selected_target[platform_name] = dir_path_name
 
     copy_file(
         name = name,
         src = select(selected_target),
-        out = name + "/" + file_name
+        out = name + "/" + file_name,
     )
