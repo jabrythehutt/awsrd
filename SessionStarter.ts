@@ -4,7 +4,6 @@ import {
   StartSessionCommandInput,
 } from "@aws-sdk/client-ssm";
 import { ChildProcess, spawn } from "node:child_process";
-import { arch, platform } from "node:os";
 import { resolve } from "path";
 import { toSessionManagerArgs } from "./toSessionManagerArgs";
 
@@ -51,11 +50,6 @@ export class SessionStarter {
   }
 
   get sessionManagerPath(): string {
-    const nodeArch = arch();
-    const architecture = nodeArch === "x64" ? "amd64" : nodeArch;
-    return resolve(
-      this.sessionManagerBinPath,
-      `${platform()}_${architecture}_plugin/session-manager-plugin`
-    );
+    return resolve(this.sessionManagerBinPath, "session-manager-plugin");
   }
 }

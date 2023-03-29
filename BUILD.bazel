@@ -1,47 +1,9 @@
-load("@io_bazel_rules_docker//docker/util:run.bzl", "container_run_and_extract")
-load("@io_bazel_rules_docker//container:container.bzl", "container_image")
+
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("index.bzl", "cjs_bundle")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
-load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
-
-workdir = "/session-manager-plugin"
-
-container_image(
-    name = "session_manager_base",
-    base = "@session_manager_image//image:dockerfile_image.tar",
-    directory = workdir,
-    files = [
-        "@session_manager_repo//:all_srcs",
-    ],
-    mode = "7777",
-)
-
-image_dist_path = workdir + "/bin"
-
-container_run_and_extract(
-    name = "session_manager_release",
-    commands = [
-        "cd " + workdir,
-        "make release",
-    ],
-    extract_file = image_dist_path,
-    image = "session_manager_base.tar",
-)
-
-copy_to_directory(
-    name = "session_manager_bin",
-    srcs = [
-        "session_manager_release",
-    ],
-    include_srcs_patterns = [
-        "**/*_plugin/session-manager-plugin".format(image_dist_path = image_dist_path),
-    ],
-    root_paths = [
-        "session_manager_release" + image_dist_path,
-    ],
-)
+load("session_manager.bzl", "session_manager")
 
 npm_link_all_packages(
     name = "node_modules",
@@ -86,11 +48,17 @@ cjs_bundle(
     ],
 )
 
+session_manager_bin_name = "session_manager_bin"
+
+session_manager(
+    name = session_manager_bin_name
+)
+
 cjs_bundle(
     name = "extension",
     define = {
         "process.env.PROXY_SCRIPT_FILENAME": '"{proxy_script_file_name}"'.format(proxy_script_file_name = proxy_script_file_name),
-        "process.env.SESSION_MANAGER_BIN": '"session_manager_bin"',
+        "process.env.SESSION_MANAGER_BIN": '"{session_manager_bin_name}"'.format(session_manager_bin_name = session_manager_bin_name),
     },
     entry_point = "extension.js",
     external_libs = ["vscode"],
@@ -108,6 +76,6 @@ npm_package(
         "package.json",
         "extension",
         "ssm_proxy_script",
-        "session_manager_bin",
+        session_manager_bin_name,
     ] + glob(["media/*.*"]),
 )
