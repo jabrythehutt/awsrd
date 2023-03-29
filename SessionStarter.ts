@@ -36,7 +36,7 @@ export class SessionStarter {
       region,
       profile,
       request: startSessionParams,
-      response
+      response,
     });
 
     process.stdin.pause();

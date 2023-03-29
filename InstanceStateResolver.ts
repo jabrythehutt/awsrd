@@ -1,4 +1,8 @@
-import { EC2Client, DescribeInstanceStatusCommand, InstanceStateName} from "@aws-sdk/client-ec2";
+import {
+  EC2Client,
+  DescribeInstanceStatusCommand,
+  InstanceStateName,
+} from "@aws-sdk/client-ec2";
 import {
   DescribeInstanceInformationCommand,
   PingStatus,
@@ -25,19 +29,24 @@ export class InstanceStateResolver {
 
   async isOnline(instanceId: string): Promise<boolean> {
     const pingStatus = await this.ping(instanceId);
-    return pingStatus === PingStatus.ONLINE
+    return pingStatus === PingStatus.ONLINE;
   }
 
   async isRunning(instanceId: string): Promise<boolean> {
-    const instanceStatusResponse = await this.ec2Client.send(new DescribeInstanceStatusCommand({
-      InstanceIds: [instanceId],
-      IncludeAllInstances: true
-    }));
-    const status = instanceStatusResponse.InstanceStatuses?.find(s => s.InstanceId === instanceId);
+    const instanceStatusResponse = await this.ec2Client.send(
+      new DescribeInstanceStatusCommand({
+        InstanceIds: [instanceId],
+        IncludeAllInstances: true,
+      })
+    );
+    const status = instanceStatusResponse.InstanceStatuses?.find(
+      (s) => s.InstanceId === instanceId
+    );
     if (!status) {
-      throw new Error(`Couldn't find instance status for instance with ID: ${instanceId}`)
+      throw new Error(
+        `Couldn't find instance status for instance with ID: ${instanceId}`
+      );
     }
     return status.InstanceState?.Name === InstanceStateName.running;
-    
   }
 }

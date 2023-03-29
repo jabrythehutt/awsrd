@@ -7,8 +7,11 @@ export class InstanceStarter {
     private stateResolver: InstanceStateResolver
   ) {}
 
-  async waitFor(condition: () => Promise<boolean>, pollPeriod: number): Promise<void> {
-    while (!await condition()) {
+  async waitFor(
+    condition: () => Promise<boolean>,
+    pollPeriod: number
+  ): Promise<void> {
+    while (!(await condition())) {
       await new Promise((resolve) => setTimeout(resolve, pollPeriod));
     }
   }
@@ -26,7 +29,10 @@ export class InstanceStarter {
     }
     await this.waitFor(isRunning, pollPeriod);
     console.log("Instance has started");
-    await this.waitFor(() => this.stateResolver.isOnline(instanceId), pollPeriod);
-    console.log("Instance is online")
+    await this.waitFor(
+      () => this.stateResolver.isOnline(instanceId),
+      pollPeriod
+    );
+    console.log("Instance is online");
   }
 }

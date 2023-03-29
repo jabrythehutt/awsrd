@@ -25,11 +25,11 @@ async function run() {
   const profile = args.profile;
   const credentials = fromIni({
     profile,
-    clientConfig: { region }
-  })
+    clientConfig: { region },
+  });
   const clientConfig = {
-    credentials
-  }
+    credentials,
+  };
   const ec2Client = new EC2Client(clientConfig);
   const ssmClient = new SSMClient(clientConfig);
   const instanceConnectClient = new EC2InstanceConnectClient(clientConfig);
@@ -47,6 +47,10 @@ async function run() {
     instanceId: args.instanceId,
     publicKey,
   });
-  await sessionStarter.start({ instanceId: args.instanceId, port: args.port, profile });
+  await sessionStarter.start({
+    instanceId: args.instanceId,
+    port: args.port,
+    profile,
+  });
 }
 run();

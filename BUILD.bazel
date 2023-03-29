@@ -33,14 +33,14 @@ container_run_and_extract(
 copy_to_directory(
     name = "session_manager_bin",
     srcs = [
-        "session_manager_release"
+        "session_manager_release",
     ],
     include_srcs_patterns = [
-        "**/*_plugin/session-manager-plugin".format(image_dist_path = image_dist_path)
+        "**/*_plugin/session-manager-plugin".format(image_dist_path = image_dist_path),
     ],
     root_paths = [
-        "session_manager_release" + image_dist_path
-    ]
+        "session_manager_release" + image_dist_path,
+    ],
 )
 
 npm_link_all_packages(
@@ -55,10 +55,11 @@ ts_project(
     deps = [
         "//:node_modules/@aws-sdk/client-ec2",
         "//:node_modules/@aws-sdk/client-ec2-instance-connect",
-        "//:node_modules/@aws-sdk/credential-providers",
         "//:node_modules/@aws-sdk/client-ssm",
+        "//:node_modules/@aws-sdk/credential-providers",
         "//:node_modules/@types/node",
         "//:node_modules/@types/sshpk",
+        "//:node_modules/@types/vscode",
         "//:node_modules/@types/yargs",
         "//:node_modules/aws-cdk-lib",
         "//:node_modules/cdk-monitoring-constructs",
@@ -66,11 +67,11 @@ ts_project(
         "//:node_modules/sshpk",
         "//:node_modules/tslib",
         "//:node_modules/yargs",
-        "//:node_modules/@types/vscode"
     ],
 )
 
 entry_base = "ssmProxyScript"
+
 proxy_script_file_name = entry_base + ".cjs"
 
 sourcemap = None
@@ -87,18 +88,18 @@ cjs_bundle(
 
 cjs_bundle(
     name = "extension",
-    entry_point = "extension.js",
-    output = "extension.cjs",
-    external_libs = ["vscode"],
-    sourcemap = sourcemap,
     define = {
         "process.env.PROXY_SCRIPT_FILENAME": '"{proxy_script_file_name}"'.format(proxy_script_file_name = proxy_script_file_name),
-        "process.env.SESSION_MANAGER_BIN": '"session_manager_bin"'
+        "process.env.SESSION_MANAGER_BIN": '"session_manager_bin"',
     },
+    entry_point = "extension.js",
+    external_libs = ["vscode"],
+    output = "extension.cjs",
+    sourcemap = sourcemap,
     deps = [
         "lib",
-        "ssm_proxy_script"
-    ]
+        "ssm_proxy_script",
+    ],
 )
 
 npm_package(
@@ -107,6 +108,6 @@ npm_package(
         "package.json",
         "extension",
         "ssm_proxy_script",
-        "session_manager_bin"
-    ] + glob(["media/*.*"])
+        "session_manager_bin",
+    ] + glob(["media/*.*"]),
 )
