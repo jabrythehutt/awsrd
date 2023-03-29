@@ -1,4 +1,4 @@
-import { ExtensionContext, commands, window, Uri, workspace } from "vscode";
+import { ExtensionContext, commands, window, Uri, workspace, ConfigurationTarget } from "vscode";
 import packageJson from "./package.json";
 import { Ec2InstanceTreeProvider } from "./Ec2InstanceTreeProvider";
 import { EC2Client, Instance } from "@aws-sdk/client-ec2";
@@ -42,8 +42,9 @@ export async function activate(context: ExtensionContext) {
         
         const keyPairPaths = await generateKeyPair(destination);
         const sshConfig = toSshConfig({ ...keyPairPaths, proxyScriptPath, region, profile, sessionManagerBinPath })
-        const sshConfigPath = workspace.getConfiguration().get("remote.SSH.configFile") as string || resolve(homedir(), ".ssh", "config")
+        const sshConfigPath = resolve(destination, "config");
         await writeFile(sshConfigPath, sshConfig)
+        await workspace.getConfiguration().update("remote.SSH.configFile", sshConfigPath, ConfigurationTarget.Global)
         const stateResolver = new InstanceStateResolver(ssmClient, ec2)
         const instanceStarter = new InstanceStarter(ec2, stateResolver);
         const instanceId = ec2Instance.InstanceId as string
