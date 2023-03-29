@@ -48,7 +48,7 @@
         {
           "id": "ec2-explorer",
           "title": "EC2 instances",
-          "icon": "media/dep.svg"
+          "icon": "media/aws-ec2-logo-vector.svg"
         }
       ]
     },
