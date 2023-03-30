@@ -85,10 +85,17 @@ export async function activate(context: ExtensionContext) {
         const stateResolver = new InstanceStateResolver(ssmClient, ec2);
         const instanceStarter = new InstanceStarter(ec2, stateResolver);
         const instanceId = ec2Instance.InstanceId as string;
-        progress.report({ message: "Starting instance if necessary..." });
+        progress.report({ message: "Waiting for instance to be online..." });
         await instanceStarter.start(instanceId, 1000);
         const instanceInfoResponse = await ssmClient.send(
-          new DescribeInstanceInformationCommand({})
+          new DescribeInstanceInformationCommand({
+            Filters: [
+              {
+                Key: "InstanceIds",
+                Values: [instanceId],
+              },
+            ],
+          })
         );
         const instanceInfo = instanceInfoResponse.InstanceInformationList?.find(
           (info) => info.InstanceId === instanceId
