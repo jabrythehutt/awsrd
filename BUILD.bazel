@@ -26,10 +26,10 @@ ts_project(
         "//:node_modules/aws-cdk-lib",
         "//:node_modules/cdk-monitoring-constructs",
         "//:node_modules/constructs",
+        "//:node_modules/rxjs",
         "//:node_modules/sshpk",
         "//:node_modules/tslib",
         "//:node_modules/yargs",
-        "//:node_modules/rxjs"
     ],
 )
 

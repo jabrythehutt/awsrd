@@ -29,18 +29,24 @@ import { combineLatest, map } from "rxjs";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
-  
+
   const profileStore = new ProfileStore();
   const regionStore = new RegionStore();
-  const credentials$ = combineLatest([profileStore.value, regionStore.value])
-  .pipe(map(([profile, region]) => fromIni({
-    profile,
-    clientConfig: {
-      region
-    }
-  })));
-  
-  const profile = "default"
+  const credentials$ = combineLatest([
+    profileStore.value,
+    regionStore.value,
+  ]).pipe(
+    map(([profile, region]) =>
+      fromIni({
+        profile,
+        clientConfig: {
+          region,
+        },
+      })
+    )
+  );
+
+  const profile = "default";
   const explorerView = explorerViews[0];
   const credentials = fromIni({
     profile,
