@@ -31,6 +31,15 @@ def session_manager(name):
         image = base_name + ".tar",
     )
 
+    release_dir = release_name + "_dir"
+    output_files(
+        name = release_dir,
+        target = release_name,
+        paths = [
+            release_name + image_dist_path
+        ]
+    )
+
     archs = {
         "amd64": "x86_64",
         "arm64": "arm64",
@@ -40,7 +49,7 @@ def session_manager(name):
         "darwin": "macos",
     }
     file_name = "session-manager-plugin"
-    selected_target = {}
+    copy_commands = {}
     for arch in archs.keys():
         for os in oss.keys():
             suffix = os + "_" + arch
@@ -54,29 +63,15 @@ def session_manager(name):
                 ],
             )
 
-            bin_dir = release_name + image_dist_path + "/{suffix}_plugin".format(suffix = suffix)
-            copy_to_directory(
-                name = dir_name,
-                srcs = [
-                    release_name,
-                ],
-                include_srcs_patterns = [
-                    bin_dir + "/" + file_name,
-                ],
-                replace_prefixes = {
-                    bin_dir: "",
-                },
-            )
-            dir_path_name = dir_name + "_path"
-            directory_path(
-                name = dir_path_name,
-                directory = dir_name,
-                path = file_name,
-            )
-            selected_target[platform_name] = dir_path_name
+            bin_path = "/{suffix}_plugin/{file_name}".format(suffix = suffix, file_name = file_name)
+            cmd = "cp $(SRCS){bin_path} $@".format(bin_path = bin_path)
+            copy_commands[platform_name] = cmd
 
-    copy_file(
+    native.genrule(
         name = name,
-        src = select(selected_target),
-        out = name + "/" + file_name,
+        srcs = [
+            release_dir
+        ],
+        outs = [name],
+        cmd = select(copy_commands)
     )

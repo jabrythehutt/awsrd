@@ -4,7 +4,6 @@ import {
   StartSessionCommandInput,
 } from "@aws-sdk/client-ssm";
 import { ChildProcess, spawn } from "node:child_process";
-import { resolve } from "path";
 import { toSessionManagerArgs } from "./toSessionManagerArgs";
 
 export class SessionStarter {
@@ -39,7 +38,7 @@ export class SessionStarter {
     });
 
     process.stdin.pause();
-    const child = spawn(this.sessionManagerPath, ssmPluginArgs, {
+    const child = spawn(this.sessionManagerBinPath, ssmPluginArgs, {
       stdio: "inherit",
     });
 
@@ -47,9 +46,5 @@ export class SessionStarter {
       process.stdin.resume();
     });
     return child;
-  }
-
-  get sessionManagerPath(): string {
-    return resolve(this.sessionManagerBinPath, "session-manager-plugin");
   }
 }

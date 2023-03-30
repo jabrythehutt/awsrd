@@ -57,6 +57,7 @@ cjs_bundle(
     name = "extension",
     define = {
         "process.env.PROXY_SCRIPT_FILENAME": '"{proxy_script_file_name}"'.format(proxy_script_file_name = proxy_script_file_name),
+        "process.env.SESSION_MANAGER_BIN": '"{session_manager_bin_name}"'.format(session_manager_bin_name = session_manager_bin_name),
     },
     entry_point = "extension.js",
     external_libs = ["vscode"],
@@ -75,8 +76,5 @@ npm_package(
         "extension",
         "ssm_proxy_script",
         session_manager_bin_name,
-    ] + glob(["media/*.*"]),
-    root_paths = [
-        session_manager_bin_name,
-    ],
+    ] + glob(["media/*.*"])
 )
