@@ -36,8 +36,8 @@ def session_manager(name):
         name = release_dir,
         target = release_name,
         paths = [
-            release_name + image_dist_path
-        ]
+            release_name + image_dist_path,
+        ],
     )
 
     archs = {
@@ -70,8 +70,8 @@ def session_manager(name):
     native.genrule(
         name = name,
         srcs = [
-            release_dir
+            release_dir,
         ],
         outs = [name],
-        cmd = select(copy_commands)
+        cmd = select(copy_commands),
     )

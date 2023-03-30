@@ -76,5 +76,5 @@ npm_package(
         "extension",
         "ssm_proxy_script",
         session_manager_bin_name,
-    ] + glob(["media/*.*"])
+    ] + glob(["media/*.*"]),
 )
