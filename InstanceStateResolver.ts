@@ -18,11 +18,9 @@ export class InstanceStateResolver {
         Filters: [
           {
             Key: "InstanceIds",
-            Values: [
-              instanceId
-            ]
-          }
-        ]
+            Values: [instanceId],
+          },
+        ],
       })
     );
     const instanceInfo = response?.InstanceInformationList?.find(
