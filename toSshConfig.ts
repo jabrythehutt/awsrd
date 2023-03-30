@@ -10,12 +10,12 @@ export function toSshConfig(request: {
 }): string {
   return `
 Host i-* mi-*
-    IdentityFile ${resolve(request.privateKeyPath)}
+    IdentityFile "${resolve(request.privateKeyPath)}"
     ProxyCommand node ${resolve(
       request.proxyScriptPath
-    )} --instanceId=%h --user=%r --port=%p --publicKeyPath=${resolve(
+    )} --instanceId=%h --user=%r --port=%p --publicKeyPath="${resolve(
     request.publicKeyPath
-  )} --sessionManagerBinPath=${request.sessionManagerBinPath} --profile=${
+  )}" --sessionManagerBinPath="${request.sessionManagerBinPath}" --profile=${
     request.profile
   } --region=${request.region}
     StrictHostKeyChecking no
