@@ -36,14 +36,15 @@ entry_base = "ssmProxyScript"
 proxy_script_file_name = entry_base + ".cjs"
 
 sourcemap = None
+
 minify = True
 
 cjs_bundle(
     name = "ssm_proxy_script",
     entry_point = entry_base + ".js",
+    minify = minify,
     output = proxy_script_file_name,
     sourcemap = sourcemap,
-    minify = minify,
     deps = [
         "lib",
     ],
@@ -63,9 +64,9 @@ cjs_bundle(
     },
     entry_point = "extension.js",
     external_libs = ["vscode"],
+    minify = minify,
     output = "extension.cjs",
     sourcemap = sourcemap,
-    minify = minify,
     deps = [
         "lib",
         "ssm_proxy_script",
