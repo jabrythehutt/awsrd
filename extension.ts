@@ -103,16 +103,18 @@ export async function activate(context: ExtensionContext) {
         const options = instanceInfo ? guessUsernames(instanceInfo) : [];
         const guess = options[0];
         progress.report({ message: "" });
-        const user = await window.showInputBox({
-          placeHolder: guess || "Username",
-          prompt: `The username for the instance: ${ec2Instance.InstanceId}`,
-          value: guess,
-        });
-        if (user) {
-          const uri = Uri.parse(
-            `vscode-remote://ssh-remote+${user}@${ec2Instance.InstanceId}/home/${user}`
-          );
-          await commands.executeCommand("vscode.openFolder", uri);
+        if (!token.isCancellationRequested) {
+          const user = await window.showInputBox({
+            placeHolder: guess || "Username",
+            prompt: `The username for the instance: ${ec2Instance.InstanceId}`,
+            value: guess,
+          });
+          if (user) {
+            const uri = Uri.parse(
+              `vscode-remote://ssh-remote+${user}@${ec2Instance.InstanceId}/home/${user}`
+            );
+            await commands.executeCommand("vscode.openFolder", uri);
+          }
         }
       }
     );
