@@ -14,7 +14,16 @@ export class InstanceStateResolver {
 
   async ping(instanceId: string): Promise<PingStatus | undefined> {
     const response = await this.ssmClient.send(
-      new DescribeInstanceInformationCommand({})
+      new DescribeInstanceInformationCommand({
+        Filters: [
+          {
+            Key: "InstanceIds",
+            Values: [
+              instanceId
+            ]
+          }
+        ]
+      })
     );
     const instanceInfo = response?.InstanceInformationList?.find(
       (info) => info.InstanceId === instanceId
