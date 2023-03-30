@@ -11,10 +11,11 @@
     "@aws-cdk/aws-apigatewayv2-alpha": "2.69.0-alpha.0",
     "@aws-cdk/aws-redshift-alpha": "2.69.0-alpha.0",
     "@aws-cdk/aws-synthetics-alpha": "2.69.0-alpha.0",
-    "@aws-sdk/client-ec2": "3.299.0",
-    "@aws-sdk/client-ssm": "3.299.0",
-    "@aws-sdk/client-ec2-instance-connect": "3.299.0",
-    "@aws-sdk/credential-providers": "3.299.0",
+    "@aws-sdk/client-ec2": "3.300.0",
+    "@aws-sdk/client-ssm": "3.300.0",
+    "@aws-sdk/client-ec2-instance-connect": "3.300.0",
+    "@aws-sdk/credential-providers": "3.300.0",
+    "@aws-sdk/shared-ini-file-loader": "3.300.0",
     "aws-cdk-lib": "^2.69.0",
     "cdk-monitoring-constructs": "^3.0.3",
     "constructs": "^10.1.284",
@@ -22,7 +23,8 @@
     "ssm-session": "^1.0.6",
     "ws": "^8.13.0",
     "yargs": "^17.7.1",
-    "tslib": "2.5.0"
+    "tslib": "2.5.0",
+    "rxjs": "7.8.0"
   },
   "devDependencies": {
     "@types/vscode": "1.76.0",
@@ -43,6 +45,51 @@
   },
   "activationEvents": [],
   "contributes": {
+    "configuration": {
+      "title": "EC2",
+      "properties": {
+        "ec2vsc.profile": {
+          "type": "string",
+          "default": "default",
+          "description": "AWS profile"
+        },
+        "ec2vsc.region": {
+          "type": {
+            "type": "string",
+            "description": "AWS region",
+            "enum": [
+              "us-east-2",
+              "us-east-1",
+              "us-west-1",
+              "us-west-2",
+              "af-south-1",
+              "ap-east-1",
+              "ap-south-2",
+              "ap-southeast-3",
+              "ap-southeast-4",
+              "ap-south-1",
+              "ap-northeast-3",
+              "ap-northeast-2",
+              "ap-southeast-1",
+              "ap-southeast-2",
+              "ap-northeast-1",
+              "ca-central-1",
+              "eu-central-1",
+              "eu-west-1",
+              "eu-west-2",
+              "eu-south-1",
+              "eu-west-3",
+              "eu-south-2",
+              "eu-north-1",
+              "eu-central-2",
+              "me-south-1",
+              "me-central-1",
+              "sa-east-1"
+            ]
+          }
+        }
+      }
+    },
     "viewsContainers": {
       "activitybar": [
         {

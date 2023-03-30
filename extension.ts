@@ -23,10 +23,24 @@ import {
   SSMClient,
 } from "@aws-sdk/client-ssm";
 import { guessUsernames } from "./guessUsernames";
+import { ProfileStore } from "./ProfileStore";
+import { RegionStore } from "./RegionStore";
+import { combineLatest, map } from "rxjs";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
-  const profile = "default";
+  
+  const profileStore = new ProfileStore();
+  const regionStore = new RegionStore();
+  const credentials$ = combineLatest([profileStore.value, regionStore.value])
+  .pipe(map(([profile, region]) => fromIni({
+    profile,
+    clientConfig: {
+      region
+    }
+  })));
+  
+  const profile = "default"
   const explorerView = explorerViews[0];
   const credentials = fromIni({
     profile,
