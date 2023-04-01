@@ -42,12 +42,14 @@ export async function activate(context: ExtensionContext) {
         clientConfig: {
           region,
         },
-      }),
+      })
     )
   );
-  const clientConfig$ = credentials$.pipe(map(credentials => ({credentials})));
-  const ec2Client$ = clientConfig$.pipe(map(c => new EC2Client(c)));
-  const ssmClient$ = clientConfig$.pipe(map(c => new SSMClient(c)));
+  const clientConfig$ = credentials$.pipe(
+    map((credentials) => ({ credentials }))
+  );
+  const ec2Client$ = clientConfig$.pipe(map((c) => new EC2Client(c)));
+  const ssmClient$ = clientConfig$.pipe(map((c) => new SSMClient(c)));
   const explorerView = explorerViews[0];
   const treeView = window.createTreeView(explorerView.id, {
     treeDataProvider: new Ec2InstanceTreeProvider(ec2Client$),
