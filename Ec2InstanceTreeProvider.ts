@@ -4,9 +4,11 @@ import {
   Instance,
   paginateDescribeInstances,
 } from "@aws-sdk/client-ec2";
+import { Observable } from "rxjs";
+import { toPromise } from "./toPromise";
 
 export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
-  constructor(private ec2: EC2Client) {}
+  constructor(private ec2$: Observable<EC2Client>) {}
 
   // onDidChangeTreeData?: Event<Instance | null | undefined> | undefined;
 
@@ -20,7 +22,7 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
   async getRootChildren(): Promise<Instance[] | null | undefined> {
     const instances: Instance[] = [];
     for await (const response of paginateDescribeInstances(
-      { client: this.ec2 },
+      { client: await toPromise(this.ec2$) },
       {}
     )) {
       for (const reservation of response.Reservations || []) {

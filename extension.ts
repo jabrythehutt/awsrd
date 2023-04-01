@@ -25,11 +25,11 @@ import {
 import { guessUsernames } from "./guessUsernames";
 import { ProfileStore } from "./ProfileStore";
 import { RegionStore } from "./RegionStore";
-import { combineLatest, map } from "rxjs";
+import { combineLatest, map, tap } from "rxjs";
+import { toPromise } from "./toPromise";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
-
   const profileStore = new ProfileStore();
   const regionStore = new RegionStore();
   const credentials$ = combineLatest([
@@ -42,27 +42,24 @@ export async function activate(context: ExtensionContext) {
         clientConfig: {
           region,
         },
-      })
+      }),
     )
   );
-
-  const profile = "default";
+  const clientConfig$ = credentials$.pipe(map(credentials => ({credentials})));
+  const ec2Client$ = clientConfig$.pipe(map(c => new EC2Client(c)));
+  const ssmClient$ = clientConfig$.pipe(map(c => new SSMClient(c)));
   const explorerView = explorerViews[0];
-  const credentials = fromIni({
-    profile,
-  });
-  const clientConfig = {
-    credentials,
-  };
-  const ec2 = new EC2Client(clientConfig);
-  const ssmClient = new SSMClient(clientConfig);
   const treeView = window.createTreeView(explorerView.id, {
-    treeDataProvider: new Ec2InstanceTreeProvider(ec2),
+    treeDataProvider: new Ec2InstanceTreeProvider(ec2Client$),
   });
   context.subscriptions.push(treeView);
   const openItemCommand = packageJson.contributes.commands[0].command;
 
   commands.registerCommand(openItemCommand, async (ec2Instance: Instance) => {
+    const ec2Client = await toPromise(ec2Client$);
+    const ssmClient = await toPromise(ssmClient$);
+    const region = await ec2Client.config.region();
+    const profile = await toPromise(profileStore.value);
     window.withProgress(
       {
         location: ProgressLocation.Notification,
@@ -83,7 +80,6 @@ export async function activate(context: ExtensionContext) {
           __dirname,
           process.env.SESSION_MANAGER_BIN as string
         );
-        const region = await ec2.config.region();
 
         const keyPairPaths = await generateKeyPair(destination);
         const sshConfig = toSshConfig({
@@ -102,8 +98,8 @@ export async function activate(context: ExtensionContext) {
             sshConfigPath,
             ConfigurationTarget.Global
           );
-        const stateResolver = new InstanceStateResolver(ssmClient, ec2);
-        const instanceStarter = new InstanceStarter(ec2, stateResolver);
+        const stateResolver = new InstanceStateResolver(ssmClient, ec2Client);
+        const instanceStarter = new InstanceStarter(ec2Client, stateResolver);
         const instanceId = ec2Instance.InstanceId as string;
         progress.report({ message: "Waiting for instance to be online..." });
         await instanceStarter.start(instanceId, 1000);
