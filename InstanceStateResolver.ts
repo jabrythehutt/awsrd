@@ -26,12 +26,7 @@ export class InstanceStateResolver {
     const instanceInfo = response?.InstanceInformationList?.find(
       (info) => info.InstanceId === instanceId
     );
-    if (!instanceInfo) {
-      const errorString = `Instance information not found for instance with ID: ${instanceId}`;
-      throw new Error(errorString);
-    }
-
-    return instanceInfo.PingStatus as PingStatus;
+    return instanceInfo?.PingStatus as PingStatus;
   }
 
   async isOnline(instanceId: string): Promise<boolean> {
