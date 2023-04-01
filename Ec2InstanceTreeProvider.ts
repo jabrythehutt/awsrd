@@ -23,9 +23,12 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
   }
 
   getTreeItem(element: Instance): TreeItem | Thenable<TreeItem> {
+    const name = element.Tags?.find(t => t.Key === "Name")?.Value;
+    const id = element.InstanceId;
+    const label = name ? `${name} (${id})` : id;
     return {
-      label: element.InstanceId,
-      id: element.InstanceId,
+      label,
+      id,
     };
   }
 
@@ -43,7 +46,6 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
   }
 
   getChildren(element: Instance): ProviderResult<Instance[]> {
-    console.log("Getting elements for", element);
     return element ? [] : this.getRootChildren();
   }
 
