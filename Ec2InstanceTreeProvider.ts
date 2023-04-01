@@ -1,4 +1,4 @@
-import { ProviderResult, TreeDataProvider, TreeItem } from "vscode";
+import { EventEmitter, ProviderResult, TreeDataProvider, TreeItem, Event} from "vscode";
 import {
   EC2Client,
   Instance,
@@ -8,10 +8,15 @@ import { Observable } from "rxjs";
 import { toPromise } from "./toPromise";
 
 export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
-  constructor(private ec2$: Observable<EC2Client>) {}
+  
+  readonly eventEmitter = new EventEmitter<Instance | undefined>();
+  readonly onDidChangeTreeData: Event<Instance | undefined>;
 
-  // onDidChangeTreeData?: Event<Instance | null | undefined> | undefined;
-
+  constructor(private ec2$: Observable<EC2Client>) {
+    this.onDidChangeTreeData = this.eventEmitter.event;
+    this.ec2$.subscribe(() => this.eventEmitter.fire(undefined));
+  }
+  
   getTreeItem(element: Instance): TreeItem | Thenable<TreeItem> {
     return {
       label: element.InstanceId,
