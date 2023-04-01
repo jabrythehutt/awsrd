@@ -23,7 +23,7 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
   }
 
   getTreeItem(element: Instance): TreeItem | Thenable<TreeItem> {
-    const name = element.Tags?.find(t => t.Key === "Name")?.Value;
+    const name = element.Tags?.find((t) => t.Key === "Name")?.Value;
     const id = element.InstanceId;
     const label = name ? `${name} (${id})` : id;
     return {
