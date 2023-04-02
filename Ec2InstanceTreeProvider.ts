@@ -32,8 +32,8 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
       label,
       id,
       iconPath: {
-        light: join(mediaDir, "server_light.svg"),
-        dark: join(mediaDir, "server_dark.svg"),
+        light: join(mediaDir, "instance_light.svg"),
+        dark: join(mediaDir, "instance_dark.svg"),
       },
     };
   }

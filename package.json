@@ -94,7 +94,7 @@
       "activitybar": [
         {
           "id": "ec2-explorer",
-          "title": "EC2 instances",
+          "title": "AWS EC2",
           "icon": "media/instances_dark.svg"
         }
       ]
@@ -103,7 +103,7 @@
       "ec2-explorer": [
         {
           "id": "ec2Instances",
-          "name": "AWS EC2 instances",
+          "name": "Instances",
           "icon": "media/instances_light.svg"
         }
       ]
@@ -111,7 +111,7 @@
     "commands": [
       {
         "command": "ec2Instances.open",
-        "title": "Open",
+        "title": "Open in new window",
         "icon": {
           "dark": "media/client_dark.svg",
           "light": "media/client_light.svg"
