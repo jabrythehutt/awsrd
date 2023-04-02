@@ -62,12 +62,12 @@ export async function activate(context: ExtensionContext) {
   const startItemCommand = commandDefs[2].command;
 
   commands.registerCommand(stopItemCommand, async (ec2Instance: Instance) => {
-    console.log("Stop command clicked")
-  })
+    console.log("Stop command clicked");
+  });
 
   commands.registerCommand(startItemCommand, async (ec2Instance: Instance) => {
-    console.log("Start command clicked")
-  })
+    console.log("Start command clicked");
+  });
 
   commands.registerCommand(openItemCommand, async (ec2Instance: Instance) => {
     const ec2Client = await toPromise(ec2Client$);
