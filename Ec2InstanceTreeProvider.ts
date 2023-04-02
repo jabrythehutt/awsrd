@@ -10,6 +10,7 @@ import {
   Instance,
   paginateDescribeInstances,
 } from "@aws-sdk/client-ec2";
+import { join } from "path";
 import { Observable } from "rxjs";
 import { toPromise } from "./toPromise";
 
@@ -26,9 +27,14 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
     const name = element.Tags?.find((t) => t.Key === "Name")?.Value;
     const id = element.InstanceId;
     const label = name ? `${name} (${id})` : id;
+    const mediaDir = join(__dirname, "media");
     return {
       label,
       id,
+      iconPath: {
+        light: join(mediaDir, "server_light.svg"),
+        dark: join(mediaDir, "server_dark.svg")
+      }
     };
   }
 

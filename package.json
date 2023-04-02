@@ -95,7 +95,7 @@
         {
           "id": "ec2-explorer",
           "title": "EC2 instances",
-          "icon": "media/aws-ec2-logo-vector.svg"
+          "icon": "media/instances_dark.svg"
         }
       ]
     },
@@ -103,7 +103,8 @@
       "ec2-explorer": [
         {
           "id": "ec2Instances",
-          "name": "AWS EC2 instances"
+          "name": "AWS EC2 instances",
+          "icon": "media/instances_light.svg"
         }
       ]
     },
@@ -111,7 +112,10 @@
       {
         "command": "ec2Instances.open",
         "title": "Open",
-        "icon": "media/dep.svg"
+        "icon": {
+          "dark": "media/client_dark.svg",
+          "light": "media/client_light.svg"
+        }
       }
     ],
     "menus": {

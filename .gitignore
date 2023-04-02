@@ -10,3 +10,4 @@ session-manager-plugin
 dist
 .pnpm-store
 bazel-*
+.DS_Store
