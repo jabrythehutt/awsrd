@@ -27,6 +27,7 @@ import { ProfileStore } from "./ProfileStore";
 import { RegionStore } from "./RegionStore";
 import { combineLatest, map, tap } from "rxjs";
 import { toPromise } from "./toPromise";
+import { toInstanceLabel } from "./toInstanceLabel";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
@@ -62,10 +63,11 @@ export async function activate(context: ExtensionContext) {
     const ssmClient = await toPromise(ssmClient$);
     const region = await ec2Client.config.region();
     const profile = await toPromise(profileStore.value);
+    const label = toInstanceLabel(ec2Instance);
     window.withProgress(
       {
         location: ProgressLocation.Notification,
-        title: `Starting a connection to the EC2 instance: ${ec2Instance.InstanceId}`,
+        title: `Starting a connection to ${label}`,
         cancellable: true,
       },
       async (progress, token) => {
@@ -103,7 +105,7 @@ export async function activate(context: ExtensionContext) {
         const stateResolver = new InstanceStateResolver(ssmClient, ec2Client);
         const instanceStarter = new InstanceStarter(ec2Client, stateResolver);
         const instanceId = ec2Instance.InstanceId as string;
-        progress.report({ message: "Waiting for instance to be online..." });
+        progress.report({ message: "Waiting for instance to start..." });
         await instanceStarter.start(instanceId, 1000);
         const instanceInfoResponse = await ssmClient.send(
           new DescribeInstanceInformationCommand({
@@ -124,7 +126,7 @@ export async function activate(context: ExtensionContext) {
         if (!token.isCancellationRequested) {
           const user = await window.showInputBox({
             placeHolder: guess || "Username",
-            prompt: `The username for the instance: ${ec2Instance.InstanceId}`,
+            prompt: `The username for ${label}`,
             value: guess,
           });
           if (user) {

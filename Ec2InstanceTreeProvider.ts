@@ -13,6 +13,7 @@ import {
 import { join } from "path";
 import { Observable } from "rxjs";
 import { toPromise } from "./toPromise";
+import { toInstanceLabel } from "./toInstanceLabel";
 
 export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
   readonly eventEmitter = new EventEmitter<Instance | undefined>();
@@ -24,9 +25,8 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
   }
 
   getTreeItem(element: Instance): TreeItem | Thenable<TreeItem> {
-    const name = element.Tags?.find((t) => t.Key === "Name")?.Value;
+    const label = toInstanceLabel(element);
     const id = element.InstanceId;
-    const label = name ? `${name} (${id})` : id;
     const mediaDir = join(__dirname, "media");
     return {
       label,
