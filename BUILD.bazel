@@ -11,7 +11,6 @@ npm_link_all_packages(
 ts_project(
     name = "lib",
     srcs = glob(["*.ts"]) + ["package.json"],
-    declaration = True,
     resolve_json_module = True,
     deps = [
         "//:node_modules/@aws-sdk/client-ec2",

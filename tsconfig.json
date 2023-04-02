@@ -12,7 +12,6 @@
     "noFallthroughCasesInSwitch": true,
     "module": "ES2022",
     "moduleResolution": "node",
-    "isolatedModules": true,
-    "declaration": true
+    "isolatedModules": true
   }
 }
