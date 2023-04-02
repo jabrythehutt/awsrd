@@ -35,6 +35,7 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
         light: join(mediaDir, "instance_light.svg"),
         dark: join(mediaDir, "instance_dark.svg"),
       },
+      contextValue: element.State?.Name
     };
   }
 

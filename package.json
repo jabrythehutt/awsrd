@@ -116,10 +116,30 @@
           "dark": "media/client_dark.svg",
           "light": "media/client_light.svg"
         }
+      },
+      {
+        "command": "ec2Instances.stop",
+        "title": "Stop instance",
+        "icon": "media/stop_button.svg"
+      },
+      {
+        "command": "ec2Instances.start",
+        "title": "Start instance",
+        "icon": "media/play_button.svg"
       }
     ],
     "menus": {
       "view/item/context": [
+        {
+          "command": "ec2Instances.stop",
+          "group": "inline",
+          "when": "viewItem == running"
+        },
+        {
+          "command": "ec2Instances.start",
+          "group": "inline",
+          "when": "viewItem == stopped"
+        },
         {
           "command": "ec2Instances.open",
           "group": "inline"

@@ -56,7 +56,18 @@ export async function activate(context: ExtensionContext) {
     treeDataProvider: new Ec2InstanceTreeProvider(ec2Client$),
   });
   context.subscriptions.push(treeView);
-  const openItemCommand = packageJson.contributes.commands[0].command;
+  const commandDefs = packageJson.contributes.commands;
+  const openItemCommand = commandDefs[0].command;
+  const stopItemCommand = commandDefs[1].command;
+  const startItemCommand = commandDefs[2].command;
+
+  commands.registerCommand(stopItemCommand, async (ec2Instance: Instance) => {
+    console.log("Stop command clicked")
+  })
+
+  commands.registerCommand(startItemCommand, async (ec2Instance: Instance) => {
+    console.log("Start command clicked")
+  })
 
   commands.registerCommand(openItemCommand, async (ec2Instance: Instance) => {
     const ec2Client = await toPromise(ec2Client$);
