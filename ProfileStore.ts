@@ -1,7 +1,7 @@
-import { Store } from "./Store";
+import { ConfigStore } from "./ConfigStore";
 import packageJson from "./package.json";
 
-export class ProfileStore extends Store<string> {
+export class ProfileStore extends ConfigStore<string> {
   constructor() {
     super(
       Object.keys(packageJson.contributes.configuration.properties).find((k) =>

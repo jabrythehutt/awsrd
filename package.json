@@ -11,11 +11,13 @@
     "@aws-cdk/aws-apigatewayv2-alpha": "2.69.0-alpha.0",
     "@aws-cdk/aws-redshift-alpha": "2.69.0-alpha.0",
     "@aws-cdk/aws-synthetics-alpha": "2.69.0-alpha.0",
-    "@aws-sdk/client-ec2": "3.300.0",
-    "@aws-sdk/client-ssm": "3.300.0",
-    "@aws-sdk/client-ec2-instance-connect": "3.300.0",
-    "@aws-sdk/credential-providers": "3.300.0",
-    "@aws-sdk/shared-ini-file-loader": "3.300.0",
+    "@aws-sdk/client-ec2": "3.303.0",
+    "@aws-sdk/client-ssm": "3.303.0",
+    "@aws-sdk/types": "3.303.0",
+    "@aws-sdk/smithy-client": "3.303.0",
+    "@aws-sdk/client-ec2-instance-connect": "3.303.0",
+    "@aws-sdk/credential-providers": "3.303.0",
+    "@aws-sdk/shared-ini-file-loader": "3.303.0",
     "aws-cdk-lib": "^2.69.0",
     "cdk-monitoring-constructs": "^3.0.3",
     "constructs": "^10.1.284",
@@ -142,7 +144,8 @@
         },
         {
           "command": "ec2Instances.open",
-          "group": "inline"
+          "group": "inline",
+          "when": "viewItem == stopped || viewItem == running"
         }
       ]
     }

@@ -1,6 +1,5 @@
 import yargs from "yargs";
-import { SSMClient } from "@aws-sdk/client-ssm";
-import { EC2Client } from "@aws-sdk/client-ec2";
+import { of } from "rxjs"
 import { EC2InstanceConnectClient } from "@aws-sdk/client-ec2-instance-connect";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { InstanceStarter } from "./InstanceStarter";
@@ -9,6 +8,7 @@ import { hideBin } from "yargs/helpers";
 import { KeyAuthoriser } from "./KeyAuthoriser";
 import { SessionStarter } from "./SessionStarter";
 import { fromIni } from "@aws-sdk/credential-providers";
+import { AwsServiceFactory } from "./AwsServiceFactory";
 
 async function run() {
   const args = await yargs(hideBin(process.argv))
@@ -30,16 +30,15 @@ async function run() {
   const clientConfig = {
     credentials,
   };
-  const ec2Client = new EC2Client(clientConfig);
-  const ssmClient = new SSMClient(clientConfig);
   const instanceConnectClient = new EC2InstanceConnectClient(clientConfig);
-  const stateResolver = new InstanceStateResolver(ssmClient, ec2Client);
+  const serviceFactory = new AwsServiceFactory(of(credentials))
+  const stateResolver = new InstanceStateResolver(serviceFactory);
   const keyAuthoriser = new KeyAuthoriser(instanceConnectClient);
   const sessionStarter = new SessionStarter(
-    ssmClient,
+    serviceFactory,
     args.sessionManagerBinPath
   );
-  const starter = new InstanceStarter(ec2Client, stateResolver);
+  const starter = new InstanceStarter(serviceFactory, stateResolver);
   await starter.start(args.instanceId, args.pollPeriod);
   const publicKey = (await readFile(args.publicKeyPath)).toString();
   await keyAuthoriser.authorise({

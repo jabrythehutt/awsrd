@@ -5,10 +5,11 @@ import {
 } from "@aws-sdk/client-ssm";
 import { ChildProcess, spawn } from "node:child_process";
 import { toSessionManagerArgs } from "./toSessionManagerArgs";
+import { AwsServiceFactory } from "./AwsServiceFactory";
 
 export class SessionStarter {
   constructor(
-    private ssmClient: SSMClient,
+    private serviceFactory: AwsServiceFactory,
     private sessionManagerBinPath: string
   ) {}
 
@@ -24,12 +25,13 @@ export class SessionStarter {
         portNumber: [`${request.port}`],
       },
     };
-    const response = await this.ssmClient.send(
+    const ssmClient = await this.serviceFactory.createAwsClientPromise(SSMClient);
+    const response = await ssmClient.send(
       new StartSessionCommand(startSessionParams)
     );
 
     const profile = request.profile;
-    const region = await this.ssmClient.config.region();
+    const region = await ssmClient.config.region();
     const ssmPluginArgs: string[] = toSessionManagerArgs({
       region,
       profile,

@@ -8,12 +8,14 @@ import {
   PingStatus,
   SSMClient,
 } from "@aws-sdk/client-ssm";
+import { AwsServiceFactory } from "./AwsServiceFactory";
 
 export class InstanceStateResolver {
-  constructor(private ssmClient: SSMClient, private ec2Client: EC2Client) {}
+  constructor(private serviceFactory: AwsServiceFactory) {}
 
   async ping(instanceId: string): Promise<PingStatus | undefined> {
-    const response = await this.ssmClient.send(
+    const client = await this.serviceFactory.createAwsClientPromise(SSMClient);
+    const response = await client.send(
       new DescribeInstanceInformationCommand({
         Filters: [
           {
@@ -35,7 +37,8 @@ export class InstanceStateResolver {
   }
 
   async isRunning(instanceId: string): Promise<boolean> {
-    const instanceStatusResponse = await this.ec2Client.send(
+    const client = await this.serviceFactory.createAwsClientPromise(EC2Client);
+    const instanceStatusResponse = await client.send(
       new DescribeInstanceStatusCommand({
         InstanceIds: [instanceId],
         IncludeAllInstances: true,

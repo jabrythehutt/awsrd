@@ -1,7 +1,7 @@
 import { Observable, ReplaySubject, Subject } from "rxjs";
 import { workspace } from "vscode";
 
-export class Store<T> {
+export class ConfigStore<T> {
   public readonly value: Observable<T>;
   constructor(
     protected readonly section: string,

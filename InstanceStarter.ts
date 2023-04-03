@@ -1,9 +1,10 @@
 import { EC2Client, StartInstancesCommand } from "@aws-sdk/client-ec2";
 import { InstanceStateResolver } from "./InstanceStateResolver";
+import { AwsServiceFactory } from "./AwsServiceFactory";
 
 export class InstanceStarter {
   constructor(
-    private ec2Client: EC2Client,
+    private serviceFactory: AwsServiceFactory,
     private stateResolver: InstanceStateResolver
   ) {}
 
@@ -21,7 +22,8 @@ export class InstanceStarter {
     let online = await isRunning();
     if (!online) {
       console.log("Attempting to start EC2 instance:", instanceId);
-      await this.ec2Client.send(
+      const client = await this.serviceFactory.createAwsClientPromise(EC2Client);
+      await client.send(
         new StartInstancesCommand({
           InstanceIds: [instanceId],
         })

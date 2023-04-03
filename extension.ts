@@ -15,7 +15,6 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 import { createKeyPair } from "./createKeyPair";
 import { toSshConfig } from "./toSshConfig";
-import { fromIni } from "@aws-sdk/credential-providers";
 import { InstanceStarter } from "./InstanceStarter";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import {
@@ -25,35 +24,22 @@ import {
 import { guessUsernames } from "./guessUsernames";
 import { ProfileStore } from "./ProfileStore";
 import { RegionStore } from "./RegionStore";
-import { combineLatest, map, tap } from "rxjs";
 import { toPromise } from "./toPromise";
 import { toInstanceLabel } from "./toInstanceLabel";
+import { createCredentialStore } from "./createCredentialStore";
+import { AwsServiceFactory } from "./AwsServiceFactory";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
   const profileStore = new ProfileStore();
   const regionStore = new RegionStore();
-  const credentials$ = combineLatest([
-    profileStore.value,
-    regionStore.value,
-  ]).pipe(
-    map(([profile, region]) =>
-      fromIni({
-        profile,
-        clientConfig: {
-          region,
-        },
-      })
-    )
-  );
-  const clientConfig$ = credentials$.pipe(
-    map((credentials) => ({ credentials }))
-  );
-  const ec2Client$ = clientConfig$.pipe(map((c) => new EC2Client(c)));
-  const ssmClient$ = clientConfig$.pipe(map((c) => new SSMClient(c)));
+  const credentials$ = createCredentialStore({region: regionStore.value, profile: profileStore.value});
+  const serviceFactory = new AwsServiceFactory(credentials$);
+  const stateResolver = new InstanceStateResolver(serviceFactory);
+  const instanceStarter = new InstanceStarter(serviceFactory, stateResolver);
   const explorerView = explorerViews[0];
   const treeView = window.createTreeView(explorerView.id, {
-    treeDataProvider: new Ec2InstanceTreeProvider(ec2Client$),
+    treeDataProvider: new Ec2InstanceTreeProvider(serviceFactory),
   });
   context.subscriptions.push(treeView);
   const commandDefs = packageJson.contributes.commands;
@@ -70,9 +56,8 @@ export async function activate(context: ExtensionContext) {
   });
 
   commands.registerCommand(openItemCommand, async (ec2Instance: Instance) => {
-    const ec2Client = await toPromise(ec2Client$);
-    const ssmClient = await toPromise(ssmClient$);
-    const region = await ec2Client.config.region();
+    const ssmClient = await serviceFactory.createAwsClientPromise(SSMClient);
+    const region = await ssmClient.config.region();
     const profile = await toPromise(profileStore.value);
     const label = toInstanceLabel(ec2Instance);
     window.withProgress(
@@ -113,8 +98,7 @@ export async function activate(context: ExtensionContext) {
             sshConfigPath,
             ConfigurationTarget.Global
           );
-        const stateResolver = new InstanceStateResolver(ssmClient, ec2Client);
-        const instanceStarter = new InstanceStarter(ec2Client, stateResolver);
+
         const instanceId = ec2Instance.InstanceId as string;
         progress.report({ message: "Waiting for instance to start..." });
         await instanceStarter.start(instanceId, 1000);
