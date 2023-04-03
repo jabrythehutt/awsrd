@@ -5,19 +5,17 @@ import { AwsServiceFactory } from "./AwsServiceFactory";
 export class InstanceStarter {
   constructor(
     private serviceFactory: AwsServiceFactory,
-    private stateResolver: InstanceStateResolver
+    private stateResolver: InstanceStateResolver,
+    private pollPeriod: number = 1000
   ) {}
 
-  async waitFor(
-    condition: () => Promise<boolean>,
-    pollPeriod: number
-  ): Promise<void> {
+  async waitFor(condition: () => Promise<boolean>): Promise<void> {
     while (!(await condition())) {
-      await new Promise((resolve) => setTimeout(resolve, pollPeriod));
+      await new Promise((resolve) => setTimeout(resolve, this.pollPeriod));
     }
   }
 
-  async start(instanceId: string, pollPeriod: number): Promise<void> {
+  async start(instanceId: string): Promise<void> {
     const isRunning = () => this.stateResolver.isRunning(instanceId);
     let online = await isRunning();
     if (!online) {
@@ -31,12 +29,14 @@ export class InstanceStarter {
         })
       );
     }
-    await this.waitFor(isRunning, pollPeriod);
+    await this.waitFor(isRunning);
     console.log("Instance has started");
-    await this.waitFor(
-      () => this.stateResolver.isOnline(instanceId),
-      pollPeriod
-    );
+    await this.waitFor(() => this.stateResolver.isOnline(instanceId));
     console.log("Instance is online");
+  }
+
+  async stop(instanceId: string): Promise<void> {
+    const isStopped = () => this.stateResolver.isStopped(instanceId);
+    await this.waitFor(isStopped);
   }
 }

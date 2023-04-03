@@ -38,8 +38,12 @@ async function run() {
     serviceFactory,
     args.sessionManagerBinPath
   );
-  const starter = new InstanceStarter(serviceFactory, stateResolver);
-  await starter.start(args.instanceId, args.pollPeriod);
+  const starter = new InstanceStarter(
+    serviceFactory,
+    stateResolver,
+    args.pollPeriod
+  );
+  await starter.start(args.instanceId);
   const publicKey = (await readFile(args.publicKeyPath)).toString();
   await keyAuthoriser.authorise({
     user: args.user,

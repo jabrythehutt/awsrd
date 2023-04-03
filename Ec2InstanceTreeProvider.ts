@@ -21,7 +21,7 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
   readonly onDidChangeTreeData: Event<Instance | undefined>;
   private readonly client: Observable<EC2Client>;
 
-  constructor(private serviceFactory: AwsServiceFactory) {
+  constructor(serviceFactory: AwsServiceFactory) {
     this.onDidChangeTreeData = this.eventEmitter.event;
     this.client = serviceFactory.createAwsClient(EC2Client);
     this.client.subscribe(() => this.eventEmitter.fire(undefined));

@@ -9,7 +9,7 @@ import {
 } from "vscode";
 import packageJson from "./package.json";
 import { Ec2InstanceTreeProvider } from "./Ec2InstanceTreeProvider";
-import { EC2Client, Instance } from "@aws-sdk/client-ec2";
+import { Instance } from "@aws-sdk/client-ec2";
 import { writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
@@ -51,11 +51,11 @@ export async function activate(context: ExtensionContext) {
   const startItemCommand = commandDefs[2].command;
 
   commands.registerCommand(stopItemCommand, async (ec2Instance: Instance) => {
-    console.log("Stop command clicked");
+    await instanceStarter.start(ec2Instance.InstanceId as string);
   });
 
   commands.registerCommand(startItemCommand, async (ec2Instance: Instance) => {
-    console.log("Start command clicked");
+    await instanceStarter.stop(ec2Instance.InstanceId as string);
   });
 
   commands.registerCommand(openItemCommand, async (ec2Instance: Instance) => {
@@ -104,7 +104,7 @@ export async function activate(context: ExtensionContext) {
 
         const instanceId = ec2Instance.InstanceId as string;
         progress.report({ message: "Waiting for instance to start..." });
-        await instanceStarter.start(instanceId, 1000);
+        await instanceStarter.start(instanceId);
         const instanceInfoResponse = await ssmClient.send(
           new DescribeInstanceInformationCommand({
             Filters: [
