@@ -22,7 +22,9 @@ export class InstanceStarter {
     let online = await isRunning();
     if (!online) {
       console.log("Attempting to start EC2 instance:", instanceId);
-      const client = await this.serviceFactory.createAwsClientPromise(EC2Client);
+      const client = await this.serviceFactory.createAwsClientPromise(
+        EC2Client
+      );
       await client.send(
         new StartInstancesCommand({
           InstanceIds: [instanceId],

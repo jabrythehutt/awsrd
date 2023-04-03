@@ -1,5 +1,5 @@
 import yargs from "yargs";
-import { of } from "rxjs"
+import { of } from "rxjs";
 import { EC2InstanceConnectClient } from "@aws-sdk/client-ec2-instance-connect";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { InstanceStarter } from "./InstanceStarter";
@@ -31,7 +31,7 @@ async function run() {
     credentials,
   };
   const instanceConnectClient = new EC2InstanceConnectClient(clientConfig);
-  const serviceFactory = new AwsServiceFactory(of(credentials))
+  const serviceFactory = new AwsServiceFactory(of(credentials));
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const keyAuthoriser = new KeyAuthoriser(instanceConnectClient);
   const sessionStarter = new SessionStarter(

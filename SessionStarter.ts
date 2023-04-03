@@ -25,7 +25,9 @@ export class SessionStarter {
         portNumber: [`${request.port}`],
       },
     };
-    const ssmClient = await this.serviceFactory.createAwsClientPromise(SSMClient);
+    const ssmClient = await this.serviceFactory.createAwsClientPromise(
+      SSMClient
+    );
     const response = await ssmClient.send(
       new StartSessionCommand(startSessionParams)
     );

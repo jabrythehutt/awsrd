@@ -33,7 +33,10 @@ export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
   const profileStore = new ProfileStore();
   const regionStore = new RegionStore();
-  const credentials$ = createCredentialStore({region: regionStore.value, profile: profileStore.value});
+  const credentials$ = createCredentialStore({
+    region: regionStore.value,
+    profile: profileStore.value,
+  });
   const serviceFactory = new AwsServiceFactory(credentials$);
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const instanceStarter = new InstanceStarter(serviceFactory, stateResolver);

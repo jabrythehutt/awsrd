@@ -45,10 +45,7 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
   async getRootChildren(): Promise<Instance[] | null | undefined> {
     const instances: Instance[] = [];
     const client = await toPromise(this.client);
-    for await (const response of paginateDescribeInstances(
-      { client },
-      {}
-    )) {
+    for await (const response of paginateDescribeInstances({ client }, {})) {
       for (const reservation of response.Reservations || []) {
         instances.push(...(reservation.Instances || []));
       }
