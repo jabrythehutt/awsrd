@@ -27,7 +27,6 @@ specifiers:
   ts-node: ^10.9.1
   tslib: 2.5.0
   typescript: 4.9.5
-  ws: ^8.13.0
   yargs: ^17.7.1
 
 dependencies:
@@ -48,7 +47,6 @@ dependencies:
   sshpk: 1.17.0
   ssm-session: 1.0.6
   tslib: 2.5.0
-  ws: 8.13.0
   yargs: 17.7.1
 
 devDependencies:
@@ -1730,19 +1728,6 @@ packages:
       ansi-styles: 4.3.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
-    dev: false
-
-  /ws/8.13.0:
-    resolution: {integrity: sha512-x9vcZYTrFPC7aSIbj7sRCYo7L/Xb8Iy+pW0ng0wt2vCJv7M9HOMy0UoN3rr+IFC7hb7vXoqS+P9ktyLLLhO+LA==}
-    engines: {node: '>=10.0.0'}
-    peerDependencies:
-      bufferutil: ^4.0.1
-      utf-8-validate: '>=5.0.2'
-    peerDependenciesMeta:
-      bufferutil:
-        optional: true
-      utf-8-validate:
-        optional: true
     dev: false
 
   /y18n/5.0.8:

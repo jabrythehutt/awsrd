@@ -13,7 +13,7 @@ import {
 import { join } from "path";
 import { toPromise } from "./toPromise";
 import { toInstanceLabel } from "./toInstanceLabel";
-import { AwsServiceFactory } from "./AwsServiceFactory";
+import { AwsClientFactory } from "./AwsClientFactory";
 import { Observable } from "rxjs";
 
 export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
@@ -21,7 +21,7 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
   readonly onDidChangeTreeData: Event<Instance | undefined>;
   private readonly client: Observable<EC2Client>;
 
-  constructor(serviceFactory: AwsServiceFactory) {
+  constructor(serviceFactory: AwsClientFactory) {
     this.onDidChangeTreeData = this.eventEmitter.event;
     this.client = serviceFactory.createAwsClient(EC2Client);
     this.client.subscribe(() => this.eventEmitter.fire(undefined));

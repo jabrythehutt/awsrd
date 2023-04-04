@@ -8,7 +8,7 @@ import { VscInstanceProps } from "./VscInstanceProps";
 import { MetricStatistic, MonitoringFacade } from "cdk-monitoring-constructs";
 import { Duration } from "aws-cdk-lib";
 import { Ec2StopAlarmActionStrategy } from "./Ec2StopAlarmActionStrategy";
-import { Effect, ManagedPolicy, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { ManagedPolicy } from "aws-cdk-lib/aws-iam";
 
 export class VscInstance extends Construct {
   public readonly instance: Instance;

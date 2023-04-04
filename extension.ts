@@ -27,7 +27,7 @@ import { RegionStore } from "./RegionStore";
 import { toPromise } from "./toPromise";
 import { toInstanceLabel } from "./toInstanceLabel";
 import { createCredentialStore } from "./createCredentialStore";
-import { AwsServiceFactory } from "./AwsServiceFactory";
+import { AwsClientFactory } from "./AwsClientFactory";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
@@ -37,7 +37,7 @@ export async function activate(context: ExtensionContext) {
     region: regionStore.value,
     profile: profileStore.value,
   });
-  const serviceFactory = new AwsServiceFactory(credentials$);
+  const serviceFactory = new AwsClientFactory(credentials$);
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const instanceStarter = new InstanceStarter(serviceFactory, stateResolver);
   const explorerView = explorerViews[0];

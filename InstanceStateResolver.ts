@@ -9,10 +9,10 @@ import {
   PingStatus,
   SSMClient,
 } from "@aws-sdk/client-ssm";
-import { AwsServiceFactory } from "./AwsServiceFactory";
+import { AwsClientFactory } from "./AwsClientFactory";
 
 export class InstanceStateResolver {
-  constructor(private serviceFactory: AwsServiceFactory) {}
+  constructor(private serviceFactory: AwsClientFactory) { }
 
   async ping(instanceId: string): Promise<PingStatus | undefined> {
     const client = await this.serviceFactory.createAwsClientPromise(SSMClient);

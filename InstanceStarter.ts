@@ -1,10 +1,10 @@
 import { EC2Client, StartInstancesCommand } from "@aws-sdk/client-ec2";
 import { InstanceStateResolver } from "./InstanceStateResolver";
-import { AwsServiceFactory } from "./AwsServiceFactory";
+import { AwsClientFactory } from "./AwsClientFactory";
 
 export class InstanceStarter {
   constructor(
-    private serviceFactory: AwsServiceFactory,
+    private serviceFactory: AwsClientFactory,
     private stateResolver: InstanceStateResolver,
     private pollPeriod: number = 1000
   ) {}

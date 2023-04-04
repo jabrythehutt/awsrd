@@ -8,7 +8,7 @@ import { hideBin } from "yargs/helpers";
 import { KeyAuthoriser } from "./KeyAuthoriser";
 import { SessionStarter } from "./SessionStarter";
 import { fromIni } from "@aws-sdk/credential-providers";
-import { AwsServiceFactory } from "./AwsServiceFactory";
+import { AwsClientFactory } from "./AwsClientFactory";
 
 async function run() {
   const args = await yargs(hideBin(process.argv))
@@ -31,7 +31,7 @@ async function run() {
     credentials,
   };
   const instanceConnectClient = new EC2InstanceConnectClient(clientConfig);
-  const serviceFactory = new AwsServiceFactory(of(credentials));
+  const serviceFactory = new AwsClientFactory(of(credentials));
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const keyAuthoriser = new KeyAuthoriser(instanceConnectClient);
   const sessionStarter = new SessionStarter(

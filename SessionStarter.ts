@@ -5,11 +5,11 @@ import {
 } from "@aws-sdk/client-ssm";
 import { ChildProcess, spawn } from "node:child_process";
 import { toSessionManagerArgs } from "./toSessionManagerArgs";
-import { AwsServiceFactory } from "./AwsServiceFactory";
+import { AwsClientFactory } from "./AwsClientFactory";
 
 export class SessionStarter {
   constructor(
-    private serviceFactory: AwsServiceFactory,
+    private serviceFactory: AwsClientFactory,
     private sessionManagerBinPath: string
   ) {}
 

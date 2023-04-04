@@ -3,7 +3,7 @@ import { AwsCredentialIdentityProvider } from "@aws-sdk/types";
 import { Client } from "@aws-sdk/smithy-client";
 import { toPromise } from "./toPromise";
 
-export class AwsServiceFactory {
+export class AwsClientFactory {
   constructor(
     private credentialStore: Observable<AwsCredentialIdentityProvider>
   ) {}
