@@ -156,31 +156,31 @@
       "view/title": [
         {
           "command": "ec2Instances.selectProfile",
-          "group": "navigation"
+          "group": "navigation@0"
         },
         {
           "command": "ec2Instances.selectRegion",
-          "group": "navigation"
+          "group": "navigation@1"
         },
         {
           "command": "ec2Instances.refresh",
-          "group": "navigation"
+          "group": "navigation@2"
         }
       ],
       "view/item/context": [
         {
           "command": "ec2Instances.stop",
-          "group": "inline",
+          "group": "inline@0",
           "when": "viewItem == running"
         },
         {
           "command": "ec2Instances.start",
-          "group": "inline",
+          "group": "inline@1",
           "when": "viewItem == stopped"
         },
         {
           "command": "ec2Instances.open",
-          "group": "inline",
+          "group": "inline@2",
           "when": "viewItem == stopped || viewItem == running"
         }
       ]
