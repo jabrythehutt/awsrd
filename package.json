@@ -115,10 +115,7 @@
       {
         "command": "ec2Instances.open",
         "title": "Open in new window",
-        "icon": {
-          "dark": "media/client_dark.svg",
-          "light": "media/client_light.svg"
-        }
+        "icon": "media/new_window.svg"
       },
       {
         "command": "ec2Instances.stop",
