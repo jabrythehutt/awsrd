@@ -60,7 +60,7 @@ export async function activate(context: ExtensionContext) {
       const instance = await instanceStore.describe(instanceId);
       const label = toInstanceLabel(instance as Instance);
       const title = `${
-        commandName === "running" ? "Starting" : "Stopping"
+        targetState === "running" ? "Starting" : "Stopping"
       } ${label}`;
       window.withProgress(
         {
@@ -87,6 +87,7 @@ export async function activate(context: ExtensionContext) {
     const profile = await toPromise(profileStore.value);
     const instance = await instanceStore.describe(instanceId);
     const label = toInstanceLabel(instance as Instance);
+    await commands.executeCommand(startItemCommand, instanceId);
     window.withProgress(
       {
         location: ProgressLocation.Notification,
@@ -125,10 +126,6 @@ export async function activate(context: ExtensionContext) {
             sshConfigPath,
             ConfigurationTarget.Global
           );
-
-        progress.report({ message: "Waiting for instance to start..." });
-        await instanceStarter.requestInstanceState(instanceId, "running");
-        instanceStore.refresh();
         progress.report({ message: "Waiting for instance to be reachable..." });
         await instanceStarter.start(instanceId);
         const instanceInfoResponse = await ssmClient.send(
