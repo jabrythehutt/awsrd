@@ -6,6 +6,7 @@ import {
 } from "@aws-sdk/client-ec2";
 import {
   Observable,
+  ReplaySubject,
   Subject,
   combineLatest,
   distinctUntilChanged,
@@ -25,7 +26,7 @@ export class InstanceStore {
   public readonly instanceIds: Observable<string[]>;
   protected readonly instances: Observable<Instance[]>;
   protected readonly ec2Client: Observable<EC2Client>;
-  protected readonly refreshSubject: Subject<void> = new Subject();
+  protected readonly refreshSubject: Subject<void> = new ReplaySubject(1);
   constructor(clientFactory: AwsClientFactory) {
     this.ec2Client = clientFactory.createAwsClient(EC2Client);
     this.instances = combineLatest([this.ec2Client, this.refreshSubject]).pipe(
@@ -55,6 +56,7 @@ export class InstanceStore {
       map((instances) => instances.map(toInstanceId)),
       filter((changes) => changes.length > 0)
     );
+    this.refresh();
   }
 
   protected async listAll(client: EC2Client): Promise<Instance[]> {

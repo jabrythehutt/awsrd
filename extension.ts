@@ -53,13 +53,37 @@ export async function activate(context: ExtensionContext) {
   const startItemCommand = commandDefs[2].command;
 
   commands.registerCommand(stopItemCommand, async (instanceId: string) => {
-    await instanceStarter.start(instanceId);
-    await instanceStore.refresh();
+    const instance = await instanceStore.describe(instanceId);
+    const label = toInstanceLabel(instance as Instance);
+    window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: `Stopping ${label}`,
+        cancellable: false,
+      },
+      async (progress, token) => {
+        await instanceStarter.stopInstance(instanceId);
+        instanceStore.refresh();
+        await instanceStarter.stop(instanceId);
+        instanceStore.refresh();
+      });
   });
 
   commands.registerCommand(startItemCommand, async (instanceId: string) => {
-    await instanceStarter.stop(instanceId);
-    await instanceStore.refresh();
+    const instance = await instanceStore.describe(instanceId);
+    const label = toInstanceLabel(instance as Instance);
+    window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: `Starting ${label}`,
+        cancellable: false,
+      },
+      async (progress, token) => {
+        await instanceStarter.startInstance(instanceId);
+        instanceStore.refresh();
+        await instanceStarter.start(instanceId);
+        instanceStore.refresh();
+      });
   });
 
   commands.registerCommand(openItemCommand, async (instanceId: string) => {

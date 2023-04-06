@@ -1,4 +1,4 @@
-import { EC2Client, StartInstancesCommand } from "@aws-sdk/client-ec2";
+import { EC2Client, StartInstancesCommand, StopInstancesCommand } from "@aws-sdk/client-ec2";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { AwsClientFactory } from "./AwsClientFactory";
 
@@ -15,19 +15,22 @@ export class InstanceStarter {
     }
   }
 
+  async startInstance(instanceId: string): Promise<void> {
+    const client = await this.serviceFactory.createAwsClientPromise(
+      EC2Client
+    );
+    await client.send(
+      new StartInstancesCommand({
+        InstanceIds: [instanceId],
+      })
+    );
+  }
+
   async start(instanceId: string): Promise<void> {
     const isRunning = () => this.stateResolver.isRunning(instanceId);
     let online = await isRunning();
     if (!online) {
-      console.log("Attempting to start EC2 instance:", instanceId);
-      const client = await this.serviceFactory.createAwsClientPromise(
-        EC2Client
-      );
-      await client.send(
-        new StartInstancesCommand({
-          InstanceIds: [instanceId],
-        })
-      );
+      await this.startInstance(instanceId);
     }
     await this.waitFor(isRunning);
     console.log("Instance has started");
@@ -35,8 +38,22 @@ export class InstanceStarter {
     console.log("Instance is online");
   }
 
+  async stopInstance(instanceId: string): Promise<void> {
+    const client = await this.serviceFactory.createAwsClientPromise(
+      EC2Client
+    );
+    await client.send(
+      new StopInstancesCommand({
+        InstanceIds: [instanceId],
+      })
+    );
+  }
+
   async stop(instanceId: string): Promise<void> {
     const isStopped = () => this.stateResolver.isStopped(instanceId);
+    if (!(await isStopped())) {
+      await this.stopInstance(instanceId);
+    }
     await this.waitFor(isStopped);
   }
 }
