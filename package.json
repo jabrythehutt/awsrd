@@ -146,7 +146,10 @@
       {
         "command": "ec2Instances.refresh",
         "title": "Refresh instances list",
-        "icon": "media/play_button.svg"
+        "icon": {
+          "light": "media/refresh_light.svg",
+          "dark": "media/refresh_dark.svg"
+        }
       }
     ],
     "menus": {
@@ -157,6 +160,10 @@
         },
         {
           "command": "ec2Instances.selectRegion",
+          "group": "navigation"
+        },
+        {
+          "command": "ec2Instances.refresh",
           "group": "navigation"
         }
       ],
