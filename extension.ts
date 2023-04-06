@@ -30,8 +30,6 @@ import { createCredentialStore } from "./createCredentialStore";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { InstanceStore } from "./InstanceStore";
 
-
-
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
   const profileStore = new ProfileStore();
@@ -54,11 +52,16 @@ export async function activate(context: ExtensionContext) {
   const stopItemCommand = commandDefs[1].command;
   const startItemCommand = commandDefs[2].command;
 
-  function registerInstanceStateCommand(commandName: string, targetState: InstanceStateName) {
+  function registerInstanceStateCommand(
+    commandName: string,
+    targetState: InstanceStateName
+  ) {
     commands.registerCommand(commandName, async (instanceId: string) => {
       const instance = await instanceStore.describe(instanceId);
       const label = toInstanceLabel(instance as Instance);
-      const title = `${commandName === "running" ? "Starting" : "Stopping"} ${label}`
+      const title = `${
+        commandName === "running" ? "Starting" : "Stopping"
+      } ${label}`;
       window.withProgress(
         {
           location: ProgressLocation.Notification,
