@@ -1,5 +1,5 @@
 import { flattener } from "./flattener";
 
 export function flatten<T>(input: T[][]): T[] {
-    return input.reduce(flattener, []);
+  return input.reduce(flattener, []);
 }

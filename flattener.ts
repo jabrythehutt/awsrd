@@ -1,5 +1,4 @@
-export const flattener =
-    <T>(previous: T[], current: T[]): T[] => ([
-        ...previous,
-        ...current
-    ]);
+export const flattener = <T>(previous: T[], current: T[]): T[] => [
+  ...previous,
+  ...current,
+];
