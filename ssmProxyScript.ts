@@ -24,11 +24,11 @@ async function run() {
   const region = args.region;
   const profile = args.profile;
   const credentials = fromIni({
-    profile
+    profile,
   });
   const clientConfig = {
     credentials,
-    region
+    region,
   };
   const instanceConnectClient = new EC2InstanceConnectClient(clientConfig);
   const serviceFactory = new AwsClientFactory(of(credentials), of(region));

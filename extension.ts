@@ -53,14 +53,16 @@ export async function activate(context: ExtensionContext) {
   const selectRegionCommand = commandDefs[4].command;
   const refreshCommand = commandDefs[5].command;
 
-
   commands.registerCommand(selectRegionCommand, async () => {
     const configPath = "ec2vsc.region";
-    const regionsList = packageJson.contributes.configuration.properties[configPath].type.enum;
+    const regionsList =
+      packageJson.contributes.configuration.properties[configPath].type.enum;
     const region = await window.showQuickPick(regionsList, {
-      title: "Select an AWS region"
+      title: "Select an AWS region",
     });
-    await workspace.getConfiguration().update(configPath, region, ConfigurationTarget.Global);
+    await workspace
+      .getConfiguration()
+      .update(configPath, region, ConfigurationTarget.Global);
     await commands.executeCommand(refreshCommand);
   });
 
@@ -68,9 +70,11 @@ export async function activate(context: ExtensionContext) {
     const configPath = "ec2vsc.profile";
     const profiles = await listProfiles();
     const profile = await window.showQuickPick(profiles, {
-      title: "Select an AWS profile"
+      title: "Select an AWS profile",
     });
-    await workspace.getConfiguration().update(configPath, profile, ConfigurationTarget.Global);
+    await workspace
+      .getConfiguration()
+      .update(configPath, profile, ConfigurationTarget.Global);
     await commands.executeCommand(refreshCommand);
   });
 
@@ -86,7 +90,6 @@ export async function activate(context: ExtensionContext) {
         await toPromise(instanceStore.instanceIds);
       }
     );
-    
   });
 
   function registerInstanceStateCommand(

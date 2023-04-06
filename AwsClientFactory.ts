@@ -16,7 +16,10 @@ export class AwsClientFactory {
     }) => T
   ): Observable<T> {
     return combineLatest([this.credentialStore, this.region$]).pipe(
-      map(([credentials, region]) => new clientConstructor({ credentials, region }))
+      map(
+        ([credentials, region]) =>
+          new clientConstructor({ credentials, region })
+      )
     );
   }
 
