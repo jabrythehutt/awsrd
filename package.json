@@ -126,9 +126,40 @@
         "command": "ec2Instances.start",
         "title": "Start instance",
         "icon": "media/play_button.svg"
+      },
+      {
+        "command": "ec2Instances.selectProfile",
+        "title": "Select AWS profile",
+        "icon": {
+          "light": "media/user_light.svg",
+          "dark": "media/user_dark.svg"
+        }
+      },
+      {
+        "command": "ec2Instances.selectRegion",
+        "title": "Select AWS region",
+        "icon": {
+          "light": "media/globe_light.svg",
+          "dark": "media/globe_dark.svg"
+        }
+      },
+      {
+        "command": "ec2Instances.refresh",
+        "title": "Refresh instances list",
+        "icon": "media/play_button.svg"
       }
     ],
     "menus": {
+      "view/title": [
+        {
+          "command": "ec2Instances.selectProfile",
+          "group": "navigation"
+        },
+        {
+          "command": "ec2Instances.selectRegion",
+          "group": "navigation"
+        }
+      ],
       "view/item/context": [
         {
           "command": "ec2Instances.stop",
