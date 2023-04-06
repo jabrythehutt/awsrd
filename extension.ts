@@ -127,6 +127,9 @@ export async function activate(context: ExtensionContext) {
           );
 
         progress.report({ message: "Waiting for instance to start..." });
+        await instanceStarter.requestInstanceState(instanceId, "running");
+        instanceStore.refresh();
+        progress.report({ message: "Waiting for instance to be reachable..." });
         await instanceStarter.start(instanceId);
         const instanceInfoResponse = await ssmClient.send(
           new DescribeInstanceInformationCommand({
@@ -144,6 +147,7 @@ export async function activate(context: ExtensionContext) {
         const options = instanceInfo ? guessUsernames(instanceInfo) : [];
         const guess = options[0];
         progress.report({ message: "" });
+        instanceStore.refresh();
         if (!token.isCancellationRequested) {
           const user = await window.showInputBox({
             placeHolder: guess || "Username",
