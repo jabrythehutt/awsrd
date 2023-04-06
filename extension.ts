@@ -29,16 +29,14 @@ import { toInstanceLabel } from "./toInstanceLabel";
 import { createCredentialStore } from "./createCredentialStore";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { InstanceStore } from "./InstanceStore";
+import { listProfiles } from "./listProfiles";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
   const profileStore = new ProfileStore();
   const regionStore = new RegionStore();
-  const credentials$ = createCredentialStore({
-    region: regionStore.value,
-    profile: profileStore.value,
-  });
-  const serviceFactory = new AwsClientFactory(credentials$);
+  const credentials$ = createCredentialStore(profileStore.value);
+  const serviceFactory = new AwsClientFactory(credentials$, regionStore.value);
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const instanceStarter = new InstanceStarter(serviceFactory, stateResolver);
   const explorerView = explorerViews[0];
@@ -51,6 +49,45 @@ export async function activate(context: ExtensionContext) {
   const openItemCommand = commandDefs[0].command;
   const stopItemCommand = commandDefs[1].command;
   const startItemCommand = commandDefs[2].command;
+  const selectProfileCommand = commandDefs[3].command;
+  const selectRegionCommand = commandDefs[4].command;
+  const refreshCommand = commandDefs[5].command;
+
+
+  commands.registerCommand(selectRegionCommand, async () => {
+    const configPath = "ec2vsc.region";
+    const regionsList = packageJson.contributes.configuration.properties[configPath].type.enum;
+    const region = await window.showQuickPick(regionsList, {
+      title: "Select an AWS region"
+    });
+    await workspace.getConfiguration().update(configPath, region, ConfigurationTarget.Global);
+    await commands.executeCommand(refreshCommand);
+  });
+
+  commands.registerCommand(selectProfileCommand, async () => {
+    const configPath = "ec2vsc.profile";
+    const profiles = await listProfiles();
+    const profile = await window.showQuickPick(profiles, {
+      title: "Select an AWS profile"
+    });
+    await workspace.getConfiguration().update(configPath, profile, ConfigurationTarget.Global);
+    await commands.executeCommand(refreshCommand);
+  });
+
+  commands.registerCommand(refreshCommand, async () => {
+    instanceStore.refresh();
+    await window.withProgress(
+      {
+        location: ProgressLocation.Notification,
+        title: "Refreshing EC2 list",
+        cancellable: false,
+      },
+      async (progress, token) => {
+        await toPromise(instanceStore.instanceIds);
+      }
+    );
+    
+  });
 
   function registerInstanceStateCommand(
     commandName: string,
@@ -62,7 +99,7 @@ export async function activate(context: ExtensionContext) {
       const title = `${
         targetState === "running" ? "Starting" : "Stopping"
       } ${label}`;
-      window.withProgress(
+      await window.withProgress(
         {
           location: ProgressLocation.Notification,
           title,
@@ -88,7 +125,7 @@ export async function activate(context: ExtensionContext) {
     const instance = await instanceStore.describe(instanceId);
     const label = toInstanceLabel(instance as Instance);
     await commands.executeCommand(startItemCommand, instanceId);
-    window.withProgress(
+    await window.withProgress(
       {
         location: ProgressLocation.Notification,
         title: `Starting a connection to ${label}`,

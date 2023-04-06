@@ -1,20 +1,22 @@
-import { Observable, map } from "rxjs";
+import { Observable, combineLatest, map } from "rxjs";
 import { AwsCredentialIdentityProvider } from "@aws-sdk/types";
 import { Client } from "@aws-sdk/smithy-client";
 import { toPromise } from "./toPromise";
 
 export class AwsClientFactory {
   constructor(
-    private credentialStore: Observable<AwsCredentialIdentityProvider>
+    private credentialStore: Observable<AwsCredentialIdentityProvider>,
+    private region$: Observable<string>
   ) {}
 
   createAwsClient<T extends Client<any, any, any, any>>(
     clientConstructor: new (arg: {
       credentials: AwsCredentialIdentityProvider;
+      region: string;
     }) => T
   ): Observable<T> {
-    return this.credentialStore.pipe(
-      map((credentials) => new clientConstructor({ credentials }))
+    return combineLatest([this.credentialStore, this.region$]).pipe(
+      map(([credentials, region]) => new clientConstructor({ credentials, region }))
     );
   }
 
