@@ -11,6 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "module": "ES2022",
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "isolatedModules": true
   }
 }

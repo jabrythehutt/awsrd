@@ -9,7 +9,7 @@ import {
 } from "vscode";
 import packageJson from "./package.json";
 import { Ec2InstanceTreeProvider } from "./Ec2InstanceTreeProvider";
-import { Instance } from "@aws-sdk/client-ec2";
+import { Instance, InstanceStateName } from "@aws-sdk/client-ec2";
 import { writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
@@ -29,6 +29,8 @@ import { toInstanceLabel } from "./toInstanceLabel";
 import { createCredentialStore } from "./createCredentialStore";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { InstanceStore } from "./InstanceStore";
+
+
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
@@ -52,41 +54,29 @@ export async function activate(context: ExtensionContext) {
   const stopItemCommand = commandDefs[1].command;
   const startItemCommand = commandDefs[2].command;
 
-  commands.registerCommand(stopItemCommand, async (instanceId: string) => {
-    const instance = await instanceStore.describe(instanceId);
-    const label = toInstanceLabel(instance as Instance);
-    window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: `Stopping ${label}`,
-        cancellable: false,
-      },
-      async (progress, token) => {
-        await instanceStarter.stopInstance(instanceId);
-        instanceStore.refresh();
-        await instanceStarter.stop(instanceId);
-        instanceStore.refresh();
-      }
-    );
-  });
+  function registerInstanceStateCommand(commandName: string, targetState: InstanceStateName) {
+    commands.registerCommand(commandName, async (instanceId: string) => {
+      const instance = await instanceStore.describe(instanceId);
+      const label = toInstanceLabel(instance as Instance);
+      const title = `${commandName === "running" ? "Starting" : "Stopping"} ${label}`
+      window.withProgress(
+        {
+          location: ProgressLocation.Notification,
+          title,
+          cancellable: false,
+        },
+        async (progress, token) => {
+          await instanceStarter.requestInstanceState(instanceId, targetState);
+          instanceStore.refresh();
+          await instanceStarter.waitForState(instanceId, targetState);
+          instanceStore.refresh();
+        }
+      );
+    });
+  }
 
-  commands.registerCommand(startItemCommand, async (instanceId: string) => {
-    const instance = await instanceStore.describe(instanceId);
-    const label = toInstanceLabel(instance as Instance);
-    window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: `Starting ${label}`,
-        cancellable: false,
-      },
-      async (progress, token) => {
-        await instanceStarter.startInstance(instanceId);
-        instanceStore.refresh();
-        await instanceStarter.start(instanceId);
-        instanceStore.refresh();
-      }
-    );
-  });
+  registerInstanceStateCommand(startItemCommand, "running");
+  registerInstanceStateCommand(stopItemCommand, "stopped");
 
   commands.registerCommand(openItemCommand, async (instanceId: string) => {
     const ssmClient = await serviceFactory.createAwsClientPromise(SSMClient);
