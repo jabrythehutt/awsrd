@@ -66,7 +66,7 @@ export async function activate(context: ExtensionContext) {
     const ssmClient = await serviceFactory.createAwsClientPromise(SSMClient);
     const region = await ssmClient.config.region();
     const profile = await toPromise(profileStore.value);
-    const instance = await instanceStore.describe(instanceId)
+    const instance = await instanceStore.describe(instanceId);
     const label = toInstanceLabel(instance as Instance);
     window.withProgress(
       {

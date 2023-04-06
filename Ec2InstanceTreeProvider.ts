@@ -5,9 +5,7 @@ import {
   TreeItem,
   Event,
 } from "vscode";
-import {
-  Instance,
-} from "@aws-sdk/client-ec2";
+import { Instance } from "@aws-sdk/client-ec2";
 import { join } from "path";
 import { toPromise } from "./toPromise";
 import { toInstanceLabel } from "./toInstanceLabel";
@@ -19,10 +17,12 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<string> {
 
   constructor(private instanceStore: InstanceStore) {
     this.onDidChangeTreeData = this.eventEmitter.event;
-    instanceStore.instanceIds.subscribe(() => this.eventEmitter.fire(undefined));
-    instanceStore.changes.subscribe(async changes => {
+    instanceStore.instanceIds.subscribe(() =>
+      this.eventEmitter.fire(undefined)
+    );
+    instanceStore.changes.subscribe(async (changes) => {
       for (const change of changes) {
-        this.eventEmitter.fire(change)
+        this.eventEmitter.fire(change);
       }
     });
   }
@@ -43,7 +43,7 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<string> {
   }
 
   getRootChildren(): Promise<string[] | null | undefined> {
-    return toPromise(this.instanceStore.instanceIds)
+    return toPromise(this.instanceStore.instanceIds);
   }
 
   getChildren(element: string): ProviderResult<string[]> {

@@ -4,11 +4,21 @@ import {
   Instance,
   paginateDescribeInstances,
 } from "@aws-sdk/client-ec2";
-import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, pairwise, shareReplay, switchMap } from "rxjs";
+import {
+  Observable,
+  Subject,
+  combineLatest,
+  distinctUntilChanged,
+  filter,
+  map,
+  pairwise,
+  shareReplay,
+  switchMap,
+} from "rxjs";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { toPromise } from "./toPromise";
 import { flatten } from "./flatten";
-import { isEqual } from "lodash"
+import { isEqual } from "lodash";
 
 export class InstanceStore {
   public readonly changes: Observable<string[]>;
@@ -26,17 +36,25 @@ export class InstanceStore {
 
     this.instanceIds = this.instances.pipe(
       map((instances) => instances.map(toInstanceId)),
-      map((instanceIds => instanceIds.sort())),
+      map((instanceIds) => instanceIds.sort()),
       distinctUntilChanged(isEqual)
     );
     this.changes = this.instances.pipe(
-      map(instances => instances.sort((i1, i2) => toInstanceId(i1).localeCompare(toInstanceId(i2)))),
+      map((instances) =>
+        instances.sort((i1, i2) =>
+          toInstanceId(i1).localeCompare(toInstanceId(i2))
+        )
+      ),
       pairwise(),
-      filter(([previous, current]) => isEqual(previous.map(toInstanceId), current.map(toInstanceId))),
-      map(([previous, current]) => current.filter((instance, index) => !isEqual(instance, previous[index]))),
-      map(instances => instances.map(toInstanceId)),
-      filter(changes => changes.length > 0)
-    )
+      filter(([previous, current]) =>
+        isEqual(previous.map(toInstanceId), current.map(toInstanceId))
+      ),
+      map(([previous, current]) =>
+        current.filter((instance, index) => !isEqual(instance, previous[index]))
+      ),
+      map((instances) => instances.map(toInstanceId)),
+      filter((changes) => changes.length > 0)
+    );
   }
 
   protected async listAll(client: EC2Client): Promise<Instance[]> {
@@ -55,9 +73,7 @@ export class InstanceStore {
 
   async describe(instanceId: string): Promise<Instance | undefined> {
     const instances = await toPromise(this.instances);
-    return (
-      instances.find((i) => i.InstanceId === instanceId)
-    );
+    return instances.find((i) => i.InstanceId === instanceId);
   }
 
   refresh() {
