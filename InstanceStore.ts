@@ -1,27 +1,42 @@
 import {
-  DescribeInstancesCommand,
   DescribeInstancesCommandOutput,
   EC2Client,
   Instance,
   paginateDescribeInstances,
 } from "@aws-sdk/client-ec2";
-import { Observable, concatMap, map } from "rxjs";
+import { Observable, Subject, combineLatest, distinctUntilChanged, filter, map, pairwise, shareReplay, switchMap } from "rxjs";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { toPromise } from "./toPromise";
 import { flatten } from "./flatten";
+import { isEqual } from "lodash"
 
 export class InstanceStore {
+  public readonly changes: Observable<string[]>;
   public readonly instanceIds: Observable<string[]>;
   protected readonly instances: Observable<Instance[]>;
   protected readonly ec2Client: Observable<EC2Client>;
+  protected readonly refreshSubject: Subject<void> = new Subject();
   constructor(clientFactory: AwsClientFactory) {
     this.ec2Client = clientFactory.createAwsClient(EC2Client);
-    this.instances = this.ec2Client.pipe(
-      concatMap((client) => this.listAll(client))
+    this.instances = combineLatest([this.ec2Client, this.refreshSubject]).pipe(
+      switchMap(([client]) => this.listAll(client)),
+      shareReplay(1)
     );
+    const toInstanceId = (instance: Instance) => instance.InstanceId as string;
+
     this.instanceIds = this.instances.pipe(
-      map((instances) => instances.map((i) => i.InstanceId as string))
+      map((instances) => instances.map(toInstanceId)),
+      map((instanceIds => instanceIds.sort())),
+      distinctUntilChanged(isEqual)
     );
+    this.changes = this.instances.pipe(
+      map(instances => instances.sort((i1, i2) => toInstanceId(i1).localeCompare(toInstanceId(i2)))),
+      pairwise(),
+      filter(([previous, current]) => isEqual(previous.map(toInstanceId), current.map(toInstanceId))),
+      map(([previous, current]) => current.filter((instance, index) => !isEqual(instance, previous[index]))),
+      map(instances => instances.map(toInstanceId)),
+      filter(changes => changes.length > 0)
+    )
   }
 
   protected async listAll(client: EC2Client): Promise<Instance[]> {
@@ -32,33 +47,20 @@ export class InstanceStore {
     return instances;
   }
 
-  toInstances(response: DescribeInstancesCommandOutput): Instance[] {
+  protected toInstances(response: DescribeInstancesCommandOutput): Instance[] {
     return flatten(
       response.Reservations?.map((r) => r.Instances) as Instance[][]
     );
   }
 
-  protected async describeInstance(
-    client: EC2Client,
-    instanceId: string
-  ): Promise<Instance | undefined> {
-    const response = await client.send(
-      new DescribeInstancesCommand({
-        InstanceIds: [instanceId],
-      })
-    );
-    const instances = this.toInstances(response);
-    return instances.find(
-      (i: Instance) => i.InstanceId === instanceId
-    ) as Instance;
-  }
-
   async describe(instanceId: string): Promise<Instance | undefined> {
-    const client = await toPromise(this.ec2Client);
     const instances = await toPromise(this.instances);
     return (
-      instances.find((i) => i.InstanceId === instanceId) ||
-      (await this.describeInstance(client, instanceId))
+      instances.find((i) => i.InstanceId === instanceId)
     );
+  }
+
+  refresh() {
+    this.refreshSubject.next();
   }
 }

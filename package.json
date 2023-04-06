@@ -21,6 +21,7 @@
     "aws-cdk-lib": "^2.69.0",
     "cdk-monitoring-constructs": "^3.0.3",
     "constructs": "^10.1.284",
+    "lodash": "4.17.21",
     "sshpk": "^1.17.0",
     "ssm-session": "^1.0.6",
     "yargs": "^17.7.1",
@@ -28,6 +29,7 @@
     "rxjs": "7.8.0"
   },
   "devDependencies": {
+    "@types/lodash": "4.14.192",
     "@types/vscode": "1.76.0",
     "@types/node": "^18.15.5",
     "@types/sshpk": "^1.17.1",

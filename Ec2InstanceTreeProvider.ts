@@ -6,30 +6,30 @@ import {
   Event,
 } from "vscode";
 import {
-  EC2Client,
   Instance,
-  paginateDescribeInstances,
 } from "@aws-sdk/client-ec2";
 import { join } from "path";
 import { toPromise } from "./toPromise";
 import { toInstanceLabel } from "./toInstanceLabel";
-import { AwsClientFactory } from "./AwsClientFactory";
-import { Observable } from "rxjs";
+import { InstanceStore } from "./InstanceStore";
 
-export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
-  readonly eventEmitter = new EventEmitter<Instance | undefined>();
-  readonly onDidChangeTreeData: Event<Instance | undefined>;
-  private readonly client: Observable<EC2Client>;
+export class Ec2InstanceTreeProvider implements TreeDataProvider<string> {
+  readonly eventEmitter = new EventEmitter<string | undefined>();
+  readonly onDidChangeTreeData: Event<string | undefined>;
 
-  constructor(serviceFactory: AwsClientFactory) {
+  constructor(private instanceStore: InstanceStore) {
     this.onDidChangeTreeData = this.eventEmitter.event;
-    this.client = serviceFactory.createAwsClient(EC2Client);
-    this.client.subscribe(() => this.eventEmitter.fire(undefined));
+    instanceStore.instanceIds.subscribe(() => this.eventEmitter.fire(undefined));
+    instanceStore.changes.subscribe(async changes => {
+      for (const change of changes) {
+        this.eventEmitter.fire(change)
+      }
+    });
   }
 
-  getTreeItem(element: Instance): TreeItem | Thenable<TreeItem> {
-    const label = toInstanceLabel(element);
-    const id = element.InstanceId;
+  async getTreeItem(id: string): Promise<TreeItem> {
+    const instance = (await this.instanceStore.describe(id)) as Instance;
+    const label = toInstanceLabel(instance);
     const mediaDir = join(__dirname, "media");
     return {
       label,
@@ -38,26 +38,19 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<Instance> {
         light: join(mediaDir, "instance_light.svg"),
         dark: join(mediaDir, "instance_dark.svg"),
       },
-      contextValue: element.State?.Name,
+      contextValue: instance.State?.Name,
     };
   }
 
-  async getRootChildren(): Promise<Instance[] | null | undefined> {
-    const instances: Instance[] = [];
-    const client = await toPromise(this.client);
-    for await (const response of paginateDescribeInstances({ client }, {})) {
-      for (const reservation of response.Reservations || []) {
-        instances.push(...(reservation.Instances || []));
-      }
-    }
-    return instances;
+  getRootChildren(): Promise<string[] | null | undefined> {
+    return toPromise(this.instanceStore.instanceIds)
   }
 
-  getChildren(element: Instance): ProviderResult<Instance[]> {
+  getChildren(element: string): ProviderResult<string[]> {
     return element ? [] : this.getRootChildren();
   }
 
-  getParent?(element: Instance): ProviderResult<Instance> {
+  getParent?(element: string): ProviderResult<string> {
     return undefined;
   }
 }

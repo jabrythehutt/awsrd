@@ -13,6 +13,8 @@ ts_project(
     srcs = glob(["*.ts"]) + ["package.json"],
     resolve_json_module = True,
     deps = [
+        "//:node_modules/lodash",
+        "//:node_modules/@types/lodash",
         "//:node_modules/@aws-sdk/client-ec2",
         "//:node_modules/@aws-sdk/client-ec2-instance-connect",
         "//:node_modules/@aws-sdk/client-ssm",

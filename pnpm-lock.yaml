@@ -11,6 +11,7 @@ specifiers:
   '@aws-sdk/shared-ini-file-loader': 3.303.0
   '@aws-sdk/smithy-client': 3.303.0
   '@aws-sdk/types': 3.303.0
+  '@types/lodash': 4.14.192
   '@types/node': ^18.15.5
   '@types/sshpk': ^1.17.1
   '@types/vscode': 1.76.0
@@ -21,6 +22,7 @@ specifiers:
   cdk-monitoring-constructs: ^3.0.3
   constructs: ^10.1.284
   esbuild: ^0.17.12
+  lodash: 4.17.21
   rxjs: 7.8.0
   sshpk: ^1.17.0
   ssm-session: ^1.0.6
@@ -43,6 +45,7 @@ dependencies:
   aws-cdk-lib: 2.69.0_constructs@10.1.284
   cdk-monitoring-constructs: 3.0.3_wnec2y6uysyel4qefr3lg6vvmm
   constructs: 10.1.284
+  lodash: 4.17.21
   rxjs: 7.8.0
   sshpk: 1.17.0
   ssm-session: 1.0.6
@@ -50,6 +53,7 @@ dependencies:
   yargs: 17.7.1
 
 devDependencies:
+  '@types/lodash': 4.14.192
   '@types/node': 18.15.5
   '@types/sshpk': 1.17.1
   '@types/vscode': 1.76.0
@@ -1261,6 +1265,10 @@ packages:
       '@types/node': 18.15.5
     dev: true
 
+  /@types/lodash/4.14.192:
+    resolution: {integrity: sha512-km+Vyn3BYm5ytMO13k9KTp27O75rbQ0NFw+U//g+PX7VZyjCioXaRFisqSIJRECljcTv73G3i6BpglNGHgUQ5A==}
+    dev: true
+
   /@types/node/18.15.5:
     resolution: {integrity: sha512-Ark2WDjjZO7GmvsyFFf81MXuGTA/d6oP38anyxWOL6EREyBKAxKoFHwBhaZxCfLRLpO8JgVXwqOwSwa7jRcjew==}
     dev: true
@@ -1571,6 +1579,10 @@ packages:
 
   /jsonschema/1.4.1:
     resolution: {integrity: sha512-S6cATIPVv1z0IlxdN+zUk5EPjkGCdnhN4wVSBlvoUO1tOLJootbo9CquNJmbIh4yikWHiUedhRYrNPn1arpEmQ==}
+    dev: false
+
+  /lodash/4.17.21:
+    resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
     dev: false
 
   /lru-cache/6.0.0:

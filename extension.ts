@@ -28,6 +28,7 @@ import { toPromise } from "./toPromise";
 import { toInstanceLabel } from "./toInstanceLabel";
 import { createCredentialStore } from "./createCredentialStore";
 import { AwsClientFactory } from "./AwsClientFactory";
+import { InstanceStore } from "./InstanceStore";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
@@ -41,8 +42,9 @@ export async function activate(context: ExtensionContext) {
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const instanceStarter = new InstanceStarter(serviceFactory, stateResolver);
   const explorerView = explorerViews[0];
+  const instanceStore = new InstanceStore(serviceFactory);
   const treeView = window.createTreeView(explorerView.id, {
-    treeDataProvider: new Ec2InstanceTreeProvider(serviceFactory),
+    treeDataProvider: new Ec2InstanceTreeProvider(instanceStore),
   });
   context.subscriptions.push(treeView);
   const commandDefs = packageJson.contributes.commands;
@@ -50,19 +52,22 @@ export async function activate(context: ExtensionContext) {
   const stopItemCommand = commandDefs[1].command;
   const startItemCommand = commandDefs[2].command;
 
-  commands.registerCommand(stopItemCommand, async (ec2Instance: Instance) => {
-    await instanceStarter.start(ec2Instance.InstanceId as string);
+  commands.registerCommand(stopItemCommand, async (instanceId: string) => {
+    await instanceStarter.start(instanceId);
+    await instanceStore.refresh();
   });
 
-  commands.registerCommand(startItemCommand, async (ec2Instance: Instance) => {
-    await instanceStarter.stop(ec2Instance.InstanceId as string);
+  commands.registerCommand(startItemCommand, async (instanceId: string) => {
+    await instanceStarter.stop(instanceId);
+    await instanceStore.refresh();
   });
 
-  commands.registerCommand(openItemCommand, async (ec2Instance: Instance) => {
+  commands.registerCommand(openItemCommand, async (instanceId: string) => {
     const ssmClient = await serviceFactory.createAwsClientPromise(SSMClient);
     const region = await ssmClient.config.region();
     const profile = await toPromise(profileStore.value);
-    const label = toInstanceLabel(ec2Instance);
+    const instance = await instanceStore.describe(instanceId)
+    const label = toInstanceLabel(instance as Instance);
     window.withProgress(
       {
         location: ProgressLocation.Notification,
@@ -102,7 +107,6 @@ export async function activate(context: ExtensionContext) {
             ConfigurationTarget.Global
           );
 
-        const instanceId = ec2Instance.InstanceId as string;
         progress.report({ message: "Waiting for instance to start..." });
         await instanceStarter.start(instanceId);
         const instanceInfoResponse = await ssmClient.send(
@@ -129,7 +133,7 @@ export async function activate(context: ExtensionContext) {
           });
           if (user) {
             const uri = Uri.parse(
-              `vscode-remote://ssh-remote+${user}@${ec2Instance.InstanceId}/home/${user}`
+              `vscode-remote://ssh-remote+${user}@${instanceId}/home/${user}`
             );
             await commands.executeCommand("vscode.openFolder", uri);
           }
