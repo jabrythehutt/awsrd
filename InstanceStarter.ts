@@ -1,4 +1,8 @@
-import { EC2Client, StartInstancesCommand, StopInstancesCommand } from "@aws-sdk/client-ec2";
+import {
+  EC2Client,
+  StartInstancesCommand,
+  StopInstancesCommand,
+} from "@aws-sdk/client-ec2";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { AwsClientFactory } from "./AwsClientFactory";
 
@@ -16,9 +20,7 @@ export class InstanceStarter {
   }
 
   async startInstance(instanceId: string): Promise<void> {
-    const client = await this.serviceFactory.createAwsClientPromise(
-      EC2Client
-    );
+    const client = await this.serviceFactory.createAwsClientPromise(EC2Client);
     await client.send(
       new StartInstancesCommand({
         InstanceIds: [instanceId],
@@ -39,9 +41,7 @@ export class InstanceStarter {
   }
 
   async stopInstance(instanceId: string): Promise<void> {
-    const client = await this.serviceFactory.createAwsClientPromise(
-      EC2Client
-    );
+    const client = await this.serviceFactory.createAwsClientPromise(EC2Client);
     await client.send(
       new StopInstancesCommand({
         InstanceIds: [instanceId],

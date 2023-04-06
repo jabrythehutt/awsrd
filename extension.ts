@@ -66,7 +66,8 @@ export async function activate(context: ExtensionContext) {
         instanceStore.refresh();
         await instanceStarter.stop(instanceId);
         instanceStore.refresh();
-      });
+      }
+    );
   });
 
   commands.registerCommand(startItemCommand, async (instanceId: string) => {
@@ -83,7 +84,8 @@ export async function activate(context: ExtensionContext) {
         instanceStore.refresh();
         await instanceStarter.start(instanceId);
         instanceStore.refresh();
-      });
+      }
+    );
   });
 
   commands.registerCommand(openItemCommand, async (instanceId: string) => {
