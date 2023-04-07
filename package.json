@@ -150,6 +150,14 @@
           "light": "media/refresh_light.svg",
           "dark": "media/refresh_dark.svg"
         }
+      },
+      {
+        "command": "ec2Instances.create",
+        "title": "Create a development EC2 instance",
+        "icon": {
+          "light": "media/refresh_light.svg",
+          "dark": "media/refresh_dark.svg"
+        }
       }
     ],
     "menus": {
@@ -163,8 +171,12 @@
           "group": "navigation@1"
         },
         {
-          "command": "ec2Instances.refresh",
+          "command": "ec2Instances.create",
           "group": "navigation@2"
+        },
+        {
+          "command": "ec2Instances.create",
+          "group": "navigation@3"
         }
       ],
       "view/item/context": [
