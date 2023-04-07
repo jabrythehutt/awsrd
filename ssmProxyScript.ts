@@ -18,10 +18,16 @@ async function run() {
     .option(SsmProxyScriptArg.Port, { type: "number", demand: true })
     .option(SsmProxyScriptArg.PublicKeyPath, { type: "string", demand: true })
     .option(SsmProxyScriptArg.User, { type: "string", demand: true })
-    .option(SsmProxyScriptArg.PollPeriod, { type: "number", default: defaultPollPeriod })
+    .option(SsmProxyScriptArg.PollPeriod, {
+      type: "number",
+      default: defaultPollPeriod,
+    })
     .option(SsmProxyScriptArg.Profile, { type: "string", demand: true })
     .option(SsmProxyScriptArg.Region, { type: "string", demand: true })
-    .option(SsmProxyScriptArg.SessionManagerBinPath, { type: "string", demand: true })
+    .option(SsmProxyScriptArg.SessionManagerBinPath, {
+      type: "string",
+      demand: true,
+    })
     .parse();
   const region = args.region;
   const profile = args.profile;
