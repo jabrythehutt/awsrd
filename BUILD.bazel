@@ -63,13 +63,13 @@ session_manager(
 
 cjs_bundle(
     name = "cdk_app",
-    deps = [
-        "lib"
-    ],
     entry_point = "app.js",
+    minify = minify,
     output = "app.cjs",
     sourcemap = sourcemap,
-    minify = minify,
+    deps = [
+        "lib",
+    ],
 )
 
 cjs_bundle(
@@ -84,13 +84,11 @@ cjs_bundle(
     output = "extension.cjs",
     sourcemap = sourcemap,
     deps = [
+        "cdk_app",
         "lib",
         "ssm_proxy_script",
-        "cdk_app"
     ],
 )
-
-
 
 npm_package(
     name = "dist",
