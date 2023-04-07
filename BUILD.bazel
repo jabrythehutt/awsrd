@@ -62,6 +62,17 @@ session_manager(
 )
 
 cjs_bundle(
+    name = "cdk_app",
+    deps = [
+        "lib"
+    ],
+    entry_point = "app.js",
+    output = "app.cjs",
+    sourcemap = sourcemap,
+    minify = minify,
+)
+
+cjs_bundle(
     name = "extension",
     define = {
         "process.env.PROXY_SCRIPT_FILENAME": '"{proxy_script_file_name}"'.format(proxy_script_file_name = proxy_script_file_name),
@@ -75,12 +86,16 @@ cjs_bundle(
     deps = [
         "lib",
         "ssm_proxy_script",
+        "cdk_app"
     ],
 )
+
+
 
 npm_package(
     name = "dist",
     srcs = [
+        "cdk_app",
         "package.json",
         "extension",
         "ssm_proxy_script",
