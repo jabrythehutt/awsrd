@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Icon-Resource/General-Resource/Res_Recover_48_Dark</title>
-    <g id="Icon-Resource/General-Resource/Res_Recover_48" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <path d="M45,24 C45,35.58 35.58,45 24,45 C12.42,45 3,35.58 3,24 C3,16.674 6.9,9.783 13.181,6 L5,6 L5,4 L16,4 C16.552,4 17,4.448 17,5 L17,16 L15,16 L15,7.279 C14.75,7.414 14.496,7.541 14.253,7.687 C8.546,11.104 5,17.355 5,24 C5,34.477 13.523,43 24,43 C34.477,43 43,34.477 43,24 C43,13.523 34.477,5 24,5 L24,3 C35.58,3 45,12.42 45,24" id="Fill-1" fill="#FFFFFF"></path>
-    </g>
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5.56253 2.51577C3.46348 3.4501 2 5.55414 2 7.99999C2 11.3137 4.68629 14 8 14C11.3137 14 14 11.3137 14 7.99999C14 5.32519 12.2497 3.05919 9.83199 2.28482L9.52968 3.23832C11.5429 3.88454 13 5.7721 13 7.99999C13 10.7614 10.7614 13 8 13C5.23858 13 3 10.7614 3 7.99999C3 6.31104 3.83742 4.81767 5.11969 3.91245L5.56253 2.51577Z" fill="#C5C5C5"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M5 3H2V2H5.5L6 2.5V6H5V3Z" fill="#C5C5C5"/>
 </svg>
