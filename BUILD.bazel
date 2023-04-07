@@ -92,7 +92,6 @@ cjs_bundle(
 
 npm_package(
     name = "dist",
-    exclude_srcs_patterns = [],
     srcs = [
         "cdk_app",
         "package.json",
@@ -101,4 +100,5 @@ npm_package(
         "//:node_modules/aws-cdk/dir",
         session_manager_bin_name,
     ] + glob(["media/*.*"]),
+    exclude_srcs_patterns = [],
 )
