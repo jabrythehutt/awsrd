@@ -6,6 +6,7 @@ import {
 } from "@aws-sdk/client-ec2";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { AwsClientFactory } from "./AwsClientFactory";
+import { defaultPollPeriod } from "./defaultPollPeriod";
 
 export class InstanceStarter {
   protected readonly commands: Partial<
@@ -18,7 +19,7 @@ export class InstanceStarter {
   constructor(
     private serviceFactory: AwsClientFactory,
     private stateResolver: InstanceStateResolver,
-    private pollPeriod: number = 1000
+    private pollPeriod: number = defaultPollPeriod
   ) {}
 
   async waitFor(condition: () => Promise<boolean>): Promise<void> {

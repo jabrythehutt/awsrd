@@ -9,17 +9,19 @@ import { KeyAuthoriser } from "./KeyAuthoriser";
 import { SessionStarter } from "./SessionStarter";
 import { fromIni } from "@aws-sdk/credential-providers";
 import { AwsClientFactory } from "./AwsClientFactory";
+import { SsmProxyScriptArg } from "./SsmProxyScriptArg";
+import { defaultPollPeriod } from "./defaultPollPeriod";
 
 async function run() {
   const args = await yargs(hideBin(process.argv))
-    .option("instanceId", { type: "string", demand: true })
-    .option("port", { type: "number", demand: true })
-    .option("publicKeyPath", { type: "string", demand: true })
-    .option("user", { type: "string", demand: true })
-    .option("pollPeriod", { type: "number", default: 1000 })
-    .option("profile", { type: "string", demand: true })
-    .option("region", { type: "string", demand: true })
-    .option("sessionManagerBinPath", { type: "string", demand: true })
+    .option(SsmProxyScriptArg.InstanceId, { type: "string", demand: true })
+    .option(SsmProxyScriptArg.Port, { type: "number", demand: true })
+    .option(SsmProxyScriptArg.PublicKeyPath, { type: "string", demand: true })
+    .option(SsmProxyScriptArg.User, { type: "string", demand: true })
+    .option(SsmProxyScriptArg.PollPeriod, { type: "number", default: defaultPollPeriod })
+    .option(SsmProxyScriptArg.Profile, { type: "string", demand: true })
+    .option(SsmProxyScriptArg.Region, { type: "string", demand: true })
+    .option(SsmProxyScriptArg.SessionManagerBinPath, { type: "string", demand: true })
     .parse();
   const region = args.region;
   const profile = args.profile;

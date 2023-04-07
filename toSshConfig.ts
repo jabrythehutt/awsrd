@@ -1,4 +1,5 @@
 import { resolve } from "path";
+import { SsmProxyScriptArg } from "./SsmProxyScriptArg";
 
 export function toSshConfig(request: {
   publicKeyPath: string;
@@ -13,11 +14,11 @@ Host i-* mi-*
     IdentityFile "${resolve(request.privateKeyPath)}"
     ProxyCommand node ${resolve(
       request.proxyScriptPath
-    )} --instanceId=%h --user=%r --port=%p --publicKeyPath="${resolve(
+    )} --${SsmProxyScriptArg.InstanceId}=%h --${SsmProxyScriptArg.User}=%r --${SsmProxyScriptArg.Port}=%p --${SsmProxyScriptArg.PublicKeyPath}="${resolve(
     request.publicKeyPath
-  )}" --sessionManagerBinPath="${request.sessionManagerBinPath}" --profile=${
+  )}" --${SsmProxyScriptArg.SessionManagerBinPath}="${request.sessionManagerBinPath}" --${SsmProxyScriptArg.Profile}=${
     request.profile
-  } --region=${request.region}
+  } --${SsmProxyScriptArg.Region}=${request.region}
     StrictHostKeyChecking no
 `;
 }
