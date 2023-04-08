@@ -66,7 +66,9 @@ export class InstanceStore {
         instances.push(...this.toInstances(response));
       }
     } catch (err) {
-      if (!["UnauthorizedOperation", "AuthFailure"].includes((err as Error).name)) {
+      if (
+        !["UnauthorizedOperation", "AuthFailure"].includes((err as Error).name)
+      ) {
         console.error(err);
         throw err;
       }
