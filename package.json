@@ -58,8 +58,9 @@
         },
         "ec2vsc.region": {
           "type": {
-            "type": "string",
+            "type": ["string", "null"],
             "description": "AWS region",
+            "default": null,
             "enum": [
               "us-east-2",
               "us-east-1",
