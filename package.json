@@ -115,7 +115,10 @@
       {
         "command": "ec2Instances.open",
         "title": "Open in new window",
-        "icon": "media/new_window.svg"
+        "icon": {
+          "dark": "media/client_dark.svg",
+          "light": "media/client_light.svg"
+        }
       },
       {
         "command": "ec2Instances.stop",
@@ -171,7 +174,7 @@
           "group": "navigation@1"
         },
         {
-          "command": "ec2Instances.create",
+          "command": "ec2Instances.refresh",
           "group": "navigation@2"
         },
         {

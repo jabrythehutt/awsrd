@@ -14,7 +14,7 @@ import {
   map,
   pairwise,
   shareReplay,
-  switchMap,
+  switchMap
 } from "rxjs";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { toPromise } from "./toPromise";
@@ -61,9 +61,16 @@ export class InstanceStore {
 
   protected async listAll(client: EC2Client): Promise<Instance[]> {
     const instances: Instance[] = [];
-    for await (const response of paginateDescribeInstances({ client }, {})) {
-      instances.push(...this.toInstances(response));
+    try {
+      for await (const response of paginateDescribeInstances({ client }, {})) {
+        instances.push(...this.toInstances(response));
+      }
+    } catch (err) {
+      if (!['UnauthorizedOperation'].includes((err as Error).name)) {
+        throw err;
+      }
     }
+
     return instances;
   }
 
