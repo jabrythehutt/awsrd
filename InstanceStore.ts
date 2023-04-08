@@ -14,7 +14,7 @@ import {
   map,
   pairwise,
   shareReplay,
-  switchMap
+  switchMap,
 } from "rxjs";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { toPromise } from "./toPromise";
@@ -66,7 +66,7 @@ export class InstanceStore {
         instances.push(...this.toInstances(response));
       }
     } catch (err) {
-      if (!['UnauthorizedOperation'].includes((err as Error).name)) {
+      if (!["UnauthorizedOperation"].includes((err as Error).name)) {
         throw err;
       }
     }
