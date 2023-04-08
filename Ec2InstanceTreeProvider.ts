@@ -10,6 +10,7 @@ import { join } from "path";
 import { toPromise } from "./toPromise";
 import { toInstanceLabel } from "./toInstanceLabel";
 import { InstanceStore } from "./InstanceStore";
+import { existsSync } from "node:fs";
 
 export class Ec2InstanceTreeProvider implements TreeDataProvider<string> {
   readonly eventEmitter = new EventEmitter<string | undefined>();
@@ -27,16 +28,26 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<string> {
     });
   }
 
+  toIconPath(type: "light" | "dark", instance: Instance): string {
+    const mediaDir = join(__dirname, "media");
+    const iconPrefix = instance.State?.Name ? `vm_${instance.State?.Name}` : "instance"
+    const iconPath = join(mediaDir, `${iconPrefix}_${type}.svg`);
+    if (!existsSync(iconPath)) {
+      return join(mediaDir, `vm_${type}.svg`)
+    }
+    return iconPath;
+  }
+
+
   async getTreeItem(id: string): Promise<TreeItem> {
     const instance = (await this.instanceStore.describe(id)) as Instance;
     const label = toInstanceLabel(instance);
-    const mediaDir = join(__dirname, "media");
     return {
       label,
       id,
       iconPath: {
-        light: join(mediaDir, "instance_light.svg"),
-        dark: join(mediaDir, "instance_dark.svg"),
+        light: this.toIconPath("light", instance),
+        dark: this.toIconPath("dark", instance),
       },
       contextValue: instance.State?.Name,
     };

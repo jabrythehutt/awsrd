@@ -118,7 +118,7 @@
     "commands": [
       {
         "command": "ec2Instances.open",
-        "title": "Open in new window",
+        "title": "Connect in new window",
         "icon": {
           "dark": "media/new_window_dark.svg",
           "light": "media/new_window_light.svg"
