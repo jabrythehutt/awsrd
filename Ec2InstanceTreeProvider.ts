@@ -30,14 +30,15 @@ export class Ec2InstanceTreeProvider implements TreeDataProvider<string> {
 
   toIconPath(type: "light" | "dark", instance: Instance): string {
     const mediaDir = join(__dirname, "media");
-    const iconPrefix = instance.State?.Name ? `vm_${instance.State?.Name}` : "instance"
+    const iconPrefix = instance.State?.Name
+      ? `vm_${instance.State?.Name}`
+      : "instance";
     const iconPath = join(mediaDir, `${iconPrefix}_${type}.svg`);
     if (!existsSync(iconPath)) {
-      return join(mediaDir, `vm_${type}.svg`)
+      return join(mediaDir, `vm_${type}.svg`);
     }
     return iconPath;
   }
-
 
   async getTreeItem(id: string): Promise<TreeItem> {
     const instance = (await this.instanceStore.describe(id)) as Instance;
