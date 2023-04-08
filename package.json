@@ -171,18 +171,22 @@
       "view/title": [
         {
           "command": "ec2Instances.selectProfile",
+          "when": "view == ec2Instances",
           "group": "navigation@0"
         },
         {
           "command": "ec2Instances.selectRegion",
+          "when": "view == ec2Instances",
           "group": "navigation@1"
         },
         {
           "command": "ec2Instances.refresh",
+          "when": "view == ec2Instances",
           "group": "navigation@2"
         },
         {
           "command": "ec2Instances.create",
+          "when": "view == ec2Instances",
           "group": "navigation@3"
         }
       ],
@@ -190,17 +194,17 @@
         {
           "command": "ec2Instances.stop",
           "group": "inline@0",
-          "when": "viewItem == running"
+          "when": "view == ec2Instances && viewItem == running"
         },
         {
           "command": "ec2Instances.start",
           "group": "inline@1",
-          "when": "viewItem == stopped"
+          "when": "view == ec2Instances && viewItem == stopped"
         },
         {
           "command": "ec2Instances.open",
           "group": "inline@2",
-          "when": "viewItem == stopped || viewItem == running"
+          "when": "view == ec2Instances && (viewItem == stopped || viewItem == running)"
         }
       ]
     }
