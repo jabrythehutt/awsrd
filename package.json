@@ -120,8 +120,8 @@
         "command": "ec2Instances.open",
         "title": "Open in new window",
         "icon": {
-          "dark": "media/client_dark.svg",
-          "light": "media/client_light.svg"
+          "dark": "media/new_window_dark.svg",
+          "light": "media/new_window_light.svg"
         }
       },
       {
@@ -162,8 +162,8 @@
         "command": "ec2Instances.create",
         "title": "Create a development EC2 instance",
         "icon": {
-          "light": "media/refresh_light.svg",
-          "dark": "media/refresh_dark.svg"
+          "light": "media/add_light.svg",
+          "dark": "media/add_dark.svg"
         }
       }
     ],
