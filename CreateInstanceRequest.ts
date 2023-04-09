@@ -1,4 +1,4 @@
-import {_InstanceType} from "@aws-sdk/client-ec2";
+import { _InstanceType } from "@aws-sdk/client-ec2";
 export interface CreateInstanceRequest {
   rootVolumeSizeGb: number;
   user: string;
