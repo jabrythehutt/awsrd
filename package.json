@@ -168,6 +168,14 @@
           "light": "media/add_light.svg",
           "dark": "media/add_dark.svg"
         }
+      },
+      {
+        "command": "ec2Instances.delete",
+        "title": "Delete instance",
+        "icon": {
+          "light": "media/trash_light.svg",
+          "dark": "media/trash_dark.svg"
+        }
       }
     ],
     "menus": {
@@ -197,17 +205,22 @@
         {
           "command": "ec2Instances.stop",
           "group": "inline@0",
-          "when": "view == ec2Instances && viewItem == running"
+          "when": "view == ec2Instances && viewItem =~ /running/"
         },
         {
           "command": "ec2Instances.start",
           "group": "inline@1",
-          "when": "view == ec2Instances && viewItem == stopped"
+          "when": "view == ec2Instances && viewItem =~ /stopped/"
         },
         {
           "command": "ec2Instances.open",
           "group": "inline@2",
-          "when": "view == ec2Instances && (viewItem == stopped || viewItem == running)"
+          "when": "view == ec2Instances && (viewItem =~ /stopped/ || viewItem =~ /running/)"
+        },
+        {
+          "command": "ec2Instances.delete",
+          "group": "inline@3",
+          "when": "view == ec2Instances && (viewItem =~ /stopped/) && viewItem =~ /managed/"
         }
       ]
     }
