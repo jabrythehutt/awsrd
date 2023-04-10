@@ -6,7 +6,11 @@ import { STSClient, GetCallerIdentityCommand } from "@aws-sdk/client-sts";
 import { toPromise } from "./toPromise";
 
 export class InstanceCreator {
-  constructor(private serviceFactory: AwsClientFactory, private profileStore: Observable<string>, private cdkAppPath: string) {}
+  constructor(
+    private serviceFactory: AwsClientFactory,
+    private profileStore: Observable<string>,
+    private cdkAppPath: string
+  ) {}
 
   get cdkBinaryPath(): string {
     return join(require.resolve("aws-cdk"), "bin", "cdk");
@@ -21,20 +25,31 @@ export class InstanceCreator {
     return response.Account as string;
   }
 
-  async toTerminalCommand(
-    request: CreateInstanceRequest
-  ): Promise<string[]> {
+  async toTerminalCommand(request: CreateInstanceRequest): Promise<string[]> {
     const optionArgs = Object.entries(request).map(
       ([key, value]) => `-c ${key}=${value}`
     );
-    const stsClient = await this.serviceFactory.createAwsClientPromise(STSClient);
+    const stsClient = await this.serviceFactory.createAwsClientPromise(
+      STSClient
+    );
     const region = await stsClient.config.region();
     const account = await this.resolveAccountId(stsClient);
     const profile = await toPromise(this.profileStore);
-    const extraArgs = this.toArgs({profile, region});
+    const extraArgs = this.toArgs({ profile, region });
     const appArgs = `-a "node ${this.cdkAppPath}"`;
-    const bootstrapCommand = [this.cdkBinaryPath, "bootstrap", `aws://${account}/${region}`, ...extraArgs].join(" ");
-    const deployAppCommand = [this.cdkBinaryPath, "deploy", appArgs, ...optionArgs, ...extraArgs].join(" ")
-    return [bootstrapCommand, deployAppCommand]
+    const bootstrapCommand = [
+      this.cdkBinaryPath,
+      "bootstrap",
+      `aws://${account}/${region}`,
+      ...extraArgs,
+    ].join(" ");
+    const deployAppCommand = [
+      this.cdkBinaryPath,
+      "deploy",
+      appArgs,
+      ...optionArgs,
+      ...extraArgs,
+    ].join(" ");
+    return [bootstrapCommand, deployAppCommand];
   }
 }

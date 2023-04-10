@@ -22,10 +22,13 @@ const stack = new Stack(app, "VscEc2", {
   },
 });
 
-const args = Object.values(StackArg).reduce((values, arg) => ({
-  ...values,
-  [arg]: app.node.tryGetContext(arg)
-}), {} as Record<StackArg, string>);
+const args = Object.values(StackArg).reduce(
+  (values, arg) => ({
+    ...values,
+    [arg]: app.node.tryGetContext(arg),
+  }),
+  {} as Record<StackArg, string>
+);
 
 const vpc = Vpc.fromLookup(stack, "VPC", {
   isDefault: true,

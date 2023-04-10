@@ -65,7 +65,11 @@ export async function activate(context: ExtensionContext) {
       __dirname,
       process.env.CDK_APP_FILENAME as string
     );
-    const instanceCreator = new InstanceCreator(serviceFactory, profileStore.value, cdkAppPath);
+    const instanceCreator = new InstanceCreator(
+      serviceFactory,
+      profileStore.value,
+      cdkAppPath
+    );
     const instanceType = await window.showQuickPick(
       Object.values(_InstanceType),
       {
@@ -89,13 +93,11 @@ export async function activate(context: ExtensionContext) {
         }
       },
     });
-    const args = await instanceCreator.toTerminalCommand(
-      {
-        instanceName: instanceName as string,
-        instanceType: instanceType as _InstanceType,
-        rootVolumeSizeGb: parseInt(rootVolumeSize as string),
-      }
-    );
+    const args = await instanceCreator.toTerminalCommand({
+      instanceName: instanceName as string,
+      instanceType: instanceType as _InstanceType,
+      rootVolumeSizeGb: parseInt(rootVolumeSize as string),
+    });
 
     const terminal = window.createTerminal(
       "Create developer instance",

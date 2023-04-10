@@ -1,5 +1,5 @@
 export enum StackArg {
-    RootVolumeSizeGb = "rootVolumeSizeGb",
-    InstanceName = "instanceName",
-    InstanceType = "instanceType"
+  RootVolumeSizeGb = "rootVolumeSizeGb",
+  InstanceName = "instanceName",
+  InstanceType = "instanceType",
 }
