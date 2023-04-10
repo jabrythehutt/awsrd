@@ -8,7 +8,7 @@ import {
   ProgressLocation,
 } from "vscode";
 import packageJson from "./package.json";
-import { Ec2InstanceTreeProvider } from "./Ec2InstanceTreeProvider";
+import { InstanceTreeProvider } from "./InstanceTreeProvider";
 import {
   Instance,
   InstanceStateName,
@@ -48,7 +48,7 @@ export async function activate(context: ExtensionContext) {
   const explorerView = explorerViews[0];
   const instanceStore = new InstanceStore(serviceFactory);
   const treeView = window.createTreeView(explorerView.id, {
-    treeDataProvider: new Ec2InstanceTreeProvider(instanceStore),
+    treeDataProvider: new InstanceTreeProvider(instanceStore),
   });
   context.subscriptions.push(treeView);
   const commandDefs = packageJson.contributes.commands;
@@ -81,15 +81,15 @@ export async function activate(context: ExtensionContext) {
       title: "Enter a name for the instance",
     });
 
-    const maxSize = 100000;
+    const maxSize = 16000;
     const rootVolumeSize = await window.showInputBox({
       title: "Set the size of the root volume (GB)",
-      value: `${100}`,
+      value: `${20}`,
       validateInput: (v) => {
         if (!v) {
           return "No value entered";
-        } else if (!(parseInt(v) > 0 && parseInt(v) < maxSize)) {
-          return `Value needs to be greater than 0 and less than ${maxSize}`;
+        } else if (!(parseInt(v) >= 1 && parseInt(v) <= maxSize)) {
+          return `Disk size must be between 1GB and 16TB`;
         }
       },
     });

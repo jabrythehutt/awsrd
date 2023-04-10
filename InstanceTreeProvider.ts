@@ -12,7 +12,7 @@ import { toInstanceLabel } from "./toInstanceLabel";
 import { InstanceStore } from "./InstanceStore";
 import { existsSync } from "node:fs";
 
-export class Ec2InstanceTreeProvider implements TreeDataProvider<string> {
+export class InstanceTreeProvider implements TreeDataProvider<string> {
   readonly eventEmitter = new EventEmitter<string | undefined>();
   readonly onDidChangeTreeData: Event<string | undefined>;
 

@@ -1,17 +1,18 @@
-import { Terminal } from "vscode";
+import { Terminal, TerminalExitStatus } from "vscode";
 import { window } from "vscode";
 
 export function executeTerminalCommands(
   terminal: Terminal,
   commands: string[]
-): Promise<void> {
+): Promise<TerminalExitStatus | undefined> {
   for (const command of [...commands, "exit"]) {
     terminal.sendText(command);
   }
   return new Promise((resolve) => {
-    window.onDidCloseTerminal((closedTerminal) => {
+    const token = window.onDidCloseTerminal((closedTerminal) => {
       if (closedTerminal === terminal) {
-        resolve();
+        token.dispose();
+        resolve(closedTerminal.exitStatus);
       }
     });
   });

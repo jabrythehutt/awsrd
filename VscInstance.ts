@@ -7,7 +7,7 @@ import { Instance } from "aws-cdk-lib/aws-ec2";
 import { VscInstanceProps } from "./VscInstanceProps";
 import { MetricStatistic, MonitoringFacade } from "cdk-monitoring-constructs";
 import { Duration } from "aws-cdk-lib";
-import { Ec2StopAlarmActionStrategy } from "./Ec2StopAlarmActionStrategy";
+import { StopAlarmActionStrategy } from "./StopAlarmActionStrategy";
 import { ManagedPolicy } from "aws-cdk-lib/aws-iam";
 
 export class VscInstance extends Construct {
@@ -20,7 +20,7 @@ export class VscInstance extends Construct {
       alarmFactoryDefaults: {
         actionsEnabled: true,
         alarmNamePrefix: "EC2",
-        action: new Ec2StopAlarmActionStrategy(),
+        action: new StopAlarmActionStrategy(),
       },
     }).monitorEC2Instances({
       instanceIds: [this.instance.instanceId],

@@ -7,7 +7,7 @@ import {
   IAlarmActionStrategy,
 } from "cdk-monitoring-constructs";
 
-export class Ec2StopAlarmActionStrategy implements IAlarmActionStrategy {
+export class StopAlarmActionStrategy implements IAlarmActionStrategy {
   addAlarmActions(props: AlarmActionStrategyProps): void {
     props.alarm.addAlarmAction(new Ec2Action(Ec2InstanceAction.STOP));
   }
