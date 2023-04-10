@@ -50,7 +50,7 @@ export class InstanceCreator {
       ...optionArgs,
       ...extraArgs,
     ].join(" ");
-    const commands = [bootstrapCommand, deployAppCommand]
+    const commands = [bootstrapCommand, deployAppCommand];
     return commands;
   }
 }
