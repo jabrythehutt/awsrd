@@ -45,6 +45,11 @@ sourcemap = None
 
 minify = True
 
+external_libs = [
+    "vscode",
+    "aws-cdk"
+]
+
 cjs_bundle(
     name = "ssm_proxy_script",
     entry_point = entry_base + ".js",
@@ -68,6 +73,7 @@ cjs_bundle(
     name = "cdk_app",
     entry_point = "app.js",
     minify = minify,
+    external_libs = external_libs,
     output = cdk_app_file_name,
     sourcemap = sourcemap,
     deps = [
@@ -83,7 +89,7 @@ cjs_bundle(
         "process.env.CDK_APP_FILENAME": '"{cdk_app_file_name}"'.format(cdk_app_file_name = cdk_app_file_name),
     },
     entry_point = "extension.js",
-    external_libs = ["vscode"],
+    external_libs = external_libs,
     minify = minify,
     output = "extension.cjs",
     sourcemap = sourcemap,

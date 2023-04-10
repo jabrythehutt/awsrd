@@ -12,7 +12,6 @@ import { Ec2InstanceTreeProvider } from "./Ec2InstanceTreeProvider";
 import {
   Instance,
   InstanceStateName,
-  EC2Client,
   _InstanceType,
 } from "@aws-sdk/client-ec2";
 import { writeFile, mkdir } from "node:fs/promises";
