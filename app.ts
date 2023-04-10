@@ -6,14 +6,13 @@ import {
   InitPackage,
   InitService,
   InitUser,
-  InstanceClass,
-  InstanceSize,
   InstanceType,
   MachineImage,
   OperatingSystemType,
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
 import { user } from "./user";
+import { StackArg } from "./StackArg";
 
 const app = new App();
 const stack = new Stack(app, "VscEc2", {
@@ -23,15 +22,21 @@ const stack = new Stack(app, "VscEc2", {
   },
 });
 
+const args = Object.values(StackArg).reduce((values, arg) => ({
+  ...values,
+  [arg]: app.node.tryGetContext(arg)
+}), {} as Record<StackArg, string>);
+
 const vpc = Vpc.fromLookup(stack, "VPC", {
   isDefault: true,
 });
 
-const instanceType = InstanceType.of(InstanceClass.C7G, InstanceSize.XLARGE2);
+const instanceType = new InstanceType(args.instanceType);
 const architecture = instanceType.architecture.toString();
 const ec2 = new VscInstance(stack, "EC2", {
   vpc,
   instanceType,
+  instanceName: args.instanceName,
   machineImage: MachineImage.fromSsmParameter(
     `/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-${architecture}`,
     {
@@ -41,7 +46,7 @@ const ec2 = new VscInstance(stack, "EC2", {
   blockDevices: [
     {
       deviceName: "/dev/xvda",
-      volume: BlockDeviceVolume.ebs(100),
+      volume: BlockDeviceVolume.ebs(parseInt(args.rootVolumeSizeGb)),
     },
   ],
   init: CloudFormationInit.fromElements(

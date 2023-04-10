@@ -65,7 +65,7 @@ export async function activate(context: ExtensionContext) {
       __dirname,
       process.env.CDK_APP_FILENAME as string
     );
-    const instanceCreator = new InstanceCreator(cdkAppPath);
+    const instanceCreator = new InstanceCreator(serviceFactory, profileStore.value, cdkAppPath);
     const instanceType = await window.showQuickPick(
       Object.values(_InstanceType),
       {
@@ -89,16 +89,11 @@ export async function activate(context: ExtensionContext) {
         }
       },
     });
-    const ec2Client = await serviceFactory.createAwsClientPromise(EC2Client);
-    const args = instanceCreator.toTerminalCommand(
+    const args = await instanceCreator.toTerminalCommand(
       {
         instanceName: instanceName as string,
         instanceType: instanceType as _InstanceType,
         rootVolumeSizeGb: parseInt(rootVolumeSize as string),
-      },
-      {
-        profile: await toPromise(profileStore.value),
-        region: await ec2Client.config.region(),
       }
     );
 
