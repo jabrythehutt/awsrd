@@ -35,7 +35,7 @@ export class InstanceCreator {
     const region = await stsClient.config.region();
     const account = await this.resolveAccountId(stsClient);
     const profile = await toPromise(this.profileStore);
-    const extraArgs = this.toArgs({ profile, region });
+    const extraArgs = this.toArgs({ profile, region, "require-approval": "never"});
     const appArgs = `-a "node ${this.cdkAppPath}"`;
     const bootstrapCommand = [
       this.cdkBinaryPath,

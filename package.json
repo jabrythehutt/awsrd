@@ -27,9 +27,11 @@
     "ssm-session": "^1.0.6",
     "yargs": "^17.7.1",
     "tslib": "2.5.0",
-    "rxjs": "7.8.0"
+    "rxjs": "7.8.0",
+    "validator": "13.9.0"
   },
   "devDependencies": {
+    "@types/validator": "13.7.14",
     "@types/lodash": "4.14.192",
     "@types/vscode": "1.76.0",
     "@types/node": "^18.15.5",

@@ -11,17 +11,14 @@ import {
   OperatingSystemType,
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
+
 import { StackArg } from "./StackArg";
 import { defaultUsernames } from "./defaultUsernames";
 import { PlatformName } from "./PlatformName";
+import { instanceTagName } from "./instanceTagName";
+import { instanceTagValue } from "./instanceTagValue";
 
 const app = new App();
-const stack = new Stack(app, "VscEc2", {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
-  },
-});
 
 const args = Object.values(StackArg).reduce(
   (values, arg) => ({
@@ -30,6 +27,16 @@ const args = Object.values(StackArg).reduce(
   }),
   {} as Record<StackArg, string>
 );
+
+const stack = new Stack(app, args.stackName, {
+  tags: {
+    [instanceTagName]: instanceTagValue
+  },
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  },
+});
 
 const vpc = Vpc.fromLookup(stack, "VPC", {
   isDefault: true,

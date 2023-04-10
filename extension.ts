@@ -9,6 +9,7 @@ import {
 } from "vscode";
 import packageJson from "./package.json";
 import { InstanceTreeProvider } from "./InstanceTreeProvider";
+import validator from 'validator';
 import {
   Instance,
   InstanceStateName,
@@ -77,29 +78,46 @@ export async function activate(context: ExtensionContext) {
       }
     );
 
-    const instanceName = await window.showInputBox({
-      title: "Enter a name for the instance",
-    });
-
     const maxSize = 16000;
-    const rootVolumeSize = await window.showInputBox({
+    const rootVolumeSize = String(await window.showInputBox({
       title: "Set the size of the root volume (GB)",
       value: `${20}`,
       validateInput: (v) => {
         if (!v) {
-          return "No value entered";
-        } else if (!(parseInt(v) >= 1 && parseInt(v) <= maxSize)) {
-          return `Disk size must be between 1GB and 16TB`;
+          return "Must not be empty";
+        } else if (!validator.isInt(v, {
+          min: 1,
+          max: maxSize
+        })) {
+          return `Must be between 1GB and 16TB`;
         }
       },
-    });
+    }));
+
+    const stackName = String(await window.showInputBox({
+      title: "Enter a CloudFormation stack name",
+      validateInput: v => {
+        const parts = v.split("-");
+        if (!parts.every(p => validator.isAlphanumeric(p))) {
+          return "Only alphanumeric and hyphens are allowed"
+        } else if (!validator.isAlpha(v.substring(0, 1))) {
+          return "Must start with an alphabetic character"
+        } else if (v.length > 128 ) {
+          return "Must be 128 characters at most"
+        } else if (!v) {
+          return "Must not be empty"
+        }
+      }
+    }));
+
     const terminalCommands = await instanceCreator.toTerminalCommands({
-      instanceName: instanceName as string,
+      stackName,
+      instanceName: stackName,
       instanceType: instanceType as _InstanceType,
-      rootVolumeSizeGb: parseInt(rootVolumeSize as string),
+      rootVolumeSizeGb: parseInt(rootVolumeSize),
     });
     const terminal = window.createTerminal(
-      `Create developer instance ${instanceName}`
+      `Create developer instance ${stackName}`
     );
     terminal.show();
     await executeTerminalCommands(terminal, terminalCommands);
@@ -192,7 +210,6 @@ export async function activate(context: ExtensionContext) {
         if (!existsSync(destination)) {
           await mkdir(destination);
         }
-        console.log("Storage path:", destination);
         const proxyScriptPath = resolve(
           __dirname,
           process.env.PROXY_SCRIPT_FILENAME as string

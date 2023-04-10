@@ -15,6 +15,7 @@ specifiers:
   '@types/lodash': 4.14.192
   '@types/node': ^18.15.5
   '@types/sshpk': ^1.17.1
+  '@types/validator': 13.7.14
   '@types/vscode': 1.76.0
   '@types/ws': ^8.5.4
   '@types/yargs': ^17.0.23
@@ -30,6 +31,7 @@ specifiers:
   ts-node: ^10.9.1
   tslib: 2.5.0
   typescript: 4.9.5
+  validator: 13.9.0
   yargs: ^17.7.1
 
 dependencies:
@@ -52,12 +54,14 @@ dependencies:
   sshpk: 1.17.0
   ssm-session: 1.0.6
   tslib: 2.5.0
+  validator: 13.9.0
   yargs: 17.7.1
 
 devDependencies:
   '@types/lodash': 4.14.192
   '@types/node': 18.15.5
   '@types/sshpk': 1.17.1
+  '@types/validator': 13.7.14
   '@types/vscode': 1.76.0
   '@types/ws': 8.5.4
   '@types/yargs': 17.0.23
@@ -1282,6 +1286,10 @@ packages:
       '@types/node': 18.15.5
     dev: true
 
+  /@types/validator/13.7.14:
+    resolution: {integrity: sha512-J6OAed6rhN6zyqL9Of6ZMamhlsOEU/poBVvbHr/dKOYKTeuYYMlDkMv+b6UUV0o2i0tw73cgyv/97WTWaUl0/g==}
+    dev: true
+
   /@types/vscode/1.76.0:
     resolution: {integrity: sha512-CQcY3+Fe5hNewHnOEAVYj4dd1do/QHliXaknAEYSXx2KEHUzFibDZSKptCon+HPgK55xx20pR+PBJjf0MomnBA==}
     dev: true
@@ -1734,6 +1742,11 @@ packages:
   /v8-compile-cache-lib/3.0.1:
     resolution: {integrity: sha512-wa7YjyUGfNZngI/vtK0UHAN+lgDCxBPCylVXGp0zu59Fz5aiGtNXaq3DhIov063MorB+VfufLh3JlF2KdTK3xg==}
     dev: true
+
+  /validator/13.9.0:
+    resolution: {integrity: sha512-B+dGG8U3fdtM0/aNK4/X8CXq/EcxU2WPrPEkJGslb47qyHsxmbggTWK0yEA4qnYVNF+nxNlN88o14hIcPmSIEA==}
+    engines: {node: '>= 0.10'}
+    dev: false
 
   /wrap-ansi/7.0.0:
     resolution: {integrity: sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==}
