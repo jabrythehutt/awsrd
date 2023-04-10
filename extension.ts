@@ -35,6 +35,7 @@ import { AwsClientFactory } from "./AwsClientFactory";
 import { InstanceStore } from "./InstanceStore";
 import { listProfiles } from "./listProfiles";
 import { InstanceCreator } from "./InstanceCreator";
+import { executeTerminalCommands } from "./executeTerminalCommands";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
@@ -92,17 +93,17 @@ export async function activate(context: ExtensionContext) {
         }
       },
     });
-    const args = await instanceCreator.toTerminalCommand({
+    const terminalCommands = await instanceCreator.toTerminalCommands({
       instanceName: instanceName as string,
       instanceType: instanceType as _InstanceType,
       rootVolumeSizeGb: parseInt(rootVolumeSize as string),
     });
-
     const terminal = window.createTerminal(
-      "Create developer instance",
-      undefined,
-      args
+      `Create developer instance ${instanceName}`
     );
+    terminal.show();
+    await executeTerminalCommands(terminal, terminalCommands);
+    instanceStore.refresh();
   });
 
   commands.registerCommand(selectRegionCommand, async () => {

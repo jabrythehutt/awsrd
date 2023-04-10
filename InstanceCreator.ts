@@ -13,11 +13,11 @@ export class InstanceCreator {
   ) {}
 
   get cdkBinaryPath(): string {
-    return join(require.resolve("aws-cdk"), "bin", "cdk");
+    return join(__dirname, "node_modules", "aws-cdk", "bin", "cdk");
   }
 
   protected toArgs(params: Record<string, string>): string[] {
-    return Object.entries(params).map(([key, value]) => `--${key} ${value}`);
+    return Object.entries(params).map(([key, value]) => `--${key} "${value}"`);
   }
 
   protected async resolveAccountId(stsClient: STSClient): Promise<string> {
@@ -25,9 +25,9 @@ export class InstanceCreator {
     return response.Account as string;
   }
 
-  async toTerminalCommand(request: CreateInstanceRequest): Promise<string[]> {
+  async toTerminalCommands(request: CreateInstanceRequest): Promise<string[]> {
     const optionArgs = Object.entries(request).map(
-      ([key, value]) => `-c ${key}=${value}`
+      ([key, value]) => `-c ${key}="${value}"`
     );
     const stsClient = await this.serviceFactory.createAwsClientPromise(
       STSClient
@@ -50,6 +50,7 @@ export class InstanceCreator {
       ...optionArgs,
       ...extraArgs,
     ].join(" ");
-    return [bootstrapCommand, deployAppCommand];
+    const commands = [bootstrapCommand, deployAppCommand]
+    return commands;
   }
 }
