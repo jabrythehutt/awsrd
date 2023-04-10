@@ -66,8 +66,7 @@ const ec2 = new VscInstance(stack, "EC2", {
   ),
   initOptions: {
     timeout: Duration.minutes(30),
-  },
-  detailedMonitoring: true,
+  }
 });
 
 new CfnOutput(stack, "InstanceIdOutput", {
