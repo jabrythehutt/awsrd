@@ -24,6 +24,7 @@ ts_project(
         "//:node_modules/@types/lodash",
         "//:node_modules/@types/node",
         "//:node_modules/@types/sshpk",
+        "//:node_modules/@types/validator",
         "//:node_modules/@types/vscode",
         "//:node_modules/@types/yargs",
         "//:node_modules/aws-cdk-lib",
@@ -33,9 +34,8 @@ ts_project(
         "//:node_modules/rxjs",
         "//:node_modules/sshpk",
         "//:node_modules/tslib",
-        "//:node_modules/yargs",
         "//:node_modules/validator",
-        "//:node_modules/@types/validator"
+        "//:node_modules/yargs",
     ],
 )
 

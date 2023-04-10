@@ -30,7 +30,7 @@ const args = Object.values(StackArg).reduce(
 
 const stack = new Stack(app, args.stackName, {
   tags: {
-    [instanceTagName]: instanceTagValue
+    [instanceTagName]: instanceTagValue,
   },
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,

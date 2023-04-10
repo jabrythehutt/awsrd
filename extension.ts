@@ -9,7 +9,7 @@ import {
 } from "vscode";
 import packageJson from "./package.json";
 import { InstanceTreeProvider } from "./InstanceTreeProvider";
-import validator from 'validator';
+import validator from "validator";
 import {
   Instance,
   InstanceStateName,
@@ -79,36 +79,42 @@ export async function activate(context: ExtensionContext) {
     );
 
     const maxSize = 16000;
-    const rootVolumeSize = String(await window.showInputBox({
-      title: "Set the size of the root volume (GB)",
-      value: `${20}`,
-      validateInput: (v) => {
-        if (!v) {
-          return "Must not be empty";
-        } else if (!validator.isInt(v, {
-          min: 1,
-          max: maxSize
-        })) {
-          return `Must be between 1GB and 16TB`;
-        }
-      },
-    }));
+    const rootVolumeSize = String(
+      await window.showInputBox({
+        title: "Set the size of the root volume (GB)",
+        value: `${20}`,
+        validateInput: (v) => {
+          if (!v) {
+            return "Must not be empty";
+          } else if (
+            !validator.isInt(v, {
+              min: 1,
+              max: maxSize,
+            })
+          ) {
+            return `Must be between 1GB and 16TB`;
+          }
+        },
+      })
+    );
 
-    const stackName = String(await window.showInputBox({
-      title: "Enter a CloudFormation stack name",
-      validateInput: v => {
-        const parts = v.split("-");
-        if (!parts.every(p => validator.isAlphanumeric(p))) {
-          return "Only alphanumeric and hyphens are allowed"
-        } else if (!validator.isAlpha(v.substring(0, 1))) {
-          return "Must start with an alphabetic character"
-        } else if (v.length > 128 ) {
-          return "Must be 128 characters at most"
-        } else if (!v) {
-          return "Must not be empty"
-        }
-      }
-    }));
+    const stackName = String(
+      await window.showInputBox({
+        title: "Enter a CloudFormation stack name",
+        validateInput: (v) => {
+          const parts = v.split("-");
+          if (!parts.every((p) => validator.isAlphanumeric(p))) {
+            return "Only alphanumeric and hyphens are allowed";
+          } else if (!validator.isAlpha(v.substring(0, 1))) {
+            return "Must start with an alphabetic character";
+          } else if (v.length > 128) {
+            return "Must be 128 characters at most";
+          } else if (!v) {
+            return "Must not be empty";
+          }
+        },
+      })
+    );
 
     const terminalCommands = await instanceCreator.toTerminalCommands({
       stackName,
