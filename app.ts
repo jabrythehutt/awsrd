@@ -11,8 +11,9 @@ import {
   OperatingSystemType,
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
-import { user } from "./user";
 import { StackArg } from "./StackArg";
+import { defaultUsernames } from "./defaultUsernames";
+import { PlatformName } from "./PlatformName";
 
 const app = new App();
 const stack = new Stack(app, "VscEc2", {
@@ -36,6 +37,7 @@ const vpc = Vpc.fromLookup(stack, "VPC", {
 
 const instanceType = new InstanceType(args.instanceType);
 const architecture = instanceType.architecture.toString();
+const user = defaultUsernames[PlatformName.AmazonLinux][0];
 const ec2 = new VscInstance(stack, "EC2", {
   vpc,
   instanceType,
