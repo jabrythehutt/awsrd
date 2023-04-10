@@ -60,12 +60,12 @@ session_manager_bin_name = "session_manager_bin"
 session_manager(
     name = session_manager_bin_name,
 )
-
+cdk_app_file_name = "app.cjs"
 cjs_bundle(
     name = "cdk_app",
     entry_point = "app.js",
     minify = minify,
-    output = "app.cjs",
+    output = cdk_app_file_name,
     sourcemap = sourcemap,
     deps = [
         "lib",
@@ -77,6 +77,7 @@ cjs_bundle(
     define = {
         "process.env.PROXY_SCRIPT_FILENAME": '"{proxy_script_file_name}"'.format(proxy_script_file_name = proxy_script_file_name),
         "process.env.SESSION_MANAGER_BIN": '"{session_manager_bin_name}"'.format(session_manager_bin_name = session_manager_bin_name),
+        "process.env.CDK_APP_FILENAME": '"{cdk_app_file_name}"'.format(cdk_app_file_name = cdk_app_file_name),
     },
     entry_point = "extension.js",
     external_libs = ["vscode"],
