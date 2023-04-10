@@ -9,7 +9,12 @@ import {
 } from "vscode";
 import packageJson from "./package.json";
 import { Ec2InstanceTreeProvider } from "./Ec2InstanceTreeProvider";
-import { Instance, InstanceStateName, EC2Client, _InstanceType } from "@aws-sdk/client-ec2";
+import {
+  Instance,
+  InstanceStateName,
+  EC2Client,
+  _InstanceType,
+} from "@aws-sdk/client-ec2";
 import { writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
@@ -56,40 +61,52 @@ export async function activate(context: ExtensionContext) {
   const createCommand = commandDefs[6].command;
 
   commands.registerCommand(createCommand, async () => {
-    const cdkAppPath = resolve(__dirname, process.env.CDK_APP_FILENAME as string);
+    const cdkAppPath = resolve(
+      __dirname,
+      process.env.CDK_APP_FILENAME as string
+    );
     const instanceCreator = new InstanceCreator(cdkAppPath);
-    const instanceType = await window.showQuickPick(Object.values(_InstanceType), {
-      title: "Select an instance type"
-    });
+    const instanceType = await window.showQuickPick(
+      Object.values(_InstanceType),
+      {
+        title: "Select an instance type",
+      }
+    );
 
     const instanceName = await window.showInputBox({
       title: "Enter a name for the instance",
     });
 
-    const maxSize = 100000
+    const maxSize = 100000;
     const rootVolumeSize = await window.showInputBox({
       title: "Set the size of the root volume (GB)",
       value: `${100}`,
-      validateInput: v => {
+      validateInput: (v) => {
         if (!v) {
-          return "No value entered"
+          return "No value entered";
         } else if (!(parseInt(v) > 0 && parseInt(v) < maxSize)) {
-          return `Value needs to be greater than 0 and less than ${maxSize}`
+          return `Value needs to be greater than 0 and less than ${maxSize}`;
         }
-      }
+      },
     });
     const ec2Client = await serviceFactory.createAwsClientPromise(EC2Client);
-    const args = instanceCreator.toTerminalCommand({
-      instanceName: instanceName as string,
-      instanceType: instanceType as _InstanceType,
-      rootVolumeSizeGb: parseInt(rootVolumeSize as string)
-    }, {
-      profile: await toPromise(profileStore.value),
-      region: await ec2Client.config.region()
-    });
+    const args = instanceCreator.toTerminalCommand(
+      {
+        instanceName: instanceName as string,
+        instanceType: instanceType as _InstanceType,
+        rootVolumeSizeGb: parseInt(rootVolumeSize as string),
+      },
+      {
+        profile: await toPromise(profileStore.value),
+        region: await ec2Client.config.region(),
+      }
+    );
 
-    const terminal =  window.createTerminal("Create developer instance", undefined, args);
-
+    const terminal = window.createTerminal(
+      "Create developer instance",
+      undefined,
+      args
+    );
   });
 
   commands.registerCommand(selectRegionCommand, async () => {
@@ -97,7 +114,7 @@ export async function activate(context: ExtensionContext) {
     const regionsList =
       packageJson.contributes.configuration.properties[configPath].type.enum;
     const region = await window.showQuickPick(regionsList, {
-      title: "Select an AWS region"
+      title: "Select an AWS region",
     });
     await workspace
       .getConfiguration()

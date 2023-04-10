@@ -60,7 +60,9 @@ session_manager_bin_name = "session_manager_bin"
 session_manager(
     name = session_manager_bin_name,
 )
+
 cdk_app_file_name = "app.cjs"
+
 cjs_bundle(
     name = "cdk_app",
     entry_point = "app.js",

@@ -8,10 +8,17 @@ export class InstanceCreator {
     return join(require.resolve("aws-cdk"), "bin", "cdk");
   }
 
-  toTerminalCommand(request: CreateInstanceRequest, extraArgs: Record<string, string>): string[] {
-    const optionArgs = Object.entries(request).map(([key, value]) => `-c ${key}=${value}`);
-    const extraArgStrings = Object.entries(extraArgs).map(([key, value]) => `--${key} ${value}`)
-    const appArgs = `-a "node ${this.cdkAppPath}"`
+  toTerminalCommand(
+    request: CreateInstanceRequest,
+    extraArgs: Record<string, string>
+  ): string[] {
+    const optionArgs = Object.entries(request).map(
+      ([key, value]) => `-c ${key}=${value}`
+    );
+    const extraArgStrings = Object.entries(extraArgs).map(
+      ([key, value]) => `--${key} ${value}`
+    );
+    const appArgs = `-a "node ${this.cdkAppPath}"`;
     return [this.cdkBinaryPath, appArgs, ...optionArgs, ...extraArgStrings];
   }
 }
