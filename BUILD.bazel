@@ -47,7 +47,7 @@ minify = True
 
 external_libs = [
     "vscode",
-    "aws-cdk"
+    "aws-cdk",
 ]
 
 cjs_bundle(
@@ -72,8 +72,8 @@ cdk_app_file_name = "app.cjs"
 cjs_bundle(
     name = "cdk_app",
     entry_point = "app.js",
-    minify = minify,
     external_libs = external_libs,
+    minify = minify,
     output = cdk_app_file_name,
     sourcemap = sourcemap,
     deps = [
