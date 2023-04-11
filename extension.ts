@@ -68,7 +68,6 @@ export async function activate(context: ExtensionContext) {
 
   commands.registerCommand(deleteCommand, async (instanceId: string) => {
     const instance = await instanceStore.describe(instanceId);
-    
   });
 
   commands.registerCommand(createCommand, async () => {
