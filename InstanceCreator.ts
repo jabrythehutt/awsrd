@@ -1,58 +1,37 @@
-import { AwsClientFactory } from "./AwsClientFactory";
 import { CreateInstanceRequest } from "./CreateInstanceRequest";
-import { join } from "path";
 import { Observable } from "rxjs";
-import { STSClient, GetCallerIdentityCommand } from "@aws-sdk/client-sts";
 import { toPromise } from "./toPromise";
+import { AwsContextResolver } from "./AwsContextResolver";
+import { CdkCommander } from "./CdkCommander";
 
 export class InstanceCreator {
   constructor(
-    private serviceFactory: AwsClientFactory,
+    private contextResolver: AwsContextResolver,
     private profileStore: Observable<string>,
-    private cdkAppPath: string
+    private cdkCommander: CdkCommander
   ) {}
 
-  get cdkBinaryPath(): string {
-    return join(__dirname, "node_modules", "aws-cdk", "bin", "cdk");
-  }
-
-  protected toArgs(params: Record<string, string>): string[] {
-    return Object.entries(params).map(([key, value]) => `--${key} "${value}"`);
-  }
-
-  protected async resolveAccountId(stsClient: STSClient): Promise<string> {
-    const response = await stsClient.send(new GetCallerIdentityCommand({}));
-    return response.Account as string;
-  }
-
   async toTerminalCommands(request: CreateInstanceRequest): Promise<string[]> {
-    const optionArgs = Object.entries(request).map(
-      ([key, value]) => `-c ${key}="${value}"`
-    );
-    const stsClient = await this.serviceFactory.createAwsClientPromise(
-      STSClient
-    );
-    const region = await stsClient.config.region();
-    const account = await this.resolveAccountId(stsClient);
+    const region = await this.contextResolver.region();
+    const account = await this.contextResolver.account();
     const profile = await toPromise(this.profileStore);
-    const extraArgs = this.toArgs({
+    const optionArgs = this.cdkCommander.toOptionArgs({
       profile,
       region,
       "require-approval": "never",
     });
-    const appArgs = `-a "node ${this.cdkAppPath}"`;
     const bootstrapCommand = [
-      this.cdkBinaryPath,
+      this.cdkCommander.cdkBinPath,
       "bootstrap",
       `aws://${account}/${region}`,
-      ...extraArgs,
+      ...optionArgs,
     ].join(" ");
     const deployAppCommand = [
-      this.cdkBinaryPath,
+      this.cdkCommander.cdkBinPath,
       "deploy",
-      appArgs,
+      ...this.cdkCommander.cdkAppArgs,
+      ...this.cdkCommander.toContextArgs(request),
       ...optionArgs,
-      ...extraArgs,
     ].join(" ");
     const commands = [bootstrapCommand, deployAppCommand];
     return commands;

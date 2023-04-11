@@ -37,6 +37,8 @@ import { InstanceStore } from "./InstanceStore";
 import { listProfiles } from "./listProfiles";
 import { InstanceCreator } from "./InstanceCreator";
 import { executeTerminalCommands } from "./executeTerminalCommands";
+import { AwsContextResolver } from "./AwsContextResolver";
+import { CdkCommander } from "./CdkCommander";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
@@ -44,10 +46,12 @@ export async function activate(context: ExtensionContext) {
   const regionStore = new RegionStore();
   const credentials$ = createCredentialStore(profileStore.value);
   const serviceFactory = new AwsClientFactory(credentials$, regionStore.value);
+  const cdkCommander = new CdkCommander();
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const instanceStarter = new InstanceStarter(serviceFactory, stateResolver);
   const explorerView = explorerViews[0];
   const instanceStore = new InstanceStore(serviceFactory);
+  const awsContextResolver = new AwsContextResolver(serviceFactory);
   const treeView = window.createTreeView(explorerView.id, {
     treeDataProvider: new InstanceTreeProvider(instanceStore),
   });
@@ -60,6 +64,12 @@ export async function activate(context: ExtensionContext) {
   const selectRegionCommand = commandDefs[4].command;
   const refreshCommand = commandDefs[5].command;
   const createCommand = commandDefs[6].command;
+  const deleteCommand = commandDefs[7].command;
+
+  commands.registerCommand(deleteCommand, async (instanceId: string) => {
+    const instance = await instanceStore.describe(instanceId);
+    
+  });
 
   commands.registerCommand(createCommand, async () => {
     const cdkAppPath = resolve(
@@ -67,9 +77,9 @@ export async function activate(context: ExtensionContext) {
       process.env.CDK_APP_FILENAME as string
     );
     const instanceCreator = new InstanceCreator(
-      serviceFactory,
+      awsContextResolver,
       profileStore.value,
-      cdkAppPath
+      cdkCommander
     );
     const instanceType = await window.showQuickPick(
       Object.values(_InstanceType),
