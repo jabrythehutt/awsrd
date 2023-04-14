@@ -46,11 +46,9 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
     const instance = (await this.instanceStore.describe(id)) as Instance;
     const label = toInstanceLabel(instance);
     const tags = instance.Tags || [];
-    console.log(tags);
     const managedTag = tags.find(
       (t) => t.Key === instanceTagName && t.Value === instanceTagValue
     );
-    console.log("Found tag:", managedTag);
     const contextValue = instance.State?.Name + (managedTag ? ".managed" : "");
     return {
       label,
