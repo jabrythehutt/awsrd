@@ -19,7 +19,7 @@ export class VscInstance extends Construct {
     this.monitoring = new MonitoringFacade(this, "Monitoring", {
       alarmFactoryDefaults: {
         actionsEnabled: true,
-        alarmNamePrefix: "EC2",
+        alarmNamePrefix: props.alarmNamePrefix,
         action: new StopAlarmActionStrategy(),
       },
     }).monitorEC2Instances({

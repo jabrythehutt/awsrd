@@ -67,6 +67,7 @@ export class InstancePropsResolver {
     });
     return {
       vpc,
+      alarmNamePrefix: request.stackName as string,
       instanceType,
       instanceName: request.instanceName,
       machineImage,
