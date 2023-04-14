@@ -16,13 +16,7 @@ export class InstanceCreator {
       `aws://${await this.contextResolver.account()}/${await this.contextResolver.region()}`,
       ...optionArgs,
     ]);
-    const deployAppCommand = this.toLine([
-      this.cdkCommander.cdkBinPath,
-      "deploy",
-      ...this.cdkCommander.cdkAppArgs,
-      ...this.cdkCommander.toContextArgs(request),
-      ...optionArgs,
-    ]);
+    const deployAppCommand = await this.cdkCommander.toDefaultCommand("deploy", request);
     return [bootstrapCommand, deployAppCommand];
   }
 

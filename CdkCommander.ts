@@ -44,4 +44,15 @@ export class CdkCommander {
   async resolveCommonOptionArgs(): Promise<string[]> {
     return this.toOptionArgs(await this.resolveCommonOptions());
   }
+
+  async toDefaultCommand<T extends object>(cdkCommand: "deploy" | "destroy" | "synth", context: T): Promise<string> {
+    const defaultOptions = await this.resolveCommonOptionArgs();
+    return [
+      this.cdkBinPath,
+      cdkCommand,
+      ...this.cdkAppArgs,
+      ...this.toContextArgs(context),
+      ...defaultOptions
+    ].join(" ");
+  }
 }

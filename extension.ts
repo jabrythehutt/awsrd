@@ -40,6 +40,7 @@ import { InstanceCreator } from "./InstanceCreator";
 import { executeTerminalCommands } from "./executeTerminalCommands";
 import { AwsContextResolver } from "./AwsContextResolver";
 import { CdkCommander } from "./CdkCommander";
+import { InstanceDeleter } from "./InstanceDeleter";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
@@ -69,6 +70,16 @@ export async function activate(context: ExtensionContext) {
 
   commands.registerCommand(deleteCommand, async (instanceId: string) => {
     const instance = await instanceStore.describe(instanceId);
+    const label = toInstanceLabel(instance as Instance);
+    const instanceDeleter = new InstanceDeleter(instanceStore, cdkCommander);
+    const terminalCommands = await instanceDeleter.toTerminalCommands(instanceId);
+    const terminal = window.createTerminal(
+      `Deleting ${label}`
+    );
+    terminal.show();
+    await executeTerminalCommands(terminal, terminalCommands);
+    instanceStore.refresh();
+
   });
 
   commands.registerCommand(createCommand, async () => {

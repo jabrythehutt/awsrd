@@ -1,25 +1,15 @@
-import { App, Duration, Stack, CfnOutput } from "aws-cdk-lib";
+import { App, Stack, CfnOutput } from "aws-cdk-lib";
 import { VscInstance } from "./VscInstance";
-import {
-  BlockDeviceVolume,
-  CloudFormationInit,
-  InitPackage,
-  InitService,
-  InitUser,
-  InstanceType,
-  MachineImage,
-  OperatingSystemType,
-  Vpc,
-} from "aws-cdk-lib/aws-ec2";
-
 import { StackArg } from "./StackArg";
-import { defaultUsernames } from "./defaultUsernames";
-import { PlatformName } from "./PlatformName";
 import { instanceTagName } from "./instanceTagName";
 import { instanceTagValue } from "./instanceTagValue";
+import { EC2Client } from "@aws-sdk/client-ec2";
+import { InstancePropsResolver } from "./InstancePropsResolver";
 
 const app = new App();
-
+const region = process.env.CDK_DEFAULT_REGION;
+const ec2Client = new EC2Client({ region });
+const propsResolver = new InstancePropsResolver(ec2Client);
 const args = Object.values(StackArg).reduce(
   (values, arg) => ({
     ...values,
@@ -27,54 +17,17 @@ const args = Object.values(StackArg).reduce(
   }),
   {} as Record<StackArg, string>
 );
-
 const stack = new Stack(app, args.stackName, {
   tags: {
     [instanceTagName]: instanceTagValue,
   },
   env: {
     account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
+    region,
   },
 });
-
-const vpc = Vpc.fromLookup(stack, "VPC", {
-  isDefault: true,
-});
-
-const instanceType = new InstanceType(args.instanceType);
-const architecture = instanceType.architecture.toString();
-const user = defaultUsernames[PlatformName.AmazonLinux][0];
-const ec2 = new VscInstance(stack, "EC2", {
-  vpc,
-  instanceType,
-  instanceName: args.instanceName,
-  machineImage: MachineImage.fromSsmParameter(
-    `/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-${architecture}`,
-    {
-      os: OperatingSystemType.LINUX,
-    }
-  ),
-  blockDevices: [
-    {
-      deviceName: "/dev/xvda",
-      volume: BlockDeviceVolume.ebs(parseInt(args.rootVolumeSizeGb)),
-    },
-  ],
-  init: CloudFormationInit.fromElements(
-    InitPackage.yum("git"),
-    InitPackage.yum("docker"),
-    InitUser.fromName(user, {
-      groups: ["docker"],
-    }),
-    InitService.enable("docker", {
-      ensureRunning: true,
-    })
-  ),
-  initOptions: {
-    timeout: Duration.minutes(30),
-  },
-});
+const props = await propsResolver.resolve(args, stack);
+const ec2 = new VscInstance(stack, "EC2", props);
 
 new CfnOutput(stack, "InstanceIdOutput", {
   value: ec2.instance.instanceId,

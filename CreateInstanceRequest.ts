@@ -5,4 +5,5 @@ export interface CreateInstanceRequest {
   [StackArg.RootVolumeSizeGb]: number;
   [StackArg.InstanceName]: string;
   [StackArg.InstanceType]: _InstanceType;
+  [StackArg.ImageId]?: string;
 }
