@@ -27,6 +27,6 @@ export class InstanceCreator {
   }
 
   toLine(commands: string[]): string {
-    return commands.join(" ")
+    return commands.join(" ");
   }
 }

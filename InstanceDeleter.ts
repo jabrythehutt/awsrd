@@ -2,7 +2,10 @@ import { CdkCommander } from "./CdkCommander";
 import { InstanceStore } from "./InstanceStore";
 
 export class InstanceDeleter {
-  constructor(private instanceStore: InstanceStore, private cdkCommander: CdkCommander) { }
+  constructor(
+    private instanceStore: InstanceStore,
+    private cdkCommander: CdkCommander
+  ) {}
 
   async toTerminalCommands(instanceId: string): Promise<string[]> {
     const instance = await this.instanceStore.describe(instanceId);
@@ -14,7 +17,6 @@ export class InstanceDeleter {
         `No associated stack was found for instance: ${instanceId}`
       );
     }
-    throw new Error("Not implemented")
-
+    throw new Error("Not implemented");
   }
 }

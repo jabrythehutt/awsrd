@@ -4,8 +4,10 @@ import { toPromise } from "./toPromise";
 import { Observable } from "rxjs";
 
 export class CdkCommander {
-  constructor(private contextResolver: AwsContextResolver, private profileStore: Observable<string>) {
-  }
+  constructor(
+    private contextResolver: AwsContextResolver,
+    private profileStore: Observable<string>
+  ) {}
 
   get cdkBinPath(): string {
     return join(__dirname, "node_modules", "aws-cdk", "bin", "cdk");
