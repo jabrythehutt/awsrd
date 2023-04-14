@@ -17,7 +17,10 @@ export class InstanceDeleter {
       );
     }
     const context = this.toContext(stackName);
-    const destroyCommand = await this.cdkCommander.toDefaultCommand("destroy", context);
+    const destroyCommand = await this.cdkCommander.toDefaultCommand(
+      "destroy",
+      context
+    );
     return [`${destroyCommand} && exit`];
   }
 

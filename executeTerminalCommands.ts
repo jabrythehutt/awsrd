@@ -5,7 +5,7 @@ export function executeTerminalCommands(
   terminal: Terminal,
   commands: string[]
 ): Promise<TerminalExitStatus | undefined> {
-  for (const command of [...commands ]) {
+  for (const command of [...commands]) {
     terminal.sendText(command);
   }
   return new Promise((resolve) => {
