@@ -1,7 +1,6 @@
 import {
   EC2Client,
   DescribeInstanceStatusCommand,
-  InstanceStateName,
   InstanceStatus,
 } from "@aws-sdk/client-ec2";
 import {
@@ -32,11 +31,6 @@ export class InstanceStateResolver {
     return instanceInfo?.PingStatus as PingStatus;
   }
 
-  async isOnline(instanceId: string): Promise<boolean> {
-    const pingStatus = await this.ping(instanceId);
-    return pingStatus === PingStatus.ONLINE;
-  }
-
   async describeInstance(instanceId: string): Promise<InstanceStatus> {
     const client = await this.serviceFactory.createAwsClientPromise(EC2Client);
     const instanceStatusResponse = await client.send(
@@ -54,15 +48,5 @@ export class InstanceStateResolver {
       );
     }
     return status;
-  }
-
-  async isStopped(instanceId: string): Promise<boolean> {
-    const status = await this.describeInstance(instanceId);
-    return status.InstanceState?.Name === InstanceStateName.stopped;
-  }
-
-  async isRunning(instanceId: string): Promise<boolean> {
-    const status = await this.describeInstance(instanceId);
-    return status.InstanceState?.Name === InstanceStateName.running;
   }
 }

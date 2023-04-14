@@ -24,6 +24,7 @@ import { InstanceStarter } from "./InstanceStarter";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import {
   DescribeInstanceInformationCommand,
+  PingStatus,
   SSMClient,
 } from "@aws-sdk/client-ssm";
 import { guessUsernames } from "./guessUsernames";
@@ -71,10 +72,6 @@ export async function activate(context: ExtensionContext) {
   });
 
   commands.registerCommand(createCommand, async () => {
-    const cdkAppPath = resolve(
-      __dirname,
-      process.env.CDK_APP_FILENAME as string
-    );
     const instanceCreator = new InstanceCreator(
       awsContextResolver,
       profileStore.value,
@@ -192,12 +189,16 @@ export async function activate(context: ExtensionContext) {
         {
           location: ProgressLocation.Notification,
           title,
-          cancellable: false,
+          cancellable: true,
         },
         async (progress, token) => {
           await instanceStarter.requestInstanceState(instanceId, targetState);
           instanceStore.refresh();
-          await instanceStarter.waitForState(instanceId, targetState);
+          for await (const _ of instanceStarter.waitForState(instanceId, targetState)) {
+            if (token.isCancellationRequested) {
+              break;
+            }
+          }
           instanceStore.refresh();
         }
       );
@@ -252,7 +253,11 @@ export async function activate(context: ExtensionContext) {
             ConfigurationTarget.Global
           );
         progress.report({ message: "Waiting for instance to be reachable..." });
-        await instanceStarter.start(instanceId);
+        for await (const _ of instanceStarter.waitForStatus(instanceId, PingStatus.ONLINE)) {
+          if (token.isCancellationRequested) {
+            return;
+          }
+        }
         const instanceInfoResponse = await ssmClient.send(
           new DescribeInstanceInformationCommand({
             Filters: [
@@ -270,18 +275,19 @@ export async function activate(context: ExtensionContext) {
         const guess = options[0];
         progress.report({ message: "" });
         instanceStore.refresh();
-        if (!token.isCancellationRequested) {
-          const user = await window.showInputBox({
-            placeHolder: guess || "Username",
-            prompt: `The username for ${label}`,
-            value: guess,
-          });
-          if (user) {
-            const uri = Uri.parse(
-              `vscode-remote://ssh-remote+${user}@${instanceId}/home/${user}`
-            );
-            await commands.executeCommand("vscode.openFolder", uri);
-          }
+        if (token.isCancellationRequested) {
+          return
+        }
+        const user = await window.showInputBox({
+          placeHolder: guess || "Username",
+          prompt: `The username for ${label}`,
+          value: guess,
+        });
+        if (user) {
+          const uri = Uri.parse(
+            `vscode-remote://ssh-remote+${user}@${instanceId}/home/${user}`
+          );
+          await commands.executeCommand("vscode.openFolder", uri);
         }
       }
     );

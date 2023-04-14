@@ -7,6 +7,8 @@ import {
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { defaultPollPeriod } from "./defaultPollPeriod";
+import { sleep } from "./sleep";
+import { PingStatus } from "@aws-sdk/client-ssm";
 
 export class InstanceStarter {
   protected readonly commands: Partial<
@@ -21,12 +23,6 @@ export class InstanceStarter {
     private stateResolver: InstanceStateResolver,
     private pollPeriod: number = defaultPollPeriod
   ) {}
-
-  async waitFor(condition: () => Promise<boolean>): Promise<void> {
-    while (!(await condition())) {
-      await new Promise((resolve) => setTimeout(resolve, this.pollPeriod));
-    }
-  }
 
   async requestInstanceState(
     instanceId: string,
@@ -48,13 +44,11 @@ export class InstanceStarter {
     return instanceState.InstanceState?.Name as InstanceStateName;
   }
 
-  async waitForState(
+  async *waitForState(
     instanceId: string,
     targetState: InstanceStateName
-  ): Promise<void> {
-    await this.waitFor(
-      async () => (await this.toCurrentState(instanceId)) === targetState
-    );
+  ): AsyncIterable<InstanceStateName | undefined> {
+    return this.waitFor<InstanceStateName | undefined>(targetState, () => this.toCurrentState(instanceId))
   }
 
   async startInstance(instanceId: string): Promise<void> {
@@ -66,13 +60,18 @@ export class InstanceStarter {
     );
   }
 
-  async start(instanceId: string): Promise<void> {
-    const targetState = "running";
-    await this.requestInstanceState(instanceId, targetState);
-    await this.waitForState(instanceId, targetState);
-    console.log("Instance has started");
-    await this.waitFor(() => this.stateResolver.isOnline(instanceId));
-    console.log("Instance is online");
+  async *waitForStatus(instanceId: string, targetStatus: PingStatus): AsyncIterable<PingStatus | undefined> {
+    return this.waitFor<PingStatus | undefined>(targetStatus, () => this.stateResolver.ping(instanceId));
+  }
+
+  async *waitFor<T>(target: T, extractor: () => Promise<T>): AsyncIterable<T> {
+    let value = await extractor();
+    while (value !== target) {
+      yield value;
+      await sleep(this.pollPeriod);
+      value = await extractor();
+    }
+    yield value;
   }
 
   async stopInstance(instanceId: string): Promise<void> {

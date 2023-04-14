@@ -11,6 +11,7 @@ import { fromIni } from "@aws-sdk/credential-providers";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { SsmProxyScriptArg } from "./SsmProxyScriptArg";
 import { defaultPollPeriod } from "./defaultPollPeriod";
+import { PingStatus } from "@aws-sdk/client-ssm";
 
 async function run() {
   const args = await yargs(hideBin(process.argv))
@@ -51,7 +52,11 @@ async function run() {
     stateResolver,
     args.pollPeriod
   );
-  await starter.start(args.instanceId);
+  await starter.startInstance(args.instanceId);
+  for await (const _ of starter.waitForState(args.instanceId, "running")) {
+  }
+  for await (const _ of starter.waitForStatus(args.instanceId, PingStatus.ONLINE)) {
+  }
   const publicKey = (await readFile(args.publicKeyPath)).toString();
   await keyAuthoriser.authorise({
     user: args.user,
