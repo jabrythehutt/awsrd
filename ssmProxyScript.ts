@@ -55,7 +55,10 @@ async function run() {
   await starter.startInstance(args.instanceId);
   for await (const _ of starter.waitForState(args.instanceId, "running")) {
   }
-  for await (const _ of starter.waitForStatus(args.instanceId, PingStatus.ONLINE)) {
+  for await (const _ of starter.waitForStatus(
+    args.instanceId,
+    PingStatus.ONLINE
+  )) {
   }
   const publicKey = (await readFile(args.publicKeyPath)).toString();
   await keyAuthoriser.authorise({

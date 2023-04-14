@@ -48,7 +48,9 @@ export class InstanceStarter {
     instanceId: string,
     targetState: InstanceStateName
   ): AsyncIterable<InstanceStateName | undefined> {
-    return this.waitFor<InstanceStateName | undefined>(targetState, () => this.toCurrentState(instanceId))
+    return this.waitFor<InstanceStateName | undefined>(targetState, () =>
+      this.toCurrentState(instanceId)
+    );
   }
 
   async startInstance(instanceId: string): Promise<void> {
@@ -60,8 +62,13 @@ export class InstanceStarter {
     );
   }
 
-  async *waitForStatus(instanceId: string, targetStatus: PingStatus): AsyncIterable<PingStatus | undefined> {
-    return this.waitFor<PingStatus | undefined>(targetStatus, () => this.stateResolver.ping(instanceId));
+  async *waitForStatus(
+    instanceId: string,
+    targetStatus: PingStatus
+  ): AsyncIterable<PingStatus | undefined> {
+    return this.waitFor<PingStatus | undefined>(targetStatus, () =>
+      this.stateResolver.ping(instanceId)
+    );
   }
 
   async *waitFor<T>(target: T, extractor: () => Promise<T>): AsyncIterable<T> {

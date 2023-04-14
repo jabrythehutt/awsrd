@@ -194,7 +194,10 @@ export async function activate(context: ExtensionContext) {
         async (progress, token) => {
           await instanceStarter.requestInstanceState(instanceId, targetState);
           instanceStore.refresh();
-          for await (const _ of instanceStarter.waitForState(instanceId, targetState)) {
+          for await (const _ of instanceStarter.waitForState(
+            instanceId,
+            targetState
+          )) {
             if (token.isCancellationRequested) {
               break;
             }
@@ -253,7 +256,10 @@ export async function activate(context: ExtensionContext) {
             ConfigurationTarget.Global
           );
         progress.report({ message: "Waiting for instance to be reachable..." });
-        for await (const _ of instanceStarter.waitForStatus(instanceId, PingStatus.ONLINE)) {
+        for await (const _ of instanceStarter.waitForStatus(
+          instanceId,
+          PingStatus.ONLINE
+        )) {
           if (token.isCancellationRequested) {
             return;
           }
@@ -276,7 +282,7 @@ export async function activate(context: ExtensionContext) {
         progress.report({ message: "" });
         instanceStore.refresh();
         if (token.isCancellationRequested) {
-          return
+          return;
         }
         const user = await window.showInputBox({
           placeHolder: guess || "Username",
