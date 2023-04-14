@@ -1,9 +1,10 @@
+import { CdkCommander } from "./CdkCommander";
 import { InstanceStore } from "./InstanceStore";
 
 export class InstanceDeleter {
-  constructor(private instanceStore: InstanceStore) {}
+  constructor(private instanceStore: InstanceStore, private cdkCommander: CdkCommander) { }
 
-  async toDeleteCommands(instanceId: string): Promise<string[]> {
+  async toTerminalCommands(instanceId: string): Promise<string[]> {
     const instance = await this.instanceStore.describe(instanceId);
     const stackName = instance?.Tags?.find(
       (tag) => tag.Key === "aws:cloudformation:stack-name"
@@ -13,6 +14,7 @@ export class InstanceDeleter {
         `No associated stack was found for instance: ${instanceId}`
       );
     }
-    throw new Error("Not implemented");
+    throw new Error("Not implemented")
+
   }
 }

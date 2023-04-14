@@ -47,12 +47,12 @@ export async function activate(context: ExtensionContext) {
   const regionStore = new RegionStore();
   const credentials$ = createCredentialStore(profileStore.value);
   const serviceFactory = new AwsClientFactory(credentials$, regionStore.value);
-  const cdkCommander = new CdkCommander();
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const instanceStarter = new InstanceStarter(serviceFactory, stateResolver);
   const explorerView = explorerViews[0];
   const instanceStore = new InstanceStore(serviceFactory);
   const awsContextResolver = new AwsContextResolver(serviceFactory);
+  const cdkCommander = new CdkCommander(awsContextResolver, profileStore.value);
   const treeView = window.createTreeView(explorerView.id, {
     treeDataProvider: new InstanceTreeProvider(instanceStore),
   });
@@ -74,7 +74,6 @@ export async function activate(context: ExtensionContext) {
   commands.registerCommand(createCommand, async () => {
     const instanceCreator = new InstanceCreator(
       awsContextResolver,
-      profileStore.value,
       cdkCommander
     );
     const instanceType = await window.showQuickPick(
