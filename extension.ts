@@ -72,14 +72,13 @@ export async function activate(context: ExtensionContext) {
     const instance = await instanceStore.describe(instanceId);
     const label = toInstanceLabel(instance as Instance);
     const instanceDeleter = new InstanceDeleter(instanceStore, cdkCommander);
-    const terminalCommands = await instanceDeleter.toTerminalCommands(instanceId);
-    const terminal = window.createTerminal(
-      `Deleting ${label}`
+    const terminalCommands = await instanceDeleter.toTerminalCommands(
+      instanceId
     );
+    const terminal = window.createTerminal(`Deleting ${label}`);
     terminal.show();
     await executeTerminalCommands(terminal, terminalCommands);
     instanceStore.refresh();
-
   });
 
   commands.registerCommand(createCommand, async () => {

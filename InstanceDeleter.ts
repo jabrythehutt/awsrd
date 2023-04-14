@@ -7,7 +7,7 @@ export class InstanceDeleter {
   constructor(
     private instanceStore: InstanceStore,
     private cdkCommander: CdkCommander
-  ) { }
+  ) {}
 
   async toTerminalCommands(instanceId: string): Promise<string[]> {
     const stackName = await this.resolveStackName(instanceId);
@@ -17,7 +17,7 @@ export class InstanceDeleter {
       );
     }
     const context = this.toContext(stackName);
-    return [await this.cdkCommander.toDefaultCommand("destroy", context)]
+    return [await this.cdkCommander.toDefaultCommand("destroy", context)];
   }
 
   async resolveStackName(instanceId: string): Promise<string | undefined> {
@@ -33,7 +33,7 @@ export class InstanceDeleter {
       // The instance request values don't matter since we're attempting to delete the stack
       instanceName: "foo",
       instanceType: _InstanceType.c7g_medium,
-      rootVolumeSizeGb: 20
-    }
+      rootVolumeSizeGb: 20,
+    };
   }
 }

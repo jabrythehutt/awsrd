@@ -3,5 +3,5 @@ export enum StackArg {
   InstanceName = "instanceName",
   InstanceType = "instanceType",
   StackName = "stackName",
-  ImageId = "imageId"
+  ImageId = "imageId",
 }
