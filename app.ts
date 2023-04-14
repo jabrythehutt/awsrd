@@ -29,14 +29,13 @@ async function run() {
   });
   const props = await propsResolver.resolve(args, stack);
   const ec2 = new VscInstance(stack, "EC2", props);
-  
+
   new CfnOutput(stack, "InstanceIdOutput", {
     value: ec2.instance.instanceId,
   });
 }
 
-run().catch(err => {
+run().catch((err) => {
   console.error(err);
-  process.exit(1)
+  process.exit(1);
 });
-
