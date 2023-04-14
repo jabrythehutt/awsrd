@@ -17,7 +17,8 @@ export class InstanceDeleter {
       );
     }
     const context = this.toContext(stackName);
-    return [await this.cdkCommander.toDefaultCommand("destroy", context)];
+    const destroyCommand = await this.cdkCommander.toDefaultCommand("destroy", context);
+    return [`${destroyCommand} && exit`];
   }
 
   async resolveStackName(instanceId: string): Promise<string | undefined> {

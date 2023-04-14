@@ -20,7 +20,7 @@ export class InstanceCreator {
       "deploy",
       request
     );
-    return [bootstrapCommand, deployAppCommand];
+    return [bootstrapCommand, `${deployAppCommand} && exit`];
   }
 
   toLine(commands: string[]): string {

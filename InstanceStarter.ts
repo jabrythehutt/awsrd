@@ -44,7 +44,7 @@ export class InstanceStarter {
     return instanceState.InstanceState?.Name as InstanceStateName;
   }
 
-  async *waitForState(
+  waitForState(
     instanceId: string,
     targetState: InstanceStateName
   ): AsyncIterable<InstanceStateName | undefined> {
@@ -62,7 +62,7 @@ export class InstanceStarter {
     );
   }
 
-  async *waitForStatus(
+  waitForStatus(
     instanceId: string,
     targetStatus: PingStatus
   ): AsyncIterable<PingStatus | undefined> {

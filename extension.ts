@@ -71,14 +71,17 @@ export async function activate(context: ExtensionContext) {
   commands.registerCommand(deleteCommand, async (instanceId: string) => {
     const instance = await instanceStore.describe(instanceId);
     const label = toInstanceLabel(instance as Instance);
-    const instanceDeleter = new InstanceDeleter(instanceStore, cdkCommander);
-    const terminalCommands = await instanceDeleter.toTerminalCommands(
-      instanceId
-    );
-    const terminal = window.createTerminal(`Deleting ${label}`);
-    terminal.show();
-    await executeTerminalCommands(terminal, terminalCommands);
-    instanceStore.refresh();
+    const answer = await window.showInformationMessage(`Are you sure you want to delete ${label} and its associated CloudFormation stack?`, "Yes", "No")
+    if (answer === "Yes") {
+      const instanceDeleter = new InstanceDeleter(instanceStore, cdkCommander);
+      const terminalCommands = await instanceDeleter.toTerminalCommands(
+        instanceId
+      );
+      const terminal = window.createTerminal(`Deleting ${label}`);
+      terminal.show();
+      await executeTerminalCommands(terminal, terminalCommands);
+      instanceStore.refresh();
+    }
   });
 
   commands.registerCommand(createCommand, async () => {
@@ -203,10 +206,11 @@ export async function activate(context: ExtensionContext) {
         async (progress, token) => {
           await instanceStarter.requestInstanceState(instanceId, targetState);
           instanceStore.refresh();
-          for await (const _ of instanceStarter.waitForState(
+          for await (const state of instanceStarter.waitForState(
             instanceId,
             targetState
           )) {
+            progress.report({message: state});
             if (token.isCancellationRequested) {
               break;
             }
