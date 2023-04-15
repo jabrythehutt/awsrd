@@ -20,7 +20,7 @@
     "@aws-sdk/credential-providers": "3.303.0",
     "@aws-sdk/shared-ini-file-loader": "3.303.0",
     "aws-cdk-lib": "^2.69.0",
-    "cdk-monitoring-constructs": "^3.0.3",
+    "cdk-monitoring-constructs": "4.0.0",
     "constructs": "^10.1.284",
     "lodash": "4.17.21",
     "sshpk": "^1.17.0",

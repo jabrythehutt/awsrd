@@ -21,7 +21,7 @@ specifiers:
   '@types/yargs': ^17.0.23
   aws-cdk: ^2.69.0
   aws-cdk-lib: ^2.69.0
-  cdk-monitoring-constructs: ^3.0.3
+  cdk-monitoring-constructs: 4.0.0
   constructs: ^10.1.284
   esbuild: ^0.17.12
   lodash: 4.17.21
@@ -47,7 +47,7 @@ dependencies:
   '@aws-sdk/smithy-client': 3.303.0
   '@aws-sdk/types': 3.303.0
   aws-cdk-lib: 2.69.0_constructs@10.1.284
-  cdk-monitoring-constructs: 3.0.3_wnec2y6uysyel4qefr3lg6vvmm
+  cdk-monitoring-constructs: 4.0.0_wnec2y6uysyel4qefr3lg6vvmm
   constructs: 10.1.284
   lodash: 4.17.21
   rxjs: 7.8.0
@@ -1418,8 +1418,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: false
 
-  /cdk-monitoring-constructs/3.0.3_wnec2y6uysyel4qefr3lg6vvmm:
-    resolution: {integrity: sha512-xipl0aD1YPq8dv5hoJMdh+KZPiEWP45yaN4dwm8eqXRG9ot9QujyMLIl/WannIVf9b579t5lnHIQlNtUa67sCg==}
+  /cdk-monitoring-constructs/4.0.0_wnec2y6uysyel4qefr3lg6vvmm:
+    resolution: {integrity: sha512-6+qtKpFeiKIqwHusjSlCjCVtp289Smry/omFyEXQls5WZ+vtaWkWnNyGZ1NyagCvZciMa+twGr9XJTTETUqzOA==}
     peerDependencies:
       '@aws-cdk/aws-apigatewayv2-alpha': ^2.65.0-alpha.0
       '@aws-cdk/aws-redshift-alpha': ^2.65.0-alpha.0
