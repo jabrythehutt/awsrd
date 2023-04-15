@@ -41,6 +41,7 @@ import { executeTerminalCommands } from "./executeTerminalCommands";
 import { AwsContextResolver } from "./AwsContextResolver";
 import { CdkCommander } from "./CdkCommander";
 import { InstanceDeleter } from "./InstanceDeleter";
+import { writeKeyPairToDir } from "./writeKeyPairToDir";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = packageJson.contributes.views["ec2-explorer"];
@@ -319,16 +320,5 @@ async function generateKeyPair(
   destinationDir: string
 ): Promise<{ privateKeyPath: string; publicKeyPath: string }> {
   const keyPair = createKeyPair();
-  const privateKeyFileName = "id_rsa";
-  const privateKeyPath = resolve(destinationDir, privateKeyFileName);
-  const destinations = {
-    privateKeyPath,
-    publicKeyPath: `${privateKeyPath}.pub`,
-  };
-  if (!existsSync(privateKeyPath) || !existsSync(destinations.publicKeyPath)) {
-    await writeFile(destinations.publicKeyPath, keyPair.publicKey);
-    await writeFile(privateKeyPath, keyPair.privateKey, { mode: 0o600 });
-  }
-
-  return destinations;
+  return writeKeyPairToDir(keyPair, destinationDir);
 }
