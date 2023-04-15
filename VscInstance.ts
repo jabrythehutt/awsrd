@@ -16,13 +16,17 @@ export class VscInstance extends Construct {
   constructor(scope: Construct, id: string, props: VscInstanceProps) {
     super(scope, id);
     this.instance = new Instance(this, "Instance", props);
-    this.monitoring = new MonitoringFacade(this, `${props.alarmNamePrefix}Monitoring`, {
-      alarmFactoryDefaults: {
-        action: new StopAlarmActionStrategy(),
-        alarmNamePrefix: props.alarmNamePrefix,
-        actionsEnabled: true
-      },
-    }).monitorEC2Instances({
+    this.monitoring = new MonitoringFacade(
+      this,
+      `${props.alarmNamePrefix}Monitoring`,
+      {
+        alarmFactoryDefaults: {
+          action: new StopAlarmActionStrategy(),
+          alarmNamePrefix: props.alarmNamePrefix,
+          actionsEnabled: true,
+        },
+      }
+    ).monitorEC2Instances({
       instanceIds: [this.instance.instanceId],
     });
     const alarmFactory = this.monitoring.createAlarmFactory(`InactivityAlarm`);
