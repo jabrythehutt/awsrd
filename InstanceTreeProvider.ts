@@ -6,7 +6,7 @@ import {
   Event,
 } from "vscode";
 import { Instance } from "@aws-sdk/client-ec2";
-import { join, toNamespacedPath } from "path";
+import { join } from "path";
 import { toPromise } from "./toPromise";
 import { toInstanceLabel } from "./toInstanceLabel";
 import { InstanceStore } from "./InstanceStore";
@@ -64,7 +64,9 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
   }
 
   toTooltip(instance: Instance): string {
-    return `${toInstanceName(instance) || instance.InstanceId} is ${instance.State?.Name}`
+    return `${toInstanceName(instance) || instance.InstanceId} is ${
+      instance.State?.Name
+    }`;
   }
 
   getRootChildren(): Promise<string[] | null | undefined> {
