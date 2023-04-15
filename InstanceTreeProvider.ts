@@ -8,7 +8,6 @@ import {
 import { Instance } from "@aws-sdk/client-ec2";
 import { join } from "path";
 import { toPromise } from "./toPromise";
-import { toInstanceLabel } from "./toInstanceLabel";
 import { InstanceStore } from "./InstanceStore";
 import { existsSync } from "node:fs";
 import { instanceTagName } from "./instanceTagName";
@@ -45,14 +44,14 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
 
   async getTreeItem(id: string): Promise<TreeItem> {
     const instance = (await this.instanceStore.describe(id)) as Instance;
-    const label = toInstanceLabel(instance);
     const tags = instance.Tags || [];
     const managedTag = tags.find(
       (t) => t.Key === instanceTagName && t.Value === instanceTagValue
     );
     const contextValue = instance.State?.Name + (managedTag ? ".managed" : "");
     return {
-      label,
+      label: instance.InstanceId,
+      description: toInstanceName(instance),
       id,
       tooltip: this.toTooltip(instance),
       iconPath: {
