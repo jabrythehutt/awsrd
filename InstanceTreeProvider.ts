@@ -6,13 +6,14 @@ import {
   Event,
 } from "vscode";
 import { Instance } from "@aws-sdk/client-ec2";
-import { join } from "path";
+import { join, toNamespacedPath } from "path";
 import { toPromise } from "./toPromise";
 import { toInstanceLabel } from "./toInstanceLabel";
 import { InstanceStore } from "./InstanceStore";
 import { existsSync } from "node:fs";
 import { instanceTagName } from "./instanceTagName";
 import { instanceTagValue } from "./instanceTagValue";
+import { toInstanceName } from "./toInstanceName";
 
 export class InstanceTreeProvider implements TreeDataProvider<string> {
   readonly eventEmitter = new EventEmitter<string | undefined>();
@@ -53,12 +54,17 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
     return {
       label,
       id,
+      tooltip: this.toTooltip(instance),
       iconPath: {
         light: this.toIconPath("light", instance),
         dark: this.toIconPath("dark", instance),
       },
       contextValue,
     };
+  }
+
+  toTooltip(instance: Instance): string {
+    return `${toInstanceName(instance) || instance.InstanceId} is ${instance.State?.Name}`
   }
 
   getRootChildren(): Promise<string[] | null | undefined> {
