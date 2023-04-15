@@ -253,8 +253,8 @@ export async function activate(context: ExtensionContext) {
           __dirname,
           process.env.SESSION_MANAGER_BIN as string
         );
-
-        const keyPairPaths = await generateKeyPair(destination);
+        const keyPair = createKeyPair();
+        const keyPairPaths = await writeKeyPairToDir(keyPair, destination);
         const sshConfig = toSshConfig({
           ...keyPairPaths,
           proxyScriptPath,
@@ -314,11 +314,4 @@ export async function activate(context: ExtensionContext) {
       }
     );
   });
-}
-
-async function generateKeyPair(
-  destinationDir: string
-): Promise<{ privateKeyPath: string; publicKeyPath: string }> {
-  const keyPair = createKeyPair();
-  return writeKeyPairToDir(keyPair, destinationDir);
 }
