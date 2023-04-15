@@ -41,6 +41,20 @@ export class CdkCommander {
     };
   }
 
+  toLine(args: string[]): string {
+    return args.join(" ");
+  }
+
+  async resolveBootstrapCommand(): Promise<string> {
+    const optionArgs = await this.resolveCommonOptionArgs();
+    return this.toLine([
+      this.cdkBinPath,
+      "bootstrap",
+      `aws://${await this.contextResolver.account()}/${await this.contextResolver.region()}`,
+      ...optionArgs,
+    ]);
+  }
+
   async resolveCommonOptionArgs(): Promise<string[]> {
     return this.toOptionArgs(await this.resolveCommonOptions());
   }
@@ -50,12 +64,12 @@ export class CdkCommander {
     context: T
   ): Promise<string> {
     const defaultOptions = await this.resolveCommonOptionArgs();
-    return [
+    return this.toLine([
       this.cdkBinPath,
       cdkCommand,
       ...this.cdkAppArgs,
       ...this.toContextArgs(context),
       ...defaultOptions,
-    ].join(" ");
+    ]);
   }
 }

@@ -5,7 +5,9 @@ export function executeTerminalCommands(
   terminal: Terminal,
   commands: string[]
 ): Promise<TerminalExitStatus | undefined> {
-  for (const command of [...commands]) {
+  const commandsWithExit = [...commands];
+  const lastCommand = commandsWithExit.pop();
+  for (const command of [...commandsWithExit, `${lastCommand} && exit`]) {
     terminal.sendText(command);
   }
   return new Promise((resolve) => {

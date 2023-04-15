@@ -71,12 +71,13 @@ export async function activate(context: ExtensionContext) {
   commands.registerCommand(deleteCommand, async (instanceId: string) => {
     const instance = await instanceStore.describe(instanceId);
     const label = toInstanceLabel(instance as Instance);
+    const accept = "Yes"
     const answer = await window.showInformationMessage(
       `Are you sure you want to delete ${label} and its associated CloudFormation stack?`,
-      "Yes",
+      accept,
       "No"
     );
-    if (answer === "Yes") {
+    if (answer === accept) {
       const instanceDeleter = new InstanceDeleter(instanceStore, cdkCommander);
       const terminalCommands = await instanceDeleter.toTerminalCommands(
         instanceId
@@ -90,7 +91,6 @@ export async function activate(context: ExtensionContext) {
 
   commands.registerCommand(createCommand, async () => {
     const instanceCreator = new InstanceCreator(
-      awsContextResolver,
       cdkCommander
     );
     const instanceType = await window.showQuickPick(
