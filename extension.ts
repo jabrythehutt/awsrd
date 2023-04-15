@@ -71,7 +71,7 @@ export async function activate(context: ExtensionContext) {
   commands.registerCommand(deleteCommand, async (instanceId: string) => {
     const instance = await instanceStore.describe(instanceId);
     const label = toInstanceLabel(instance as Instance);
-    const accept = "Yes"
+    const accept = "Yes";
     const answer = await window.showInformationMessage(
       `Are you sure you want to delete ${label} and its associated CloudFormation stack?`,
       accept,
@@ -90,9 +90,7 @@ export async function activate(context: ExtensionContext) {
   });
 
   commands.registerCommand(createCommand, async () => {
-    const instanceCreator = new InstanceCreator(
-      cdkCommander
-    );
+    const instanceCreator = new InstanceCreator(cdkCommander);
     const instanceType = await window.showQuickPick(
       Object.values(_InstanceType),
       {

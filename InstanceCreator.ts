@@ -2,9 +2,7 @@ import { CreateInstanceRequest } from "./CreateInstanceRequest";
 import { CdkCommander } from "./CdkCommander";
 
 export class InstanceCreator {
-  constructor(
-    private cdkCommander: CdkCommander
-  ) {}
+  constructor(private cdkCommander: CdkCommander) {}
 
   async toTerminalCommands(request: CreateInstanceRequest): Promise<string[]> {
     const bootstrapCommand = await this.cdkCommander.resolveBootstrapCommand();
