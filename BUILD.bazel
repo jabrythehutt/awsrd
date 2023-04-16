@@ -1,41 +1,71 @@
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
-load("index.bzl", "cjs_bundle")
+load("index.bzl", "cjs_bundle", "cli")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("session_manager.bzl", "session_manager")
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
+load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
 
 npm_link_all_packages(
     name = "node_modules",
 )
 
+deps = [
+    "//:node_modules/@aws-sdk/client-ec2",
+    "//:node_modules/@aws-sdk/client-ec2-instance-connect",
+    "//:node_modules/@aws-sdk/client-ssm",
+    "//:node_modules/@aws-sdk/client-sts",
+    "//:node_modules/@aws-sdk/credential-providers",
+    "//:node_modules/@aws-sdk/shared-ini-file-loader",
+    "//:node_modules/@aws-sdk/smithy-client",
+    "//:node_modules/@aws-sdk/types",
+    "//:node_modules/@types/lodash",
+    "//:node_modules/@types/node",
+    "//:node_modules/@types/sshpk",
+    "//:node_modules/@types/validator",
+    "//:node_modules/@types/vscode",
+    "//:node_modules/@types/yargs",
+    "//:node_modules/aws-cdk-lib",
+    "//:node_modules/cdk-monitoring-constructs",
+    "//:node_modules/constructs",
+    "//:node_modules/lodash",
+    "//:node_modules/rxjs",
+    "//:node_modules/sshpk",
+    "//:node_modules/tslib",
+    "//:node_modules/validator",
+    "//:node_modules/yargs"
+]
+tests = ["*.test.ts"]
+
 ts_project(
     name = "lib",
-    srcs = glob(["*.ts"]) + ["package.json"],
+    srcs = glob(["*.ts"], exclude = tests) + ["package.json"],
     resolve_json_module = True,
+    declaration = True,
+    deps = deps,
+)
+
+ts_project(
+    name = "test_lib",
+    srcs = glob(tests) + ["package.json"],
+    resolve_json_module = True,
+    declaration = True,
     deps = [
-        "//:node_modules/@aws-sdk/client-ec2",
-        "//:node_modules/@aws-sdk/client-ec2-instance-connect",
-        "//:node_modules/@aws-sdk/client-ssm",
-        "//:node_modules/@aws-sdk/client-sts",
-        "//:node_modules/@aws-sdk/credential-providers",
-        "//:node_modules/@aws-sdk/shared-ini-file-loader",
-        "//:node_modules/@aws-sdk/smithy-client",
-        "//:node_modules/@aws-sdk/types",
-        "//:node_modules/@types/lodash",
-        "//:node_modules/@types/node",
-        "//:node_modules/@types/sshpk",
-        "//:node_modules/@types/validator",
-        "//:node_modules/@types/vscode",
-        "//:node_modules/@types/yargs",
-        "//:node_modules/aws-cdk-lib",
-        "//:node_modules/cdk-monitoring-constructs",
-        "//:node_modules/constructs",
-        "//:node_modules/lodash",
-        "//:node_modules/rxjs",
-        "//:node_modules/sshpk",
-        "//:node_modules/tslib",
-        "//:node_modules/validator",
-        "//:node_modules/yargs",
+        "lib",
+        "//:node_modules/@types/jest"
+    ]
+)
+
+jest_test(
+    name = "test",
+    config = "jest.config.mjs",
+    data = [
+        "test_lib",
+        "package.json"
+    ],
+    node_modules = "//:node_modules",
+    node_options = [
+        "--experimental-vm-modules",
     ],
 )
 

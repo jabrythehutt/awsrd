@@ -1,10 +1,15 @@
 {
   "name": "ec2vsc",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Display EC2 instances",
+  "type": "module",
   "main": "./extension.cjs",
   "publisher": "jabrythehutt",
-  "keywords": [],
+  "keywords": [
+    "AWS",
+    "EC2",
+    "SSM"
+  ],
   "author": "Daniel Jabry <djabry@gmail.com>",
   "license": "MIT",
   "dependencies": {
@@ -36,12 +41,15 @@
     "@types/vscode": "1.76.0",
     "@types/node": "^18.15.5",
     "@types/sshpk": "^1.17.1",
-    "@types/ws": "^8.5.4",
     "@types/yargs": "^17.0.23",
+    "@types/jest": "29.5.0",
     "aws-cdk": "^2.69.0",
     "esbuild": "^0.17.12",
     "ts-node": "^10.9.1",
-    "typescript": "4.9.5"
+    "typescript": "4.9.5",
+    "jest": "29.5.0",
+    "jest-cli": "29.5.0",
+    "jest-junit": "16.0.0"
   },
   "extensionDependencies": [
     "ms-vscode-remote.remote-ssh"
@@ -112,7 +120,7 @@
     "views": {
       "ec2-explorer": [
         {
-          "id": "ec2Instances",
+          "id": "ec2vsc.instances",
           "name": "Instances",
           "icon": "media/instances_light.svg"
         }
@@ -120,7 +128,7 @@
     },
     "commands": [
       {
-        "command": "ec2Instances.open",
+        "command": "ec2vsc.open",
         "title": "Connect in new window",
         "icon": {
           "dark": "media/new_window_dark.svg",
@@ -128,17 +136,17 @@
         }
       },
       {
-        "command": "ec2Instances.stop",
+        "command": "ec2vsc.stop",
         "title": "Stop instance",
         "icon": "media/stop_button.svg"
       },
       {
-        "command": "ec2Instances.start",
+        "command": "ec2vsc.start",
         "title": "Start instance",
         "icon": "media/play_button.svg"
       },
       {
-        "command": "ec2Instances.selectProfile",
+        "command": "ec2vsc.selectProfile",
         "title": "Select AWS profile",
         "icon": {
           "light": "media/user_light.svg",
@@ -146,7 +154,7 @@
         }
       },
       {
-        "command": "ec2Instances.selectRegion",
+        "command": "ec2vsc.selectRegion",
         "title": "Select AWS region",
         "icon": {
           "light": "media/globe_light.svg",
@@ -154,7 +162,7 @@
         }
       },
       {
-        "command": "ec2Instances.refresh",
+        "command": "ec2vsc.refresh",
         "title": "Refresh instances list",
         "icon": {
           "light": "media/refresh_light.svg",
@@ -162,7 +170,7 @@
         }
       },
       {
-        "command": "ec2Instances.create",
+        "command": "ec2vsc.create",
         "title": "Create a development EC2 instance",
         "icon": {
           "light": "media/add_light.svg",
@@ -170,7 +178,7 @@
         }
       },
       {
-        "command": "ec2Instances.delete",
+        "command": "ec2vsc.delete",
         "title": "Delete instance",
         "icon": {
           "light": "media/trash_light.svg",
@@ -181,46 +189,46 @@
     "menus": {
       "view/title": [
         {
-          "command": "ec2Instances.selectProfile",
-          "when": "view == ec2Instances",
+          "command": "ec2vsc.selectProfile",
+          "when": "view == ec2vsc.instances",
           "group": "navigation@0"
         },
         {
-          "command": "ec2Instances.selectRegion",
-          "when": "view == ec2Instances",
+          "command": "ec2vsc.selectRegion",
+          "when": "view == ec2vsc.instances",
           "group": "navigation@1"
         },
         {
-          "command": "ec2Instances.refresh",
-          "when": "view == ec2Instances",
+          "command": "ec2vsc.refresh",
+          "when": "view == ec2vsc.instances",
           "group": "navigation@2"
         },
         {
-          "command": "ec2Instances.create",
-          "when": "view == ec2Instances",
+          "command": "ec2vsc.create",
+          "when": "view == ec2vsc.instances",
           "group": "navigation@3"
         }
       ],
       "view/item/context": [
         {
-          "command": "ec2Instances.stop",
+          "command": "ec2vsc.stop",
           "group": "inline@0",
-          "when": "view == ec2Instances && viewItem =~ /running/"
+          "when": "view == ec2vsc.instances && viewItem =~ /running/"
         },
         {
-          "command": "ec2Instances.start",
+          "command": "ec2vsc.start",
           "group": "inline@1",
-          "when": "view == ec2Instances && viewItem =~ /stopped/"
+          "when": "view == ec2vsc.instances && viewItem =~ /stopped/"
         },
         {
-          "command": "ec2Instances.open",
+          "command": "ec2vsc.open",
           "group": "inline@2",
-          "when": "view == ec2Instances && (viewItem =~ /stopped/ || viewItem =~ /running/)"
+          "when": "view == ec2vsc.instances && (viewItem =~ /stopped/ || viewItem =~ /running/)"
         },
         {
-          "command": "ec2Instances.delete",
+          "command": "ec2vsc.delete",
           "group": "inline@3",
-          "when": "view == ec2Instances && (viewItem =~ /stopped/) && viewItem =~ /managed/"
+          "when": "view == ec2vsc.instances && (viewItem =~ /stopped/) && viewItem =~ /managed/"
         }
       ]
     }

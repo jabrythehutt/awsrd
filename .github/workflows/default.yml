@@ -16,5 +16,5 @@ jobs:
           key: ${{ runner.os }}-bazel-${{ hashFiles('WORKSPACE', 'environment.yml', '**/*.bazel', '**/*.bzl') }}
           restore-keys: ${{ runner.os }}-bazel-
 
-      - name: Build
-        run: bazel build //...
+      - name: Test
+        run: bazel test //...

@@ -26,12 +26,13 @@ def cjs_bundle(name, external_libs = [], format = "cjs", output = None, sourcema
         **kwargs
     )
 
-def cli(name, srcs, entry_point, external_libs = [], env = {"AWS_SDK_LOAD_CONFIG": "1"}, target = default_target, **kwargs):
+def cli(name, entry_point, srcs = [], deps = [], external_libs = [], env = {"AWS_SDK_LOAD_CONFIG": "1"}, target = default_target, **kwargs):
     bundle_name = name + "_bundle"
     cjs_bundle(
         name = bundle_name,
         external_libs = external_libs,
         srcs = srcs,
+        deps = deps,
         entry_point = entry_point,
         target = target,
     )

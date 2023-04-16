@@ -4,7 +4,6 @@ cdk.context.json
 stack.json
 session-manager-plugin
 *.js
-*.mjs
 *.cjs
 *.map
 dist
