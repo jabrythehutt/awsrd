@@ -33,35 +33,39 @@ deps = [
     "//:node_modules/sshpk",
     "//:node_modules/tslib",
     "//:node_modules/validator",
-    "//:node_modules/yargs"
+    "//:node_modules/yargs",
 ]
+
 tests = ["*.test.ts"]
 
 ts_project(
     name = "lib",
-    srcs = glob(["*.ts"], exclude = tests) + ["package.json"],
-    resolve_json_module = True,
+    srcs = glob(
+        ["*.ts"],
+        exclude = tests,
+    ) + ["package.json"],
     declaration = True,
+    resolve_json_module = True,
     deps = deps,
 )
 
 ts_project(
     name = "test_lib",
     srcs = glob(tests) + ["package.json"],
-    resolve_json_module = True,
     declaration = True,
+    resolve_json_module = True,
     deps = [
         "lib",
-        "//:node_modules/@types/jest"
-    ]
+        "//:node_modules/@types/jest",
+    ],
 )
 
 jest_test(
     name = "test",
     config = "jest.config.mjs",
     data = [
+        "package.json",
         "test_lib",
-        "package.json"
     ],
     node_modules = "//:node_modules",
     node_options = [

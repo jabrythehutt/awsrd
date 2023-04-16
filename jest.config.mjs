@@ -1,4 +1,4 @@
 export default {
-    testEnvironment: "node",
-    testMatch: ["<rootDir>/*.test.js"],
+  testEnvironment: "node",
+  testMatch: ["<rootDir>/*.test.js"],
 };
