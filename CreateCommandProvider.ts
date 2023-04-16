@@ -93,7 +93,7 @@ export class CreateCommandProvider
   async execute(): Promise<void> {
     const request = {} as Record<StackArg, string>;
     for await (const [stackArg, response] of this.requestArgs()) {
-      if (typeof response === undefined) {
+      if (response === undefined) {
         return;
       }
       request[stackArg] = response as string;
