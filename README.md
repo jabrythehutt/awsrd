@@ -8,4 +8,4 @@ This extension aims to make that experience quick and portable.
 
 ## How
 
-EC2 instances are provisioned on your behalf with CloudFormation stacks and the connection is established via [AWS SSM](https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-agent.html) so all you have to do is set up your [AWS CLI credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) and decide what type of machine you wish to set up. 
+EC2 instances are provisioned on your behalf with CloudFormation stacks and the connection is established via [AWS SSM](https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-agent.html) so all you have to do is set up your [AWS CLI credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) and decide what type of machine you wish to set up.
