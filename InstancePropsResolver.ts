@@ -69,7 +69,7 @@ export class InstancePropsResolver {
       vpc,
       alarmNamePrefix: request.stackName as string,
       instanceType,
-      instanceName: request.instanceName,
+      instanceName: request.stackName,
       machineImage,
       blockDevices: [
         {

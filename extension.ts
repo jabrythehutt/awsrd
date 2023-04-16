@@ -2,46 +2,32 @@ import {
   ExtensionContext,
   commands,
   window,
-  Uri,
-  workspace,
-  ConfigurationTarget,
-  ProgressLocation,
 } from "vscode";
 import { contributes } from "./package.json";
 import { InstanceTreeProvider } from "./InstanceTreeProvider";
-import validator from "validator";
 import {
-  Instance,
-  InstanceStateName,
   _InstanceType,
 } from "@aws-sdk/client-ec2";
-import { writeFile, mkdir } from "node:fs/promises";
-import { existsSync } from "node:fs";
-import { resolve } from "node:path";
-import { createKeyPair } from "./createKeyPair";
-import { toSshConfig } from "./toSshConfig";
 import { InstanceStarter } from "./InstanceStarter";
 import { InstanceStateResolver } from "./InstanceStateResolver";
-import {
-  DescribeInstanceInformationCommand,
-  PingStatus,
-  SSMClient,
-} from "@aws-sdk/client-ssm";
-import { guessUsernames } from "./guessUsernames";
 import { ProfileStore } from "./ProfileStore";
 import { RegionStore } from "./RegionStore";
-import { toPromise } from "./toPromise";
-import { toInstanceLabel } from "./toInstanceLabel";
 import { createCredentialStore } from "./createCredentialStore";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { InstanceStore } from "./InstanceStore";
-import { listProfiles } from "./listProfiles";
 import { InstanceCreator } from "./InstanceCreator";
-import { executeTerminalCommands } from "./executeTerminalCommands";
 import { AwsContextResolver } from "./AwsContextResolver";
 import { CdkCommander } from "./CdkCommander";
 import { InstanceDeleter } from "./InstanceDeleter";
-import { writeKeyPairToDir } from "./writeKeyPairToDir";
+import { CommandSuffix } from "./CommandSuffix";
+import { CommandProvider } from "./CommandProvider";
+import { DeleteCommandProvider } from "./DeleteCommandProvider";
+import { OpenCommandProvider } from "./OpenCommandProvider";
+import { CreateCommandProvider } from "./CreateCommandProvider";
+import { RegionCommandProvider } from "./RegionCommandProvider";
+import { ProfileCommandProvider } from "./ProfileCommandProvider";
+import { RefreshCommandProvider } from "./RefreshCommandProvider";
+import { InstanceStateCommandProvider } from "./InstanceStateCommandProvider";
 import { CommandName } from "./CommandName";
 
 export async function activate(context: ExtensionContext) {
@@ -56,254 +42,29 @@ export async function activate(context: ExtensionContext) {
   const instanceStore = new InstanceStore(serviceFactory);
   const awsContextResolver = new AwsContextResolver(serviceFactory);
   const cdkCommander = new CdkCommander(awsContextResolver, profileStore.value);
+  const instanceCreator = new InstanceCreator(cdkCommander);
   const treeView = window.createTreeView(explorerView.id, {
     treeDataProvider: new InstanceTreeProvider(instanceStore),
   });
   context.subscriptions.push(treeView);
-
-  commands.registerCommand(CommandName.delete, async (instanceId: string) => {
-    const instance = await instanceStore.describe(instanceId);
-    const label = toInstanceLabel(instance as Instance);
-    const accept = "Yes";
-    const answer = await window.showInformationMessage(
-      `Are you sure you want to delete ${label} and its associated CloudFormation stack?`,
-      accept,
-      "No"
-    );
-    if (answer === accept) {
-      const instanceDeleter = new InstanceDeleter(instanceStore, cdkCommander);
-      const terminalCommands = await instanceDeleter.toTerminalCommands(
-        instanceId
-      );
-      const terminal = window.createTerminal(`Deleting ${label}`);
-      terminal.show();
-      await executeTerminalCommands(terminal, terminalCommands);
-      instanceStore.refresh();
-    }
-  });
-
-  commands.registerCommand(CommandName.create, async () => {
-    const instanceCreator = new InstanceCreator(cdkCommander);
-    const instanceType = await window.showQuickPick(
-      Object.values(_InstanceType),
-      {
-        title: "Select an instance type",
-      }
-    );
-
-    const maxSize = 16000;
-    const rootVolumeSize = String(
-      await window.showInputBox({
-        title: "Set the size of the root volume (GB)",
-        value: `${20}`,
-        validateInput: (v) => {
-          if (!v) {
-            return "Must not be empty";
-          } else if (
-            !validator.isInt(v, {
-              min: 1,
-              max: maxSize,
-            })
-          ) {
-            return `Must be between 1GB and 16TB`;
-          }
-        },
-      })
-    );
-
-    const stackName = String(
-      await window.showInputBox({
-        title: "Enter a CloudFormation stack name",
-        validateInput: (v) => {
-          const parts = v.split("-");
-          if (!parts.every((p) => validator.isAlphanumeric(p))) {
-            return "Only alphanumeric and hyphens are allowed";
-          } else if (!validator.isAlpha(v.substring(0, 1))) {
-            return "Must start with an alphabetic character";
-          } else if (v.length > 128) {
-            return "Must be 128 characters at most";
-          } else if (!v) {
-            return "Must not be empty";
-          }
-        },
-      })
-    );
-
-    const terminalCommands = await instanceCreator.toTerminalCommands({
-      stackName,
-      instanceName: stackName,
-      instanceType: instanceType as _InstanceType,
-      rootVolumeSizeGb: parseInt(rootVolumeSize),
-    });
-    const terminal = window.createTerminal(
-      `Create developer instance ${stackName}`
-    );
-    terminal.show();
-    await executeTerminalCommands(terminal, terminalCommands);
-    instanceStore.refresh();
-  });
-
-  commands.registerCommand(CommandName.selectRegion, async () => {
-    const configPath = "ec2vsc.region";
-    const regionsList =
-      contributes.configuration.properties[configPath].type.enum;
-    const region = await window.showQuickPick(regionsList, {
-      title: "Select an AWS region",
-    });
-    await workspace
-      .getConfiguration()
-      .update(configPath, region, ConfigurationTarget.Global);
-    await commands.executeCommand(CommandName.refresh);
-  });
-
-  commands.registerCommand(CommandName.selectProfile, async () => {
-    const configPath = "ec2vsc.profile";
-    const profiles = await listProfiles();
-    const profile = await window.showQuickPick(profiles, {
-      title: "Select an AWS profile",
-    });
-    await workspace
-      .getConfiguration()
-      .update(configPath, profile, ConfigurationTarget.Global);
-    await commands.executeCommand(CommandName.refresh);
-  });
-
-  commands.registerCommand(CommandName.refresh, async () => {
-    instanceStore.refresh();
-    await window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: "Refreshing EC2 list",
-        cancellable: false,
-      },
-      async (progress, token) => {
-        await toPromise(instanceStore.instanceIds);
-      }
-    );
-  });
-
-  function registerInstanceStateCommand(
-    commandName: string,
-    targetState: InstanceStateName
-  ) {
-    commands.registerCommand(commandName, async (instanceId: string) => {
-      const instance = await instanceStore.describe(instanceId);
-      const label = toInstanceLabel(instance as Instance);
-      const title = `${
-        targetState === "running" ? "Starting" : "Stopping"
-      } ${label}`;
-      await window.withProgress(
-        {
-          location: ProgressLocation.Notification,
-          title,
-          cancellable: true,
-        },
-        async (progress, token) => {
-          await instanceStarter.requestInstanceState(instanceId, targetState);
-          instanceStore.refresh();
-          for await (const state of instanceStarter.waitForState(
-            instanceId,
-            targetState
-          )) {
-            progress.report({ message: state });
-            if (token.isCancellationRequested) {
-              break;
-            }
-          }
-          instanceStore.refresh();
-        }
-      );
-    });
+  const deleteCommandProvider = new DeleteCommandProvider(instanceStore, new InstanceDeleter(instanceStore, cdkCommander));
+  const openCommandProvider = new OpenCommandProvider(serviceFactory, instanceStore, profileStore.value, context, instanceStarter, awsContextResolver);
+  const createCommandProvider = new CreateCommandProvider(instanceCreator, instanceStore);
+  const regionCommandProvider = new RegionCommandProvider();
+  const profileCommandProvider = new ProfileCommandProvider();
+  const refreshCommandProvider = new RefreshCommandProvider(instanceStore);
+  const commandProviders: {[C in `${CommandSuffix}`]: CommandProvider<C, any>} = {
+    delete: deleteCommandProvider,
+    open: openCommandProvider,
+    create: createCommandProvider,
+    selectRegion: regionCommandProvider,
+    selectProfile: profileCommandProvider,
+    refresh: refreshCommandProvider,
+    start: new InstanceStateCommandProvider(CommandSuffix.Start, instanceStore, instanceStarter),
+    stop: new InstanceStateCommandProvider(CommandSuffix.Stop, instanceStore, instanceStarter)
   }
 
-  registerInstanceStateCommand(CommandName.start, "running");
-  registerInstanceStateCommand(CommandName.stop, "stopped");
-
-  commands.registerCommand(CommandName.open, async (instanceId: string) => {
-    const ssmClient = await serviceFactory.createAwsClientPromise(SSMClient);
-    const region = await ssmClient.config.region();
-    const profile = await toPromise(profileStore.value);
-    const instance = await instanceStore.describe(instanceId);
-    const label = toInstanceLabel(instance as Instance);
-    await commands.executeCommand(CommandName.start, instanceId);
-    await window.withProgress(
-      {
-        location: ProgressLocation.Notification,
-        title: `Starting a connection to ${label}`,
-        cancellable: true,
-      },
-      async (progress, token) => {
-        const destination = context.globalStorageUri.path;
-        if (!existsSync(destination)) {
-          await mkdir(destination);
-        }
-        const proxyScriptPath = resolve(
-          __dirname,
-          process.env.PROXY_SCRIPT_FILENAME as string
-        );
-        const sessionManagerBinPath = resolve(
-          __dirname,
-          process.env.SESSION_MANAGER_BIN as string
-        );
-        const keyPair = createKeyPair();
-        const keyPairPaths = await writeKeyPairToDir(keyPair, destination);
-        const sshConfig = toSshConfig({
-          ...keyPairPaths,
-          proxyScriptPath,
-          region,
-          profile,
-          sessionManagerBinPath,
-        });
-        const sshConfigPath = resolve(destination, "config");
-        await writeFile(sshConfigPath, sshConfig);
-        await workspace
-          .getConfiguration()
-          .update(
-            "remote.SSH.configFile",
-            sshConfigPath,
-            ConfigurationTarget.Global
-          );
-        progress.report({ message: "Waiting for instance to be reachable..." });
-        for await (const _ of instanceStarter.waitForStatus(
-          instanceId,
-          PingStatus.ONLINE
-        )) {
-          if (token.isCancellationRequested) {
-            return;
-          }
-        }
-        const instanceInfoResponse = await ssmClient.send(
-          new DescribeInstanceInformationCommand({
-            Filters: [
-              {
-                Key: "InstanceIds",
-                Values: [instanceId],
-              },
-            ],
-          })
-        );
-        const instanceInfo = instanceInfoResponse.InstanceInformationList?.find(
-          (info) => info.InstanceId === instanceId
-        );
-        const options = instanceInfo ? guessUsernames(instanceInfo) : [];
-        const guess = options[0];
-        progress.report({ message: "" });
-        instanceStore.refresh();
-        if (token.isCancellationRequested) {
-          return;
-        }
-        const user = await window.showInputBox({
-          placeHolder: guess || "Username",
-          prompt: `The username for ${label}`,
-          value: guess,
-        });
-        if (user) {
-          const uri = Uri.parse(
-            `vscode-remote://ssh-remote+${user}@${instanceId}/home/${user}`
-          );
-          await commands.executeCommand("vscode.openFolder", uri);
-        }
-      }
-    );
+  Object.entries(commandProviders).forEach(([commandSuffix, provider]) => {
+    commands.registerCommand(CommandName[commandSuffix as CommandSuffix], (arg1) => provider.execute(arg1));
   });
 }

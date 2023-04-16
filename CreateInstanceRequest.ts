@@ -3,7 +3,6 @@ import { StackArg } from "./StackArg";
 export interface CreateInstanceRequest {
   [StackArg.StackName]: string;
   [StackArg.RootVolumeSizeGb]: number;
-  [StackArg.InstanceName]: string;
   [StackArg.InstanceType]: _InstanceType;
-  [StackArg.ImageId]?: string;
+  [StackArg.ImageId]: string;
 }
