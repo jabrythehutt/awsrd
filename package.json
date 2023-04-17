@@ -1,7 +1,7 @@
 {
-  "name": "ec2vsc",
+  "name": "awsrd",
   "version": "0.1.0",
-  "displayName": "EC2 Remote Development",
+  "displayName": "AWS Remote Development",
   "description": "Provision and connect to your AWS EC2 Instances with VS Code",
   "type": "module",
   "main": "./extension.cjs",
@@ -19,7 +19,7 @@
   ],
   "repository": {
     "type": "github",
-    "url": "https://github.com/jabrythehutt/ec2vsc"
+    "url": "https://github.com/jabrythehutt/awsrd"
   },
   "author": {
     "name": "Daniel Jabry",
@@ -77,12 +77,12 @@
     "configuration": {
       "title": "EC2",
       "properties": {
-        "ec2vsc.profile": {
+        "awsrd.profile": {
           "type": "string",
           "default": "default",
           "description": "AWS profile"
         },
-        "ec2vsc.region": {
+        "awsrd.region": {
           "type": {
             "type": [
               "string",
@@ -135,7 +135,7 @@
     "views": {
       "ec2-explorer": [
         {
-          "id": "ec2vsc.instances",
+          "id": "awsrd.instances",
           "name": "Instances",
           "icon": "media/instances_light.svg"
         }
@@ -143,7 +143,7 @@
     },
     "commands": [
       {
-        "command": "ec2vsc.open",
+        "command": "awsrd.open",
         "title": "Connect in new window",
         "icon": {
           "dark": "media/new_window_dark.svg",
@@ -151,17 +151,17 @@
         }
       },
       {
-        "command": "ec2vsc.stop",
+        "command": "awsrd.stop",
         "title": "Stop instance",
         "icon": "media/stop_button.svg"
       },
       {
-        "command": "ec2vsc.start",
+        "command": "awsrd.start",
         "title": "Start instance",
         "icon": "media/play_button.svg"
       },
       {
-        "command": "ec2vsc.selectProfile",
+        "command": "awsrd.selectProfile",
         "title": "Select AWS profile",
         "icon": {
           "light": "media/user_light.svg",
@@ -169,7 +169,7 @@
         }
       },
       {
-        "command": "ec2vsc.selectRegion",
+        "command": "awsrd.selectRegion",
         "title": "Select AWS region",
         "icon": {
           "light": "media/globe_light.svg",
@@ -177,7 +177,7 @@
         }
       },
       {
-        "command": "ec2vsc.refresh",
+        "command": "awsrd.refresh",
         "title": "Refresh instances list",
         "icon": {
           "light": "media/refresh_light.svg",
@@ -185,7 +185,7 @@
         }
       },
       {
-        "command": "ec2vsc.create",
+        "command": "awsrd.create",
         "title": "Create a development EC2 instance",
         "icon": {
           "light": "media/add_light.svg",
@@ -193,7 +193,7 @@
         }
       },
       {
-        "command": "ec2vsc.delete",
+        "command": "awsrd.delete",
         "title": "Delete instance",
         "icon": {
           "light": "media/trash_light.svg",
@@ -204,46 +204,46 @@
     "menus": {
       "view/title": [
         {
-          "command": "ec2vsc.selectProfile",
-          "when": "view == ec2vsc.instances",
+          "command": "awsrd.selectProfile",
+          "when": "view == awsrd.instances",
           "group": "navigation@0"
         },
         {
-          "command": "ec2vsc.selectRegion",
-          "when": "view == ec2vsc.instances",
+          "command": "awsrd.selectRegion",
+          "when": "view == awsrd.instances",
           "group": "navigation@1"
         },
         {
-          "command": "ec2vsc.refresh",
-          "when": "view == ec2vsc.instances",
+          "command": "awsrd.refresh",
+          "when": "view == awsrd.instances",
           "group": "navigation@2"
         },
         {
-          "command": "ec2vsc.create",
-          "when": "view == ec2vsc.instances",
+          "command": "awsrd.create",
+          "when": "view == awsrd.instances",
           "group": "navigation@3"
         }
       ],
       "view/item/context": [
         {
-          "command": "ec2vsc.stop",
+          "command": "awsrd.stop",
           "group": "inline@0",
-          "when": "view == ec2vsc.instances && viewItem =~ /running/"
+          "when": "view == awsrd.instances && viewItem =~ /running/"
         },
         {
-          "command": "ec2vsc.start",
+          "command": "awsrd.start",
           "group": "inline@1",
-          "when": "view == ec2vsc.instances && viewItem =~ /stopped/"
+          "when": "view == awsrd.instances && viewItem =~ /stopped/"
         },
         {
-          "command": "ec2vsc.open",
+          "command": "awsrd.open",
           "group": "inline@2",
-          "when": "view == ec2vsc.instances && (viewItem =~ /stopped/ || viewItem =~ /running/)"
+          "when": "view == awsrd.instances && (viewItem =~ /stopped/ || viewItem =~ /running/)"
         },
         {
-          "command": "ec2vsc.delete",
+          "command": "awsrd.delete",
           "group": "inline@3",
-          "when": "view == ec2vsc.instances && (viewItem =~ /stopped/) && viewItem =~ /managed/"
+          "when": "view == awsrd.instances && (viewItem =~ /stopped/) && viewItem =~ /managed/"
         }
       ]
     }

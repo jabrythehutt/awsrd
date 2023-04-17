@@ -8,7 +8,7 @@ export class RegionCommandProvider
   implements CommandProvider<CommandSuffix.SelectRegion>
 {
   async execute(): Promise<void> {
-    const configPath = `ec2vsc.region`;
+    const configPath = `awsrd.region`;
     const regionsList =
       contributes.configuration.properties[configPath].type.enum;
     const region = await window.showQuickPick(regionsList, {

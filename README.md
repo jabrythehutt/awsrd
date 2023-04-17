@@ -1,4 +1,4 @@
-# EC2 Remote Development
+# AWS Remote Development
 
 ## Why
 
@@ -20,6 +20,8 @@ EC2 instances are provisioned on your behalf with CloudFormation stacks and the 
 
 ## Getting started
 
-1. Make sure you have your [AWS CLI credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) set up, there are various extensions that can simplify this process for you such as the offical [AWS Toolkit](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/connect.html)
+1. Make sure you have your [AWS CLI credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) set up, there are various extensions that can simplify this step for you such as the offical [AWS Toolkit](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/connect.html)
 
-2.
+2. 
+
+3. (Optional) If you would like to connect to any of your existing E
