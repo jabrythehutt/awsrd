@@ -1,16 +1,30 @@
 {
   "name": "ec2vsc",
   "version": "0.1.0",
-  "description": "Display EC2 instances",
+  "displayName": "EC2 Remote Development",
+  "description": "Provision and connect to your AWS EC2 Instances with VS Code",
   "type": "module",
   "main": "./extension.cjs",
   "publisher": "jabrythehutt",
+  "preview": true,
+  "categories": [
+    "Other"
+  ],
+  "icon": "media/ec2.png",
   "keywords": [
     "AWS",
     "EC2",
+    "Remote SSH",
     "SSM"
   ],
-  "author": "Daniel Jabry <djabry@gmail.com>",
+  "repository": {
+    "type": "github",
+    "url": "https://github.com/jabrythehutt/ec2vsc"
+  },
+  "author": {
+    "name": "Daniel Jabry",
+    "email": "djabry@gmail.com"
+  },
   "license": "MIT",
   "dependencies": {
     "@aws-cdk/aws-apigatewayv2-alpha": "2.69.0-alpha.0",
@@ -55,8 +69,9 @@
     "ms-vscode-remote.remote-ssh"
   ],
   "engines": {
-    "vscode": "^1.76.0"
+    "vscode": "^1.77.0"
   },
+  "badges": [],
   "activationEvents": [],
   "contributes": {
     "configuration": {
