@@ -2,6 +2,8 @@ import { _InstanceType } from "@aws-sdk/client-ec2";
 import { CdkCommander } from "./CdkCommander";
 import { CreateInstanceRequest } from "./CreateInstanceRequest";
 import { InstanceStore } from "./InstanceStore";
+import { defaultInstanceType } from "./defaultInstanceType";
+import { defaultRootVolumeSizeGb } from "./defaultRootVolumeSizeGb";
 
 export class InstanceDeleter {
   constructor(
@@ -36,8 +38,8 @@ export class InstanceDeleter {
       stackName,
       // The instance request values don't matter since we're attempting to delete the stack
       imageId: "",
-      instanceType: _InstanceType.c7g_medium,
-      rootVolumeSizeGb: 20,
+      instanceType: defaultInstanceType,
+      rootVolumeSizeGb: defaultRootVolumeSizeGb,
     };
   }
 }

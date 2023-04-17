@@ -8,6 +8,7 @@ import { InstanceCreator } from "./InstanceCreator";
 import { InstanceStore } from "./InstanceStore";
 import { StackArg } from "./StackArg";
 import { CreateInstanceRequest } from "./CreateInstanceRequest";
+import { defaultRootVolumeSizeGb } from "./defaultRootVolumeSizeGb";
 
 export class CreateCommandProvider
   implements CommandProvider<CommandSuffix.Create>
@@ -33,14 +34,14 @@ export class CreateCommandProvider
 
   protected async requestInstanceType(): Promise<string | undefined> {
     return window.showQuickPick(Object.values(_InstanceType), {
-      title: "Select an instance type",
+        title: "Select an instance type"
     });
   }
   protected async requestRootVolumeSize(): Promise<string | undefined> {
     const maxSize = 16000;
     return window.showInputBox({
       title: "Set the size of the root volume (GB)",
-      value: `${20}`,
+      value: `${defaultRootVolumeSizeGb}`,
       validateInput: (v) => {
         if (!v) {
           return "Must not be empty";

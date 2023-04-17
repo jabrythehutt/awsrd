@@ -1,7 +1,7 @@
 import { ConfigStore } from "./ConfigStore";
 import packageJson from "./package.json";
 
-export class RegionStore extends ConfigStore<string> {
+export class RegionStore extends ConfigStore<string | undefined> {
   constructor() {
     super(
       Object.keys(packageJson.contributes.configuration.properties).find((k) =>
