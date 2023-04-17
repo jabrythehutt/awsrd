@@ -15,7 +15,9 @@ EC2 instances are provisioned on your behalf with [CloudFormation](https://aws.a
 The extension allows you to:
 
 - Create remote development EC2 instances that shut down automatically when inactive
+![Create remote development EC2 instance](./images/create_instance.gif)
 - Connect to your development instances via SSM
+![Connect to EC2 instance](./images/open_instance.gif)
 - Start and stop your existing EC2s
 - Select alternative AWS profiles and regions
 - Terminate your development environments when you no longer need them
