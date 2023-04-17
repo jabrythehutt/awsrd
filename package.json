@@ -153,12 +153,18 @@
       {
         "command": "awsrd.stop",
         "title": "Stop instance",
-        "icon": "media/stop_button.svg"
+        "icon": {
+          "light": "media/stop_light.svg",
+          "dark": "media/stop_dark.svg"
+        }
       },
       {
         "command": "awsrd.start",
         "title": "Start instance",
-        "icon": "media/play_button.svg"
+        "icon": {
+          "light": "media/play_light.svg",
+          "dark": "media/play_dark.svg"
+        }
       },
       {
         "command": "awsrd.selectProfile",
