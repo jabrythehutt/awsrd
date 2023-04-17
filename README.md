@@ -10,17 +10,16 @@ This extension aims to make that experience quick and portable.
 
 EC2 instances are provisioned on your behalf with CloudFormation stacks and the connection is established via [AWS SSM](https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-agent.html) so all you have to do is set up your [AWS CLI credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) and decide what type of machine you wish to use.
 
-
 ## Features
 
-* Create remote development EC2 instances
-* Connect to your EC2 instances via SSM
-* Start and stop your instances
-* Select alternative AWS profiles and regions
-* Terminate your instances
+- Create remote development EC2 instances
+- Connect to your EC2 instances via SSM
+- Start and stop your EC2s
+- Select alternative AWS profiles and regions
+- Terminate your instances
 
 ## Getting started
 
 1. Make sure you have your [AWS CLI credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) set up, there are various extensions that can simplify this process for you such as the offical [AWS Toolkit](https://docs.aws.amazon.com/toolkit-for-vscode/latest/userguide/connect.html)
 
-2. 
+2.
