@@ -11,7 +11,9 @@ This extension aims to make that experience quick and portable across machines t
 EC2 instances are provisioned on your behalf with [CloudFormation](https://aws.amazon.com/cloudformation/) and the connection is established via [AWS SSM](https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-agent.html) so all you have to do is set up your [AWS CLI credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) and decide what type of machine you wish to use.
 
 ## Features
+
 The extension allows you to:
+
 - Create remote development EC2 instances that shut down automatically when inactive
 - Connect to your development instances via SSM
 - Start and stop your existing EC2s
@@ -32,8 +34,11 @@ The extension allows you to:
 ## Configuration
 
 Development machines are based on Amazon Linux machine images with docker pre-installed for compatibility with a wide range of EC2 instance types. The simplest way to customise your environment is to configure a [Dev Container](https://code.visualstudio.com/docs/devcontainers/containers) for your project and launch it once you're connected to your EC2.
+
 ### Launching with alternative machine images
+
 If you need greater control of the base machine image (e.g. to use a [DLAMI](https://docs.aws.amazon.com/dlami/latest/devguide/what-is-dlami.html) with a GPU instance) then you can simply specify the optional image ID when launching your development environment.
 
 ### Adjusting the auto-shutdown behaviour
+
 The development environment includes a CloudWatch alarm to shut down the instance if the CPU utilisation falls below a threshold for a certain period of time. The alarm name is set up as `${STACK_NAME}InactivityAlarm-Inactivity` and you can adjust it within the AWS console directly to suit your needs.
