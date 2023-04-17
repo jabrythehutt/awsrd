@@ -1,6 +1,7 @@
 # AWS Remote Development
 
 [![Maintainability](https://api.codeclimate.com/v1/badges/53f17e26baec16b7dd69/maintainability)](https://codeclimate.com/github/jabrythehutt/awsrd/maintainability)
+
 ## Why
 
 Launching an [AWS EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html) and then connecting to it via the [Remote SSH plugin](https://code.visualstudio.com/docs/remote/ssh-tutorial) requires some cumbersome manual steps. Moreover, large parts of this process must be repeated for every machine you wish to connect from (i.e. generating SSH keys and authorising them on your instance).
