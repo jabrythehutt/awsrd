@@ -19,8 +19,11 @@ The extension allows you to:
 - Connect to your development instances via SSM
   ![Connect to EC2 instance](./images/open_instance.gif)
 - Start and stop your existing EC2s
-- Select alternative AWS profiles and regions
+  ![Start instance](./images/start_instance.gif)
 - Terminate your development environments when you no longer need them
+  ![Terminate instance](./images/terminate_instance.gif)
+- Select alternative AWS profiles and regions
+
 
 ## Getting started
 
