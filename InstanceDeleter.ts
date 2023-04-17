@@ -35,7 +35,7 @@ export class InstanceDeleter {
     return {
       stackName,
       // The instance request values don't matter since we're attempting to delete the stack
-      imageId: "foo",
+      imageId: "",
       instanceType: _InstanceType.c7g_medium,
       rootVolumeSizeGb: 20,
     };
