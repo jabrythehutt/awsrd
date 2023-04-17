@@ -9,7 +9,10 @@
       "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}/bazel-bin/dist", "--profile-temp"],
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/bazel-bin/dist",
+        "--profile-temp"
+      ],
       "outFiles": ["${workspaceFolder}/bazel-bin/dist"],
       "preLaunchTask": "${defaultBuildTask}"
     }
