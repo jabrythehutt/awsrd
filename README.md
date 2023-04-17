@@ -4,19 +4,19 @@
 
 Launching an [AWS EC2 instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html) and then connecting to it via the [Remote SSH plugin](https://code.visualstudio.com/docs/remote/ssh-tutorial) requires some cumbersome manual steps. Moreover, large parts of this process must be repeated for every machine you wish to connect from (i.e. generating SSH keys and authorising them on your instance).
 
-This extension aims to make that experience quick and portable.
+This extension aims to make that experience quick and portable across machines that you already connect to AWS with.
 
 ## How
 
-EC2 instances are provisioned on your behalf with CloudFormation stacks and the connection is established via [AWS SSM](https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-agent.html) so all you have to do is set up your [AWS CLI credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) and decide what type of machine you wish to use.
+EC2 instances are provisioned on your behalf with [CloudFormation](https://aws.amazon.com/cloudformation/) and the connection is established via [AWS SSM](https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-agent.html) so all you have to do is set up your [AWS CLI credentials](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-configure.html) and decide what type of machine you wish to use.
 
 ## Features
-
+The extension allows you to:
 - Create remote development EC2 instances that shut down automatically when inactive
-- Connect to your EC2 instances via SSM
-- Start and stop your EC2s
+- Connect to your development instances via SSM
+- Start and stop your existing EC2s
 - Select alternative AWS profiles and regions
-- Terminate your instances
+- Terminate your development environments when you no longer need them
 
 ## Getting started
 
@@ -28,3 +28,12 @@ EC2 instances are provisioned on your behalf with CloudFormation stacks and the 
 2. Make sure that your AWS Account has a [default VPC](https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html) that your development instances can be launched in
 
 3. (Optional) If you would like to connect to existing EC2s (not created by this extension) then you need to make sure that [Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started.html) is set up for them
+
+## Configuration
+
+Development machines are based on Amazon Linux machine images with docker pre-installed for compatibility with a wide range of EC2 instance types. The simplest way to customise your environment is to configure a [Dev Container](https://code.visualstudio.com/docs/devcontainers/containers) for your project and launch it once you're connected to your EC2.
+### Launching with alternative machine images
+If you need greater control of the base machine image (e.g. to use a [DLAMI](https://docs.aws.amazon.com/dlami/latest/devguide/what-is-dlami.html) with a GPU instance) then you can simply specify the optional image ID when launching your development environment.
+
+### Adjusting the auto-shutdown behaviour
+The development environment includes a CloudWatch alarm to shut down the instance if the CPU utilisation falls below a threshold for a certain period of time. The alarm name is set up as `${STACK_NAME}InactivityAlarm-Inactivity` and you can adjust it within the AWS console directly to suit your needs.
