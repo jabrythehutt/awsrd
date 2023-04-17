@@ -34,7 +34,7 @@ export class CreateCommandProvider
 
   protected async requestInstanceType(): Promise<string | undefined> {
     return window.showQuickPick(Object.values(_InstanceType), {
-        title: "Select an instance type"
+      title: "Select an instance type",
     });
   }
   protected async requestRootVolumeSize(): Promise<string | undefined> {
