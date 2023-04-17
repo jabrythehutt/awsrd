@@ -71,7 +71,13 @@
   "engines": {
     "vscode": "^1.77.0"
   },
-  "badges": [],
+  "badges": [
+    {
+      "description": "Maintainability",
+      "href": "https://codeclimate.com/github/jabrythehutt/awsrd/maintainability",
+      "url": "https://codeclimate.com/github/jabrythehutt/awsrd/maintainability"
+    }
+  ],
   "activationEvents": [],
   "contributes": {
     "configuration": {
