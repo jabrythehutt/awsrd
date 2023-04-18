@@ -154,12 +154,11 @@ npm_package(
 
 bin.vsce(
     name = "vsc_package",
-    chdir = "$(rootpath dist)",
     srcs = [
-        "dist"
+        "dist",
     ],
     outs = [
-        "vsc_package.vscx"
+        "vsc_package.vscx",
     ],
     args = [
         "package",
@@ -167,7 +166,7 @@ bin.vsce(
         "--no-update-package-json",
         "--no-dependencies",
         "-o",
-        "../vsc_package.vscx"
-    ]
-
+        "../vsc_package.vscx",
+    ],
+    chdir = "$(rootpath dist)",
 )

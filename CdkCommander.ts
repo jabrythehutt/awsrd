@@ -2,7 +2,7 @@ import { join } from "path";
 import { AwsContextResolver } from "./AwsContextResolver";
 import { toPromise } from "./toPromise";
 import { Observable } from "rxjs";
-import packageJson from "./package.json"
+import packageJson from "./package.json";
 
 export class CdkCommander {
   constructor(
