@@ -144,6 +144,8 @@ npm_package(
         "extension",
         "ssm_proxy_script",
         "//:node_modules/aws-cdk/dir",
+        "README.md",
+        "LICENSE.txt",
         session_manager_bin_name,
     ] + glob(["media/*.*"]),
     exclude_srcs_patterns = [],
