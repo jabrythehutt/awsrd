@@ -175,3 +175,14 @@ bin.vsce(
     args = select(to_package_args_choice(base_args)),
     chdir = "$(rootpath dist)",
 )
+
+bin.vsce_binary(
+    name = "publish",
+    data = [
+        "vsc_package"
+    ],
+    args = select(to_package_args_choice([
+        "-i",
+        "$(rootpath vsc_package)"
+    ]))
+)
