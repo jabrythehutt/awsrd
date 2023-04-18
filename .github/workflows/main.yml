@@ -1,0 +1,33 @@
+name: Bump version CI
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  tag:
+    name: Publish a new Git tag
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip CI')"
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: Configure CI for release
+        run: |
+          git config user.email \"djabry@gmail.com\"
+          git config user.name \"Daniel Jabry\"
+
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@1.55.0
+        id: bump-version
+        env:
+          # Push back using a PAT so that the publish workflow is triggered
+          # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          WITH_V: true
