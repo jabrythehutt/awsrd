@@ -1,11 +1,21 @@
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
-load("index.bzl", "cjs_bundle", "cli")
+load("index.bzl", "cjs_bundle", "cli", "to_package_args_choice")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("session_manager.bzl", "session_manager")
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
 load("@npm//:@vscode/vsce/package_json.bzl", "bin")
+
+[
+    [config_setting(
+            name = os + "_" + arch,
+            constraint_values = [
+                "@platforms//os:" + os,
+                "@platforms//cpu:" + arch,
+            ],
+        ) for os in ["linux", "macos"]]
+for arch in ["x86_64", "arm64"]]
 
 npm_link_all_packages(
     name = "node_modules",
@@ -152,6 +162,16 @@ npm_package(
     exclude_srcs_patterns = [],
 )
 
+base_args = [
+    "package",
+    "--no-git-tag-version",
+    "--no-update-package-json",
+    "--no-dependencies",
+    "-o",
+    "../vsc_package.vscx",
+]
+
+
 bin.vsce(
     name = "vsc_package",
     srcs = [
@@ -160,13 +180,6 @@ bin.vsce(
     outs = [
         "vsc_package.vscx",
     ],
-    args = [
-        "package",
-        "--no-git-tag-version",
-        "--no-update-package-json",
-        "--no-dependencies",
-        "-o",
-        "../vsc_package.vscx",
-    ],
+    args = select(to_package_args_choice(base_args)),
     chdir = "$(rootpath dist)",
 )

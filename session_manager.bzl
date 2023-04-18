@@ -54,15 +54,7 @@ def session_manager(name):
         for os in oss.keys():
             suffix = os + "_" + arch
             dir_name = name + "_" + suffix
-            platform_name = dir_name + "_config"
-            native.config_setting(
-                name = platform_name,
-                constraint_values = [
-                    "@platforms//os:" + oss[os],
-                    "@platforms//cpu:" + archs[arch],
-                ],
-            )
-
+            platform_name = oss[os] + "_" + archs[arch]
             bin_path = "/{suffix}_plugin/{file_name}".format(suffix = suffix, file_name = file_name)
             cmd = "cp $(SRCS){bin_path} $@".format(bin_path = bin_path)
             copy_commands[platform_name] = cmd

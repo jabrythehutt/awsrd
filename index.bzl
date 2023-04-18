@@ -45,3 +45,22 @@ def cli(name, entry_point, srcs = [], deps = [], external_libs = [], env = {"AWS
         env = env,
         **kwargs
     )
+
+
+def to_package_args_choice(base_args): 
+    archs = {
+        "x64": "x86_64",
+        "arm64": "arm64",
+    }
+    oss = {
+        "linux": "linux",
+        "darwin": "macos",
+    }
+    choices = {}
+    for arch in archs.keys():
+        for os in oss.keys():
+            vsc_target_name = os + "-" + arch
+            platform_name = oss[os] + "_" + archs[arch]
+            choices[platform_name] = base_args + ["--target", vsc_target_name]
+
+    return choices
