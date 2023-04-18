@@ -1,0 +1,8 @@
+# This tells Bazel how to interact with the version control system
+# Enable this with --config=release
+build:release --stamp --workspace_status_command="bash ./bazel_stamp_vars.sh"
+run:release --stamp --workspace_status_command="bash ./bazel_stamp_vars.sh"
+
+# By default, failing tests don't print any output, it's logged to a
+# file instead.
+test --test_output=errors

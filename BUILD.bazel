@@ -7,6 +7,7 @@ load("platforms.bzl", "platforms")
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
 load("@npm//:@vscode/vsce/package_json.bzl", "bin")
+load("@aspect_rules_js//npm:defs.bzl", "stamped_package_json")
 
 platforms()
 
@@ -42,12 +43,17 @@ deps = [
 
 tests = ["*.test.ts"]
 
+stamped_package_json(
+    name = "package",
+    stamp_var = "STABLE_GIT_VERSION",
+)
+
 ts_project(
     name = "lib",
     srcs = glob(
         ["*.ts"],
         exclude = tests,
-    ) + ["package.json"],
+    ) + ["package"],
     declaration = True,
     resolve_json_module = True,
     deps = deps,
@@ -55,7 +61,7 @@ ts_project(
 
 ts_project(
     name = "test_lib",
-    srcs = glob(tests) + ["package.json"],
+    srcs = glob(tests) + ["package"],
     declaration = True,
     resolve_json_module = True,
     deps = [
@@ -68,7 +74,7 @@ jest_test(
     name = "test",
     config = "jest.config.mjs",
     data = [
-        "package.json",
+        "package",
         "test_lib",
     ],
     node_modules = "//:node_modules",
@@ -144,7 +150,7 @@ npm_package(
     name = "dist",
     srcs = [
         "cdk_app",
-        "package.json",
+        "package",
         "extension",
         "ssm_proxy_script",
         "README.md",

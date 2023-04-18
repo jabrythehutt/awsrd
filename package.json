@@ -1,6 +1,6 @@
 {
   "name": "awsrd",
-  "version": "0.1.0",
+  "version": "0.0.0-PLACEHOLDER",
   "displayName": "AWS Remote Development",
   "description": "Provision and connect to your AWS EC2 Instances with VS Code",
   "type": "module",
