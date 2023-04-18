@@ -1,5 +1,6 @@
 load("@aspect_rules_esbuild//esbuild:defs.bzl", "esbuild")
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary", "js_test")
+load("platforms.bzl", "to_config_name")
 
 def to_module_name(lib, prefix = "//:node_modules/"):
     return lib.replace(prefix, "")
@@ -46,6 +47,7 @@ def cli(name, entry_point, srcs = [], deps = [], external_libs = [], env = {"AWS
         **kwargs
     )
 
+
 def to_package_args_choice(base_args):
     archs = {
         "x64": "x86_64",
@@ -59,7 +61,7 @@ def to_package_args_choice(base_args):
     for arch in archs.keys():
         for os in oss.keys():
             vsc_target_name = os + "-" + arch
-            platform_name = oss[os] + "_" + archs[arch]
-            choices[platform_name] = base_args + ["--target", vsc_target_name]
+            config_name = to_config_name(oss[os], archs[arch])
+            choices[config_name] = base_args + ["--target", vsc_target_name]
 
     return choices

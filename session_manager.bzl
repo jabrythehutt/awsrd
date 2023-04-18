@@ -4,6 +4,7 @@ load("@io_bazel_rules_docker//container:container.bzl", "container_image")
 load("@aspect_bazel_lib//lib:output_files.bzl", "output_files")
 load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
 load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("platforms.bzl", "to_config_name")
 
 def session_manager(name):
     workdir = "/session-manager-plugin"
@@ -54,10 +55,10 @@ def session_manager(name):
         for os in oss.keys():
             suffix = os + "_" + arch
             dir_name = name + "_" + suffix
-            platform_name = oss[os] + "_" + archs[arch]
+            config_name = to_config_name(oss[os], archs[arch])
             bin_path = "/{suffix}_plugin/{file_name}".format(suffix = suffix, file_name = file_name)
             cmd = "cp $(SRCS){bin_path} $@".format(bin_path = bin_path)
-            copy_commands[platform_name] = cmd
+            copy_commands[config_name] = cmd
 
     native.genrule(
         name = name,
