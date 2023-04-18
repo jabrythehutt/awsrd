@@ -47,7 +47,6 @@ def cli(name, entry_point, srcs = [], deps = [], external_libs = [], env = {"AWS
         **kwargs
     )
 
-
 def to_package_args_choice(base_args):
     archs = {
         "x64": "x86_64",

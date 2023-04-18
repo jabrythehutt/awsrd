@@ -7,12 +7,12 @@ def to_config_name(os, arch):
 def to_platform_name(os, arch):
     return to_config_name(os, arch) + "_platform"
 
-def platforms(): 
+def platforms():
     for os in supported_os:
         for arch in supported_arch:
             constraint_values = [
                 "@platforms//os:" + os,
-                "@platforms//cpu:" + arch,                
+                "@platforms//cpu:" + arch,
             ]
             native.config_setting(
                 name = to_config_name(os, arch),
