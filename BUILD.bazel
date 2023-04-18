@@ -162,6 +162,7 @@ npm_package(
 )
 
 package_file = "package.vsix"
+
 base_args = [
     "package",
     "--no-git-tag-version",
