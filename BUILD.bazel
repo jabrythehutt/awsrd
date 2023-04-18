@@ -161,13 +161,14 @@ npm_package(
     exclude_srcs_patterns = [],
 )
 
+package_file = "package.vsix"
 base_args = [
     "package",
     "--no-git-tag-version",
     "--no-update-package-json",
     "--no-dependencies",
     "-o",
-    "../vsc_package.vscx",
+    "../" + package_file,
 ]
 
 bin.vsce(
@@ -176,7 +177,7 @@ bin.vsce(
         "dist",
     ],
     outs = [
-        "package.vsix",
+        package_file,
     ],
     args = select(to_package_args_choice(base_args)),
     chdir = "$(rootpath dist)",
