@@ -176,7 +176,7 @@ bin.vsce(
         "dist",
     ],
     outs = [
-        "vsc_package.vscx",
+        "package.vsix",
     ],
     args = select(to_package_args_choice(base_args)),
     chdir = "$(rootpath dist)",
