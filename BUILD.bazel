@@ -187,7 +187,10 @@ bin.vsce(
 bin.vsce_binary(
     name = "publish",
     args = select(to_package_args_choice([
-        "-i",
+        "publish",
+        "--no-git-tag-version",
+        "--no-update-package-json",
+        "--packagePath",
         "$(rootpath vsc_package)",
     ])),
     data = [
