@@ -9,13 +9,20 @@ load("@npm//:@vscode/vsce/package_json.bzl", "bin")
 
 [
     [config_setting(
-            name = os + "_" + arch,
-            constraint_values = [
-                "@platforms//os:" + os,
-                "@platforms//cpu:" + arch,
-            ],
-        ) for os in ["linux", "macos"]]
-for arch in ["x86_64", "arm64"]]
+        name = os + "_" + arch,
+        constraint_values = [
+            "@platforms//os:" + os,
+            "@platforms//cpu:" + arch,
+        ],
+    ) for os in [
+        "linux",
+        "macos",
+    ]]
+    for arch in [
+        "x86_64",
+        "arm64",
+    ]
+]
 
 npm_link_all_packages(
     name = "node_modules",
@@ -170,7 +177,6 @@ base_args = [
     "-o",
     "../vsc_package.vscx",
 ]
-
 
 bin.vsce(
     name = "vsc_package",
