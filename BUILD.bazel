@@ -178,11 +178,11 @@ bin.vsce(
 
 bin.vsce_binary(
     name = "publish",
-    data = [
-        "vsc_package"
-    ],
     args = select(to_package_args_choice([
         "-i",
-        "$(rootpath vsc_package)"
-    ]))
+        "$(rootpath vsc_package)",
+    ])),
+    data = [
+        "vsc_package",
+    ],
 )
