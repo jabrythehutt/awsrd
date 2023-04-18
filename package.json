@@ -39,7 +39,6 @@
     "@aws-sdk/credential-providers": "3.303.0",
     "@aws-sdk/shared-ini-file-loader": "3.303.0",
     "aws-cdk-lib": "2.75.0",
-    "aws-cdk": "2.75.0",
     "cdk-monitoring-constructs": "4.0.1",
     "constructs": "^10.1.284",
     "lodash": "4.17.21",
@@ -51,6 +50,7 @@
     "validator": "13.9.0"
   },
   "devDependencies": {
+    "aws-cdk": "2.75.0",
     "@types/validator": "13.7.14",
     "@types/lodash": "4.14.192",
     "@types/vscode": "1.76.0",
@@ -62,7 +62,8 @@
     "typescript": "4.9.5",
     "jest": "29.5.0",
     "jest-cli": "29.5.0",
-    "jest-junit": "16.0.0"
+    "jest-junit": "16.0.0",
+    "@vscode/vsce": "2.19.0"
   },
   "extensionDependencies": [
     "ms-vscode-remote.remote-ssh"

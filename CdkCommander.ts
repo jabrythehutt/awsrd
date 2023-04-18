@@ -2,6 +2,7 @@ import { join } from "path";
 import { AwsContextResolver } from "./AwsContextResolver";
 import { toPromise } from "./toPromise";
 import { Observable } from "rxjs";
+import packageJson from "./package.json"
 
 export class CdkCommander {
   constructor(
@@ -10,7 +11,8 @@ export class CdkCommander {
   ) {}
 
   get cdkBinPath(): string {
-    return join(__dirname, "node_modules", "aws-cdk", "bin", "cdk");
+    const cdkVersion = packageJson.devDependencies["aws-cdk"];
+    return `npm exec --package=aws-cdk@${cdkVersion}  --yes -- cdk`;
   }
 
   get cdkAppPath(): string {
