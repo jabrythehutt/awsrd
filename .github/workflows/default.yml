@@ -4,8 +4,8 @@ on:
     branches-ignore:
       - main
 jobs:
-  name: Test
   test:
+    name: Test
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -20,5 +20,5 @@ jobs:
           key: ${{ runner.os }}-bazel-${{ hashFiles('WORKSPACE', 'environment.yml', '**/*.bazel', '**/*.bzl') }}
           restore-keys: ${{ runner.os }}-bazel-
 
-      - name: Test
+      - name: Build all targets and run all tests
         run: bazel test //...
