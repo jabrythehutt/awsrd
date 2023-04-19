@@ -165,7 +165,7 @@ export class OpenCommandProvider
             `vscode-remote://ssh-remote+${user}@${instanceId}/home/${user}`
           );
           await commands.executeCommand("vscode.openFolder", uri, {
-            forceNewWindow: true
+            forceNewWindow: true,
           });
         }
       }
