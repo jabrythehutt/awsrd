@@ -1,5 +1,4 @@
-import { Terminal, TerminalExitStatus } from "vscode";
-import { window } from "vscode";
+import { Terminal, TerminalExitStatus, window } from "vscode";
 
 export function executeTerminalCommands(
   terminal: Terminal,
