@@ -14,8 +14,7 @@ async function run() {
   const app = new App();
   const region = process.env.CDK_DEFAULT_REGION;
   const args = resolveFromCdkContext(app.node, Object.values({...ContextArg, ...StackArg}));
-  const profile = args.profile;
-  const credentialStore = createCredentialStore(of(profile));
+  const credentialStore = createCredentialStore(of(args.profile as string));
   const clientFactory = new AwsClientFactory(credentialStore, of(region));
   const propsResolver = new InstancePropsResolver(clientFactory);
   const stack = new Stack(app, args.stackName, {
