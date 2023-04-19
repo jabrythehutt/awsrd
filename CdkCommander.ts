@@ -78,7 +78,7 @@ export class CdkCommander {
       this.cdkBinPath,
       cdkCommand,
       ...this.cdkAppArgs,
-      ...this.toContextArgs({...defaultContext, context}),
+      ...this.toContextArgs<T & Record<ContextArg, string>>({...defaultContext, ...context}),
       ...defaultOptions,
     ]);
   }
