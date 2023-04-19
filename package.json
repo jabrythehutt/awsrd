@@ -75,7 +75,12 @@
     {
       "description": "Maintainability",
       "href": "https://codeclimate.com/github/jabrythehutt/awsrd/maintainability",
-      "url": "https://codeclimate.com/github/jabrythehutt/awsrd/maintainability"
+      "url": "https://api.codeclimate.com/v1/badges/53f17e26baec16b7dd69/maintainability"
+    },
+    {
+      "description": "Build",
+      "url": "https://github.com/jabrythehutt/awsrd/actions/workflows/main.yml/badge.svg",
+      "href": "https://github.com/jabrythehutt/awsrd/actions?query=branch%3Amain"
     }
   ],
   "activationEvents": [],
