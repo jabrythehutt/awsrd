@@ -22,6 +22,8 @@ import { PlatformName } from "./PlatformName";
 import { defaultUsernames } from "./defaultUsernames";
 import { Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
+import { ContextArg } from "./ContextArg";
+import { AwsClientFactory } from "./AwsClientFactory";
 
 export class InstancePropsResolver {
   defaultInit = CloudFormationInit.fromElements(
@@ -37,10 +39,10 @@ export class InstancePropsResolver {
 
   defaultBlockDeviceName = "/dev/xvda";
 
-  constructor(private ec2Client: EC2Client) {}
+  constructor(private clientFactory: AwsClientFactory) {}
 
   async resolve(
-    request: Partial<Record<StackArg, string>>,
+    request: Partial<Record<StackArg | ContextArg, string>>,
     construct: Construct
   ): Promise<VscInstanceProps> {
     const image = request.imageId
@@ -92,7 +94,8 @@ export class InstancePropsResolver {
   }
 
   async describeImage(imageId: string): Promise<Image | undefined> {
-    const response = await this.ec2Client.send(
+    const ec2Client = await this.clientFactory.createAwsClientPromise(EC2Client);
+    const response = await ec2Client.send(
       new DescribeImagesCommand({
         ImageIds: [imageId],
       })
@@ -101,7 +104,8 @@ export class InstancePropsResolver {
   }
 
   async toMachineImage(image: Image): Promise<MachineImage> {
-    const region = await this.ec2Client.config.region();
+    const ec2Client = await this.clientFactory.createAwsClientPromise(EC2Client);
+    const region = await ec2Client.config.region();
     const amiMap = {
       [region]: image.ImageId as string,
     };

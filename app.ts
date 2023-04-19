@@ -3,21 +3,26 @@ import { VscInstance } from "./VscInstance";
 import { StackArg } from "./StackArg";
 import { instanceTagName } from "./instanceTagName";
 import { instanceTagValue } from "./instanceTagValue";
-import { EC2Client } from "@aws-sdk/client-ec2";
 import { InstancePropsResolver } from "./InstancePropsResolver";
+import { ContextArg } from "./ContextArg";
+import { of } from "rxjs";
+import { createCredentialStore } from "./createCredentialStore";
+import { AwsClientFactory } from "./AwsClientFactory";
 
 async function run() {
   const app = new App();
   const region = process.env.CDK_DEFAULT_REGION;
-  const ec2Client = new EC2Client({ region });
-  const propsResolver = new InstancePropsResolver(ec2Client);
-  const args = Object.values(StackArg).reduce(
+  const args = Object.values({...ContextArg, ...StackArg}).reduce(
     (values, arg) => ({
       ...values,
       [arg]: app.node.tryGetContext(arg),
     }),
-    {} as Record<StackArg, string>
+    {} as Record<StackArg | ContextArg, string>
   );
+  const profile = args.profile;
+  const credentialStore = createCredentialStore(of(profile));
+  const clientFactory = new AwsClientFactory(credentialStore, of(region));
+  const propsResolver = new InstancePropsResolver(clientFactory);
   const stack = new Stack(app, args.stackName, {
     tags: {
       [instanceTagName]: instanceTagValue,

@@ -7,11 +7,11 @@ import { readFile } from "fs/promises";
 import { hideBin } from "yargs/helpers";
 import { KeyAuthoriser } from "./KeyAuthoriser";
 import { SessionStarter } from "./SessionStarter";
-import { fromIni } from "@aws-sdk/credential-providers";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { SsmProxyScriptArg } from "./SsmProxyScriptArg";
 import { defaultPollPeriod } from "./defaultPollPeriod";
 import { PingStatus } from "@aws-sdk/client-ssm";
+import { createCredentialStore } from "./createCredentialStore";
 
 async function run() {
   const args = await yargs(hideBin(process.argv))
@@ -32,15 +32,9 @@ async function run() {
     .parse();
   const region = args.region;
   const profile = args.profile;
-  const credentials = fromIni({
-    profile,
-  });
-  const clientConfig = {
-    credentials,
-    region,
-  };
-  const instanceConnectClient = new EC2InstanceConnectClient(clientConfig);
-  const serviceFactory = new AwsClientFactory(of(credentials), of(region));
+  const credentialsStore = createCredentialStore(of(profile));
+  const serviceFactory = new AwsClientFactory(credentialsStore, of(region));
+  const instanceConnectClient = await serviceFactory.createAwsClientPromise(EC2InstanceConnectClient);
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const keyAuthoriser = new KeyAuthoriser(instanceConnectClient);
   const sessionStarter = new SessionStarter(
