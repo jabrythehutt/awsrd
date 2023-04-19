@@ -37,7 +37,7 @@ export class CdkCommander {
   async resolveDefaultContext(): Promise<Record<ContextArg, string>> {
     const profile = await toPromise(this.profileStore);
     return {
-      profile
+      profile,
     };
   }
 
@@ -78,7 +78,10 @@ export class CdkCommander {
       this.cdkBinPath,
       cdkCommand,
       ...this.cdkAppArgs,
-      ...this.toContextArgs<T & Record<ContextArg, string>>({...defaultContext, ...context}),
+      ...this.toContextArgs<T & Record<ContextArg, string>>({
+        ...defaultContext,
+        ...context,
+      }),
       ...defaultOptions,
     ]);
   }

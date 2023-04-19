@@ -94,7 +94,9 @@ export class InstancePropsResolver {
   }
 
   async describeImage(imageId: string): Promise<Image | undefined> {
-    const ec2Client = await this.clientFactory.createAwsClientPromise(EC2Client);
+    const ec2Client = await this.clientFactory.createAwsClientPromise(
+      EC2Client
+    );
     const response = await ec2Client.send(
       new DescribeImagesCommand({
         ImageIds: [imageId],
@@ -104,7 +106,9 @@ export class InstancePropsResolver {
   }
 
   async toMachineImage(image: Image): Promise<MachineImage> {
-    const ec2Client = await this.clientFactory.createAwsClientPromise(EC2Client);
+    const ec2Client = await this.clientFactory.createAwsClientPromise(
+      EC2Client
+    );
     const region = await ec2Client.config.region();
     const amiMap = {
       [region]: image.ImageId as string,

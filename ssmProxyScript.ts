@@ -34,7 +34,9 @@ async function run() {
   const profile = args.profile;
   const credentialsStore = createCredentialStore(of(profile));
   const serviceFactory = new AwsClientFactory(credentialsStore, of(region));
-  const instanceConnectClient = await serviceFactory.createAwsClientPromise(EC2InstanceConnectClient);
+  const instanceConnectClient = await serviceFactory.createAwsClientPromise(
+    EC2InstanceConnectClient
+  );
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const keyAuthoriser = new KeyAuthoriser(instanceConnectClient);
   const sessionStarter = new SessionStarter(

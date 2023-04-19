@@ -1,3 +1,3 @@
 export enum ContextArg {
-    Profile = "profile"
+  Profile = "profile",
 }
