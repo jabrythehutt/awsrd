@@ -8,17 +8,12 @@ import { ContextArg } from "./ContextArg";
 import { of } from "rxjs";
 import { createCredentialStore } from "./createCredentialStore";
 import { AwsClientFactory } from "./AwsClientFactory";
+import {resolveFromCdkContext} from "./resolveFromCdkContext";
 
 async function run() {
   const app = new App();
   const region = process.env.CDK_DEFAULT_REGION;
-  const args = Object.values({...ContextArg, ...StackArg}).reduce(
-    (values, arg) => ({
-      ...values,
-      [arg]: app.node.tryGetContext(arg),
-    }),
-    {} as Record<StackArg | ContextArg, string>
-  );
+  const args = resolveFromCdkContext(app.node, Object.values({...ContextArg, ...StackArg}));
   const profile = args.profile;
   const credentialStore = createCredentialStore(of(profile));
   const clientFactory = new AwsClientFactory(credentialStore, of(region));

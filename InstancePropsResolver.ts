@@ -42,7 +42,7 @@ export class InstancePropsResolver {
   constructor(private clientFactory: AwsClientFactory) {}
 
   async resolve(
-    request: Partial<Record<StackArg | ContextArg, string>>,
+    request: Record<StackArg | ContextArg, string | undefined>,
     construct: Construct
   ): Promise<VscInstanceProps> {
     const image = request.imageId
