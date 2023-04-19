@@ -3,6 +3,7 @@ import { AwsContextResolver } from "./AwsContextResolver";
 import { toPromise } from "./toPromise";
 import { Observable } from "rxjs";
 import packageJson from "./package.json";
+import { ContextArg } from "./ContextArg";
 
 export class CdkCommander {
   constructor(
@@ -33,12 +34,18 @@ export class CdkCommander {
     );
   }
 
-  async resolveCommonOptions(): Promise<Record<string, string>> {
-    const region = await this.contextResolver.region();
+  async resolveDefaultContext(): Promise<Record<ContextArg, string>> {
     const profile = await toPromise(this.profileStore);
     return {
       profile,
-      region,
+    };
+  }
+
+  async resolveCommonOptions(): Promise<Record<string, string>> {
+    const defaultContext = await this.resolveDefaultContext();
+    return {
+      ...defaultContext,
+      region: await this.contextResolver.region(),
       "require-approval": "never",
     };
   }
@@ -66,11 +73,15 @@ export class CdkCommander {
     context: T
   ): Promise<string> {
     const defaultOptions = await this.resolveCommonOptionArgs();
+    const defaultContext = await this.resolveDefaultContext();
     return this.toLine([
       this.cdkBinPath,
       cdkCommand,
       ...this.cdkAppArgs,
-      ...this.toContextArgs(context),
+      ...this.toContextArgs<T & Record<ContextArg, string>>({
+        ...defaultContext,
+        ...context,
+      }),
       ...defaultOptions,
     ]);
   }
