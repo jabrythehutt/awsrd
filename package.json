@@ -138,7 +138,7 @@
       "activitybar": [
         {
           "id": "ec2-explorer",
-          "title": "AWS EC2",
+          "title": "AWS Remote Development",
           "icon": "media/instances_dark.svg"
         }
       ]
