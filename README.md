@@ -47,6 +47,10 @@ Development machines are based on Amazon Linux machine images with docker pre-in
 
 If you need greater control of the base machine image (e.g. to use a [DLAMI](https://docs.aws.amazon.com/dlami/latest/devguide/what-is-dlami.html) with a GPU instance) then you can simply specify the optional image ID when launching your development environment.
 
-### Adjusting the auto-shutdown behaviour
+### Adjusting the auto-stop behaviour
 
-The development environment includes a CloudWatch alarm to shut down the instance if the CPU utilisation falls below a threshold for a certain period of time. The alarm name is set up as `${STACK_NAME}InactivityAlarm-Inactivity` and you can adjust it within the AWS console directly to suit your needs.
+The development environment includes a CloudWatch alarm to stop the instance if the CPU utilisation falls below a threshold for a certain period of time. The alarm name is set up as `${STACK_NAME}InactivityAlarm-Inactivity` and you can adjust it within the AWS console directly to suit your needs.
+
+### Instance permissions
+
+You can modify the permissions granted to the instance by editing the IAM role named `${STACK_NAME}InstanceRole`. Configuring access in this way removes the need to set up AWS access keys when working within the instance and any Dev Containers you run on it.

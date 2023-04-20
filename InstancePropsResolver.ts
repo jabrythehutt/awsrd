@@ -24,6 +24,12 @@ import { Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { ContextArg } from "./ContextArg";
 import { AwsClientFactory } from "./AwsClientFactory";
+import {
+  IRole,
+  ManagedPolicy,
+  Role,
+  ServicePrincipal,
+} from "aws-cdk-lib/aws-iam";
 
 export class InstancePropsResolver {
   defaultInit = CloudFormationInit.fromElements(
@@ -81,7 +87,20 @@ export class InstancePropsResolver {
       ],
       init,
       initOptions,
+      role: this.toRole(request.stackName as string, construct),
     };
+  }
+
+  toRole(stackName: string, construct: Construct): IRole {
+    const roleName = `${stackName}InstanceRole`;
+    const role = new Role(construct, roleName, {
+      roleName,
+      assumedBy: new ServicePrincipal("ec2.amazonaws.com"),
+    });
+    role.addManagedPolicy(
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore")
+    );
+    return role;
   }
 
   toDefaultMachineImage(instanceType: InstanceType): MachineImage {
