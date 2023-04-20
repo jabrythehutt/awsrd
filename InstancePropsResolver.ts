@@ -24,7 +24,12 @@ import { Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
 import { ContextArg } from "./ContextArg";
 import { AwsClientFactory } from "./AwsClientFactory";
-import { IRole, ManagedPolicy, Role, ServicePrincipal } from "aws-cdk-lib/aws-iam";
+import {
+  IRole,
+  ManagedPolicy,
+  Role,
+  ServicePrincipal,
+} from "aws-cdk-lib/aws-iam";
 
 export class InstancePropsResolver {
   defaultInit = CloudFormationInit.fromElements(
@@ -82,7 +87,7 @@ export class InstancePropsResolver {
       ],
       init,
       initOptions,
-      role: this.toRole(request.stackName as string, construct)
+      role: this.toRole(request.stackName as string, construct),
     };
   }
 
