@@ -28,8 +28,7 @@ jobs:
           git config user.name \"Daniel Jabry\"
 
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.55.0
-        id: bump-version
+        uses: anothrNick/github-tag-action@1.61.0
         env:
           # Push back using a PAT so that the publish workflow is triggered
           # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow
