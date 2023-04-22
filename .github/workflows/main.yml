@@ -34,4 +34,3 @@ jobs:
           # https://docs.github.com/en/actions/using-workflows/triggering-a-workflow
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           WITH_V: true
-          DRY_RUN: true
