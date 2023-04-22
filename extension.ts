@@ -23,6 +23,8 @@ import { ProfileCommandProvider } from "./ProfileCommandProvider";
 import { RefreshCommandProvider } from "./RefreshCommandProvider";
 import { InstanceStateCommandProvider } from "./InstanceStateCommandProvider";
 import { CommandName } from "./CommandName";
+import { combineLatest, map } from "rxjs";
+import { toExplorerTitle } from "./toExplorerTitle";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = contributes.views["ec2-explorer"];
@@ -40,6 +42,9 @@ export async function activate(context: ExtensionContext) {
   const treeView = window.createTreeView(explorerView.id, {
     treeDataProvider: new InstanceTreeProvider(instanceStore),
   });
+  combineLatest([profileStore.value, awsContextResolver.region$])
+    .pipe(map(([profile, region]) => toExplorerTitle({ profile, region })))
+    .subscribe((title) => (treeView.title = title));
   context.subscriptions.push(treeView);
   const deleteCommandProvider = new DeleteCommandProvider(
     instanceStore,

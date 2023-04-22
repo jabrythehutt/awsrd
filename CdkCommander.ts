@@ -45,7 +45,7 @@ export class CdkCommander {
     const defaultContext = await this.resolveDefaultContext();
     return {
       ...defaultContext,
-      region: await this.contextResolver.region(),
+      region: await toPromise(this.contextResolver.region$),
       "require-approval": "never",
     };
   }
@@ -56,10 +56,12 @@ export class CdkCommander {
 
   async resolveBootstrapCommand(): Promise<string> {
     const optionArgs = await this.resolveCommonOptionArgs();
+    const account = await toPromise(this.contextResolver.account$);
+    const region = await toPromise(this.contextResolver.region$);
     return this.toLine([
       this.cdkBinPath,
       "bootstrap",
-      `aws://${await this.contextResolver.account()}/${await this.contextResolver.region()}`,
+      `aws://${account}/${region}`,
       ...optionArgs,
     ]);
   }

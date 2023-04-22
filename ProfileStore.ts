@@ -1,12 +1,11 @@
 import { ConfigStore } from "./ConfigStore";
-import packageJson from "./package.json";
+import { ConfigurationSuffix } from "./ConfigurationSuffix";
 
-export class ProfileStore extends ConfigStore<string> {
+export class ProfileStore extends ConfigStore<
+  ConfigurationSuffix.Profile,
+  string
+> {
   constructor() {
-    super(
-      Object.keys(packageJson.contributes.configuration.properties).find((k) =>
-        k.endsWith("profile")
-      ) as string
-    );
+    super(ConfigurationSuffix.Profile);
   }
 }
