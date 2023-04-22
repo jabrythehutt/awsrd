@@ -2,6 +2,10 @@ name: Bump version
 
 on:
   pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - README.md
+      - LICENSE.txt
     types:
       - closed
     branches:
