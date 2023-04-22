@@ -1,12 +1,8 @@
 import { ConfigStore } from "./ConfigStore";
-import packageJson from "./package.json";
+import { ConfigurationSuffix } from "./ConfigurationSuffix";
 
-export class RegionStore extends ConfigStore<string | undefined> {
+export class RegionStore extends ConfigStore<ConfigurationSuffix.Region, string | undefined> {
   constructor() {
-    super(
-      Object.keys(packageJson.contributes.configuration.properties).find((k) =>
-        k.endsWith("region")
-      ) as string
-    );
+    super(ConfigurationSuffix.Region);
   }
 }
