@@ -42,7 +42,9 @@ export async function activate(context: ExtensionContext) {
   const treeView = window.createTreeView(explorerView.id, {
     treeDataProvider: new InstanceTreeProvider(instanceStore),
   });
-  combineLatest([profileStore.value, awsContextResolver.region$]).pipe(map(([profile, region]) => toExplorerTitle({profile, region}))).subscribe(title => treeView.title = title)
+  combineLatest([profileStore.value, awsContextResolver.region$])
+    .pipe(map(([profile, region]) => toExplorerTitle({ profile, region })))
+    .subscribe((title) => (treeView.title = title));
   context.subscriptions.push(treeView);
   const deleteCommandProvider = new DeleteCommandProvider(
     instanceStore,

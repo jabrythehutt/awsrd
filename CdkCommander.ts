@@ -56,7 +56,7 @@ export class CdkCommander {
 
   async resolveBootstrapCommand(): Promise<string> {
     const optionArgs = await this.resolveCommonOptionArgs();
-    const account = await toPromise(this.contextResolver.account$)
+    const account = await toPromise(this.contextResolver.account$);
     const region = await toPromise(this.contextResolver.region$);
     return this.toLine([
       this.cdkBinPath,
