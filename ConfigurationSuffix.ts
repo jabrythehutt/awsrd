@@ -1,4 +1,4 @@
 export enum ConfigurationSuffix {
-    Region = "region",
-    Profile = "profile"
+  Region = "region",
+  Profile = "profile",
 }
