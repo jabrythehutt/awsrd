@@ -55,7 +55,7 @@ export class OpenCommandProvider
 
     const keyPairPaths = await this.generateKeyPair(storageDir);
     const profile = await toPromise(this.profileStore);
-    const region = await this.awsContextResolver.region();
+    const region = await toPromise(this.awsContextResolver.region$);
     return toSshConfig({
       ...keyPairPaths,
       proxyScriptPath,
