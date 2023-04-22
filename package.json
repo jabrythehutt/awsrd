@@ -6,7 +6,6 @@
   "type": "module",
   "main": "./extension.cjs",
   "publisher": "jabrythehutt",
-  "preview": true,
   "categories": [
     "Other"
   ],
