@@ -49,9 +49,10 @@ The extension allows you to:
    ![Service quota section](./docs/service_quota_section.png)
 
 3. Decide which [DLAMI](https://docs.aws.amazon.com/dlami/latest/devguide/appendix-ami-release-notes.html) you wish to use and find the corresponding image ID, we'll use [Amazon Linux 2 base DLAMI](https://aws.amazon.com/releasenotes/aws-deep-learning-base-ami-amazon-linux-2/) in this example and search for the image ID using the [AWS CLI](https://aws.amazon.com/cli/) command:
-  ```
-  $ aws ec2 describe-images --region us-east-1 --owners amazon --filters 'Name=name,Values=Deep Learning Base AMI (Amazon Linux 2) Version ??.?' 'Name=state,Values=available' --query 'reverse(sort_by(Images, &CreationDate))[:1].ImageId' --output text
-  ```
+
+```
+$ aws ec2 describe-images --region us-east-1 --owners amazon --filters 'Name=name,Values=Deep Learning Base AMI (Amazon Linux 2) Version ??.?' 'Name=state,Values=available' --query 'reverse(sort_by(Images, &CreationDate))[:1].ImageId' --output text
+```
 
 4. Click the `+` icon at the top of the extension's EC2 explorer panel, fill in each of the sections according to steps 1-3 and start the process of creating the CloudFormation stack
    ![Select G4 instance type](./docs/select_g4.png)
@@ -64,10 +65,8 @@ The extension allows you to:
 5. Once the process is complete, you'll see your GPU machine appear in the instances list, connect to the instance by clicking on the "Connect in a new window" button next to the machine name
    ![Connect to GPU instance](./docs/connect_to_gpu_instance.png)
 
-6. You can verify that the NVIDIA driver is installed and working by running the ```nvidia-smi``` command in the terminal of your new machine
+6. You can verify that the NVIDIA driver is installed and working by running the `nvidia-smi` command in the terminal of your new machine
    ![NVIDIA driver](./docs/gpu_instance_driver.png)
-
-
 
 ## Configuration
 
