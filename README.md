@@ -39,6 +39,38 @@ The extension allows you to:
 
 4. (Optional) If you would like to connect to existing EC2s (not created by this extension) then you need to make sure that [Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-getting-started.html) is set up for them
 
+## Examples
+
+### Launching a GPU instance for Deep Learning
+
+1. Decide which [GPU instance](https://docs.aws.amazon.com/dlami/latest/devguide/gpu.html) you wish to use, we'll select a `g4dn.xlarge` machine type in this example
+
+2. Make sure that you have a sufficient [EC2 service quota](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-resource-limits.html) limit applied for running the instance, you'll find this under the "Amazon Elastic Compute Cloud (Amazon EC2) > Running On-Demand G and VT instances" section of the Service Quotas console
+   ![Service quota section](./docs/service_quota_section.png)
+
+3. Decide which [DLAMI](https://docs.aws.amazon.com/dlami/latest/devguide/appendix-ami-release-notes.html) you wish to use and find the corresponding image ID, we'll use [Amazon Linux 2 base DLAMI](https://aws.amazon.com/releasenotes/aws-deep-learning-base-ami-amazon-linux-2/) in this example and search for the image ID using the [AWS CLI](https://aws.amazon.com/cli/) command:
+
+```
+aws ec2 describe-images --region us-east-1 --owners amazon --filters 'Name=name,Values=Deep Learning Base AMI (Amazon Linux 2) Version ??.?' 'Name=state,Values=available' --query 'reverse(sort_by(Images, &CreationDate))[:1].ImageId' --output text
+```
+
+4. Click the `+` icon at the top of the extension's EC2 explorer panel, fill in each of the sections according to steps 1-3 and start the process of creating the CloudFormation stack
+   ![Select G4 instance type](./docs/select_g4.png)
+
+- The DLAMI we've selected requires a root volume size of at least 100GB
+  ![100GB root volume size](./docs/100_root_volume.png)
+- Make sure that you enter the image ID from step 3 in the final box
+  ![Enter DLAMI ID](./docs/gpu_image_id.png)
+
+5. Once the process is complete, you'll see your GPU machine appear in the instances list, connect to the instance by clicking on the "Connect in a new window" button next to the machine name
+   ![Connect to GPU instance](./docs/connect_to_gpu_instance.png)
+
+6. You can verify that the NVIDIA driver is installed and working by running the `nvidia-smi` command in the terminal of your new machine
+   ![NVIDIA driver](./docs/gpu_instance_driver.png)
+
+7. Cleaning up: you can delete all the resources associated with this example by stopping the instance and clicking on the trash icon once the instance has stopped
+   ![Delete GPU instance](./docs/delete_gpu_instance.png)
+
 ## Configuration
 
 Development machines are based on Amazon Linux machine images with docker pre-installed for compatibility with a wide range of EC2 instance types. The simplest way to customise your environment is to configure a [Dev Container](https://code.visualstudio.com/docs/devcontainers/containers) for your project and launch it once you're connected to the remote machine.
