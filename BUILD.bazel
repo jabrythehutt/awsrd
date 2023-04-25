@@ -1,5 +1,4 @@
 load("@npm//:defs.bzl", "npm_link_all_packages")
-load("@aspect_rules_ts//ts:defs.bzl", "ts_project")
 load("index.bzl", "cjs_bundle", "cli", "to_package_args_choice")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("session_manager.bzl", "session_manager")
@@ -8,8 +7,14 @@ load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
 load("@npm//:@vscode/vsce/package_json.bzl", "bin")
 load("@aspect_rules_js//npm:defs.bzl", "stamped_package_json")
+load("@npm//:ttypescript/package_json.bzl", ttsc_bin = "bin")
+load("ts_project.bzl", "ts_project")
 
 platforms()
+
+ttsc_bin.ttsc_binary(
+    name = "ttsc",
+)
 
 npm_link_all_packages(
     name = "node_modules",
@@ -39,6 +44,7 @@ deps = [
     "//:node_modules/tslib",
     "//:node_modules/validator",
     "//:node_modules/yargs",
+    "//:node_modules/ts-transformer-keys",
 ]
 
 tests = ["*.test.ts"]
@@ -54,16 +60,12 @@ ts_project(
         ["*.ts"],
         exclude = tests,
     ) + ["package"],
-    declaration = True,
-    resolve_json_module = True,
     deps = deps,
 )
 
 ts_project(
     name = "test_lib",
     srcs = glob(tests) + ["package"],
-    declaration = True,
-    resolve_json_module = True,
     deps = [
         "lib",
         "//:node_modules/@types/jest",
