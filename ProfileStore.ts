@@ -1,11 +1,7 @@
 import { ConfigStore } from "./ConfigStore";
-import { ConfigurationSuffix } from "./ConfigurationSuffix";
 
-export class ProfileStore extends ConfigStore<
-  ConfigurationSuffix.Profile,
-  string
-> {
+export class ProfileStore extends ConfigStore<string> {
   constructor() {
-    super(ConfigurationSuffix.Profile);
+    super("awsrd.profile");
   }
 }
