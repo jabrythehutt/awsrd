@@ -31,10 +31,15 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
         this.eventEmitter.fire(change);
       }
     });
+    this.iconPaths = this.toIconPaths(
+      keys<Record<InstanceStateName, unknown>>()
+    );
+  }
 
-    const instanceStates: InstanceStateName[] =
-      keys<Record<InstanceStateName, unknown>>();
-    this.iconPaths = instanceStates.reduce(
+  protected toIconPaths(
+    states: InstanceStateName[]
+  ): Record<InstanceStateName, IconPaths> {
+    return states.reduce(
       (result, instanceStateName) => ({
         ...result,
         [instanceStateName]: keys<IconPaths>().reduce(
@@ -49,14 +54,18 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
     );
   }
 
-  toIconPath(
+  protected toIconPath(
     type: keyof IconPaths,
     instanceStateName: InstanceStateName
   ): string {
     const mediaDir = join(__dirname, "media");
-    const iconPath = join(mediaDir, `${instanceStateName}_${type}.svg`);
+    const iconPrefix = "vm_";
+    const iconPath = join(
+      mediaDir,
+      `${iconPrefix}${instanceStateName}_${type}.svg`
+    );
     if (!existsSync(iconPath)) {
-      return join(mediaDir, `vm_${type}.svg`);
+      return join(mediaDir, `${iconPrefix}${type}.svg`);
     }
     return iconPath;
   }
@@ -68,16 +77,13 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
       (t) => t.Key === instanceTagName && t.Value === instanceTagValue
     );
     const instanceStateName = instance.State?.Name as InstanceStateName;
-    const contextValue = instance.State?.Name + (managedTag ? ".managed" : "");
+    const contextValue = instanceStateName + (managedTag ? ".managed" : "");
     return {
       label: instance.InstanceId,
       description: toInstanceName(instance),
       id,
       tooltip: this.toTooltip(instance),
-      iconPath: {
-        light: this.toIconPath("light", instanceStateName),
-        dark: this.toIconPath("dark", instanceStateName),
-      },
+      iconPath: this.iconPaths[instanceStateName],
       contextValue,
     };
   }
