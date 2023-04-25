@@ -1,8 +1,5 @@
 const buildConfig = {
-    resolveExtensions: [
-      ".mjs",
-      ".js",
-    ]
-}
+  resolveExtensions: [".mjs", ".js"],
+};
 
-export default buildConfig
+export default buildConfig;
