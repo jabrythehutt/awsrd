@@ -1,13 +1,11 @@
 import { Observable, ReplaySubject, Subject } from "rxjs";
 import { workspace } from "vscode";
 import { ConfigurationKey } from "./ConfigurationKey";
-import { ConfigurationSuffix } from "./ConfigurationSuffix";
-import { ExtensionKey } from "./ExtensionKey";
 
-export class ConfigStore<K extends ConfigurationSuffix, T> {
+export class ConfigStore<T> {
   public readonly value: Observable<T>;
   constructor(
-    protected readonly configKeySuffix: K,
+    protected readonly configKey: ConfigurationKey,
     protected readonly valueSource: Subject<T> = new ReplaySubject(1)
   ) {
     this.value = this.valueSource.asObservable();
@@ -17,10 +15,6 @@ export class ConfigStore<K extends ConfigurationSuffix, T> {
         this.valueSource.next(this.currentValue);
       }
     });
-  }
-
-  get configKey(): ExtensionKey<K> {
-    return ConfigurationKey[this.configKeySuffix] as ExtensionKey<K>;
   }
 
   get currentValue(): T {

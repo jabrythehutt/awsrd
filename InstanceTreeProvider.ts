@@ -5,7 +5,7 @@ import {
   TreeItem,
   Event,
 } from "vscode";
-import { Instance } from "@aws-sdk/client-ec2";
+import { Instance, InstanceStateName } from "@aws-sdk/client-ec2";
 import { join } from "path";
 import { toPromise } from "./toPromise";
 import { InstanceStore } from "./InstanceStore";
@@ -13,10 +13,13 @@ import { existsSync } from "node:fs";
 import { instanceTagName } from "./instanceTagName";
 import { instanceTagValue } from "./instanceTagValue";
 import { toInstanceName } from "./toInstanceName";
+import { keys } from "ts-transformer-keys";
+import { IconPaths } from "./IconPaths";
 
 export class InstanceTreeProvider implements TreeDataProvider<string> {
   readonly eventEmitter = new EventEmitter<string | undefined>();
   readonly onDidChangeTreeData: Event<string | undefined>;
+  protected iconPaths: Record<InstanceStateName, IconPaths>;
 
   constructor(private instanceStore: InstanceStore) {
     this.onDidChangeTreeData = this.eventEmitter.event;
@@ -28,16 +31,41 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
         this.eventEmitter.fire(change);
       }
     });
+    this.iconPaths = this.toIconPaths(
+      keys<Record<InstanceStateName, unknown>>()
+    );
   }
 
-  toIconPath(type: "light" | "dark", instance: Instance): string {
+  protected toIconPaths(
+    states: InstanceStateName[]
+  ): Record<InstanceStateName, IconPaths> {
+    return states.reduce(
+      (result, instanceStateName) => ({
+        ...result,
+        [instanceStateName]: keys<IconPaths>().reduce(
+          (iconPaths, iconType) => ({
+            ...iconPaths,
+            [iconType]: this.toIconPath(iconType, instanceStateName),
+          }),
+          {} as IconPaths
+        ),
+      }),
+      {} as Record<InstanceStateName, IconPaths>
+    );
+  }
+
+  protected toIconPath(
+    type: keyof IconPaths,
+    instanceStateName: InstanceStateName
+  ): string {
     const mediaDir = join(__dirname, "media");
-    const iconPrefix = instance.State?.Name
-      ? `vm_${instance.State?.Name}`
-      : "instance";
-    const iconPath = join(mediaDir, `${iconPrefix}_${type}.svg`);
+    const iconPrefix = "vm_";
+    const iconPath = join(
+      mediaDir,
+      `${iconPrefix}${instanceStateName}_${type}.svg`
+    );
     if (!existsSync(iconPath)) {
-      return join(mediaDir, `vm_${type}.svg`);
+      return join(mediaDir, `${iconPrefix}${type}.svg`);
     }
     return iconPath;
   }
@@ -48,16 +76,14 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
     const managedTag = tags.find(
       (t) => t.Key === instanceTagName && t.Value === instanceTagValue
     );
-    const contextValue = instance.State?.Name + (managedTag ? ".managed" : "");
+    const instanceStateName = instance.State?.Name as InstanceStateName;
+    const contextValue = instanceStateName + (managedTag ? ".managed" : "");
     return {
       label: instance.InstanceId,
       description: toInstanceName(instance),
       id,
       tooltip: this.toTooltip(instance),
-      iconPath: {
-        light: this.toIconPath("light", instance),
-        dark: this.toIconPath("dark", instance),
-      },
+      iconPath: this.iconPaths[instanceStateName],
       contextValue,
     };
   }
