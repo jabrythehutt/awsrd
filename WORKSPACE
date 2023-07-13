@@ -98,9 +98,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
     name = "aspect_rules_js",
-    sha256 = "aea8d12bdc4b40127e57fb3da5b61cbb17e969e7786471a71cbff0808c600bcb",
-    strip_prefix = "rules_js-1.24.1",
-    url = "https://github.com/aspect-build/rules_js/releases/download/v1.24.1/rules_js-v1.24.1.tar.gz",
+    sha256 = "e3e6c3d42491e2938f4239a3d04259a58adc83e21e352346ad4ef62f87e76125",
+    strip_prefix = "rules_js-1.30.0",
+    url = "https://github.com/aspect-build/rules_js/releases/download/v1.30.0/rules_js-v1.30.0.tar.gz",
 )
 
 load("@aspect_rules_js//js:repositories.bzl", "rules_js_dependencies")
@@ -109,9 +109,9 @@ rules_js_dependencies()
 
 http_archive(
     name = "aspect_rules_jest",
-    sha256 = "52dc08fd252add240124ef7ccc46df3a505121758dfb96578a3d5f2ebb4c2b40",
-    strip_prefix = "rules_jest-0.18.1",
-    url = "https://github.com/aspect-build/rules_jest/releases/download/v0.18.1/rules_jest-v0.18.1.tar.gz",
+    sha256 = "098186ffc450f2a604843d8ba14217088a0e259ea6a03294af5360a7f1bcd3e8",
+    strip_prefix = "rules_jest-0.19.5",
+    url = "https://github.com/aspect-build/rules_jest/releases/download/v0.19.5/rules_jest-v0.19.5.tar.gz",
 )
 
 load("@aspect_rules_jest//jest:dependencies.bzl", "rules_jest_dependencies")
@@ -143,9 +143,9 @@ npm_repositories()
 
 http_archive(
     name = "aspect_rules_ts",
-    sha256 = "8eb25d1fdafc0836f5778d33fb8eaac37c64176481d67872b54b0a05de5be5c0",
-    strip_prefix = "rules_ts-1.3.3",
-    url = "https://github.com/aspect-build/rules_ts/releases/download/v1.3.3/rules_ts-v1.3.3.tar.gz",
+    sha256 = "4c3f34fff9f96ffc9c26635d8235a32a23a6797324486c7d23c1dfa477e8b451",
+    strip_prefix = "rules_ts-1.4.5",
+    url = "https://github.com/aspect-build/rules_ts/releases/download/v1.4.5/rules_ts-v1.4.5.tar.gz",
 )
 
 load("@aspect_rules_ts//ts:repositories.bzl", "rules_ts_dependencies")
@@ -161,9 +161,9 @@ rules_ts_dependencies(
 
 http_archive(
     name = "aspect_rules_esbuild",
-    sha256 = "2ea31bd97181a315e048be693ddc2815fddda0f3a12ca7b7cc6e91e80f31bac7",
-    strip_prefix = "rules_esbuild-0.14.4",
-    url = "https://github.com/aspect-build/rules_esbuild/releases/download/v0.14.4/rules_esbuild-v0.14.4.tar.gz",
+    sha256 = "098e38e5ee868c14a6484ba263b79e57d48afacfc361ba30137c757a9c4716d6",
+    strip_prefix = "rules_esbuild-0.15.0",
+    url = "https://github.com/aspect-build/rules_esbuild/releases/download/v0.15.0/rules_esbuild-v0.15.0.tar.gz",
 )
 
 ######################
@@ -188,11 +188,11 @@ nodejs_register_toolchains(
 )
 
 # Register a toolchain containing esbuild npm package and native bindings
-load("@aspect_rules_esbuild//esbuild:repositories.bzl", "LATEST_VERSION", "esbuild_register_toolchains")
+load("@aspect_rules_esbuild//esbuild:repositories.bzl", "LATEST_ESBUILD_VERSION", "esbuild_register_toolchains")
 
 esbuild_register_toolchains(
     name = "esbuild",
-    esbuild_version = LATEST_VERSION,
+    esbuild_version = LATEST_ESBUILD_VERSION,
 )
 
 http_archive(
@@ -229,9 +229,9 @@ format_register_toolchains()
 
 http_archive(
     name = "aspect_bazel_lib",
-    sha256 = "97fa63d95cc9af006c4c7b2123ddd2a91fb8d273012f17648e6423bae2c69470",
-    strip_prefix = "bazel-lib-1.30.2",
-    url = "https://github.com/aspect-build/bazel-lib/releases/download/v1.30.2/bazel-lib-v1.30.2.tar.gz",
+    sha256 = "e3151d87910f69cf1fc88755392d7c878034a69d6499b287bcfc00b1cf9bb415",
+    strip_prefix = "bazel-lib-1.32.1",
+    url = "https://github.com/aspect-build/bazel-lib/releases/download/v1.32.1/bazel-lib-v1.32.1.tar.gz",
 )
 
 load("@aspect_bazel_lib//lib:repositories.bzl", "aspect_bazel_lib_dependencies")

@@ -15,5 +15,6 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "plugins": [{ "transform": "ts-transformer-keys/transformer" }]
-  }
+  },
+  "exclude": ["node_modules", "bazel-*", "dist"]
 }

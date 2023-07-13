@@ -5,9 +5,11 @@
   // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
   "image": "mcr.microsoft.com/devcontainers/typescript-node:18-bullseye",
   "features": {
-    "ghcr.io/devcontainers/features/docker-in-docker:2": {}
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {}
   },
-
+  "hostRequirements": {
+    "memory": "16gb"
+  },
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
 

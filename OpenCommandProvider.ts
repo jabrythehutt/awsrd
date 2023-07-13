@@ -119,6 +119,20 @@ export class OpenCommandProvider
     });
   }
 
+  /**
+   * Implementation based on: https://github.com/microsoft/vscode/issues/187202#issuecomment-1631660447
+   */
+  toConnectionString(request: {
+    hostName: string;
+    user: string;
+    port: number;
+  }): string {
+    const encodedhost = Buffer.from(JSON.stringify(request), "utf8").toString(
+      "hex"
+    );
+    return `vscode-remote://ssh-remote+${encodedhost}/home/${request.user}`;
+  }
+
   async execute(instanceId: string): Promise<void> {
     const instance = await this.instanceStore.describe(instanceId);
     const label = toInstanceLabel(instance as Instance);
@@ -162,7 +176,7 @@ export class OpenCommandProvider
         const user = await this.requestUsername(instanceInfo, label);
         if (user) {
           const uri = Uri.parse(
-            `vscode-remote://ssh-remote+${user}@${instanceId}/home/${user}`
+            this.toConnectionString({ hostName: instanceId, user, port: 22 })
           );
           await commands.executeCommand("vscode.openFolder", uri, {
             forceNewWindow: true,
