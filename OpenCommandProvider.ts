@@ -172,7 +172,7 @@ export class OpenCommandProvider
         const user = await this.requestUsername(instanceInfo, label);
         if (user) {
           const uri = Uri.parse(
-            `vscode-remote://ssh-remote+${user}@${instanceId}/home/${user}`
+            this.toConnectionString({hostName: instanceId, user})
           );
           await commands.executeCommand("vscode.openFolder", uri, {
             forceNewWindow: true,
