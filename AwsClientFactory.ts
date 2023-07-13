@@ -1,6 +1,6 @@
 import { Observable, combineLatest, map } from "rxjs";
 import { AwsCredentialIdentityProvider } from "@aws-sdk/types";
-import { Client } from "@aws-sdk/smithy-client";
+import { Client } from "@smithy/smithy-client";
 import { toPromise } from "./toPromise";
 
 export class AwsClientFactory {
