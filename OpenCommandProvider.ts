@@ -122,7 +122,11 @@ export class OpenCommandProvider
   /**
    * Implementation based on: https://github.com/microsoft/vscode/issues/187202#issuecomment-1631660447
    */
-  toConnectionString(request: { hostName: string; user: string }): string {
+  toConnectionString(request: {
+    hostName: string;
+    user: string;
+    port: number;
+  }): string {
     const encodedhost = Buffer.from(JSON.stringify(request), "utf8").toString(
       "hex"
     );
@@ -172,7 +176,7 @@ export class OpenCommandProvider
         const user = await this.requestUsername(instanceInfo, label);
         if (user) {
           const uri = Uri.parse(
-            this.toConnectionString({ hostName: instanceId, user })
+            this.toConnectionString({ hostName: instanceId, user, port: 22 })
           );
           await commands.executeCommand("vscode.openFolder", uri, {
             forceNewWindow: true,
