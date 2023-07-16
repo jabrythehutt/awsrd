@@ -33,8 +33,8 @@ dependencies:
     specifier: 2.87.0
     version: 2.87.0(constructs@10.2.69)
   cdk-monitoring-constructs:
-    specifier: 4.0.2
-    version: 4.0.2(@aws-cdk/aws-apigatewayv2-alpha@2.65.0-alpha.0)(@aws-cdk/aws-redshift-alpha@2.65.0-alpha.0)(@aws-cdk/aws-synthetics-alpha@2.65.0-alpha.0)(aws-cdk-lib@2.87.0)(constructs@10.2.69)
+    specifier: 5.3.3
+    version: 5.3.3(@aws-cdk/aws-apigatewayv2-alpha@2.65.0-alpha.0)(@aws-cdk/aws-redshift-alpha@2.65.0-alpha.0)(@aws-cdk/aws-synthetics-alpha@2.65.0-alpha.0)(aws-cdk-lib@2.87.0)(constructs@10.2.69)
   constructs:
     specifier: 10.2.69
     version: 10.2.69
@@ -58,6 +58,9 @@ dependencies:
     version: 17.7.1
 
 devDependencies:
+  '@types/aws-lambda':
+    specifier: 8.10.119
+    version: 8.10.119
   '@types/jest':
     specifier: 29.5.0
     version: 29.5.0
@@ -1797,6 +1800,10 @@ packages:
       '@types/node': 18.15.5
     dev: true
 
+  /@types/aws-lambda@8.10.119:
+    resolution: {integrity: sha512-Vqm22aZrCvCd6I5g1SvpW151jfqwTzEZ7XJ3yZ6xaZG31nUEOEyzzVImjRcsN8Wi/QyPxId/x8GTtgIbsy8kEw==}
+    dev: true
+
   /@types/babel__core@7.20.0:
     resolution: {integrity: sha512-+n8dL/9GWblDO0iU6eZAwEIJVr5DWigtle+Q6HLOrh/pdbXOhOtqzq8VPPE2zvNJzSKY4vH/z3iT3tn0A3ypiQ==}
     dependencies:
@@ -2240,8 +2247,8 @@ packages:
     engines: {node: '>= 0.8.0'}
     dev: false
 
-  /cdk-monitoring-constructs@4.0.2(@aws-cdk/aws-apigatewayv2-alpha@2.65.0-alpha.0)(@aws-cdk/aws-redshift-alpha@2.65.0-alpha.0)(@aws-cdk/aws-synthetics-alpha@2.65.0-alpha.0)(aws-cdk-lib@2.87.0)(constructs@10.2.69):
-    resolution: {integrity: sha512-3+OruZkl17e8MRTYt4fUUabXfQSDOwzrbVZ5bD25ybH1sRzdrFP/bfaSp2omQ8DdW67TKYDFQKde/LPoOD1LJg==}
+  /cdk-monitoring-constructs@5.3.3(@aws-cdk/aws-apigatewayv2-alpha@2.65.0-alpha.0)(@aws-cdk/aws-redshift-alpha@2.65.0-alpha.0)(@aws-cdk/aws-synthetics-alpha@2.65.0-alpha.0)(aws-cdk-lib@2.87.0)(constructs@10.2.69):
+    resolution: {integrity: sha512-vZWaJ7DyzYWWx24cZLuxN+5WCUEmcybfOLBI5PxZGM673dgykF3kZp/IThHrNorkm/DdwKsc2JIq9ZL9CcRHmQ==}
     peerDependencies:
       '@aws-cdk/aws-apigatewayv2-alpha': ^2.65.0-alpha.0
       '@aws-cdk/aws-redshift-alpha': ^2.65.0-alpha.0

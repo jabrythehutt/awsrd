@@ -35,7 +35,7 @@
     "@aws-sdk/credential-providers": "3.369.0",
     "@aws-sdk/shared-ini-file-loader": "3.369.0",
     "aws-cdk-lib": "2.87.0",
-    "cdk-monitoring-constructs": "4.0.2",
+    "cdk-monitoring-constructs": "5.3.3",
     "constructs": "10.2.69",
     "lodash": "4.17.21",
     "sshpk": "1.17.0",
@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "aws-cdk": "2.87.0",
+    "@types/aws-lambda": "8.10.119",
     "@types/validator": "13.7.14",
     "@types/lodash": "4.14.192",
     "@types/vscode": "1.76.0",
