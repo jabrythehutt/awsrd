@@ -84,6 +84,6 @@ export class VscInstance extends Construct {
 
   toArn(instanceId: string): string {
     const stack = Stack.of(this);
-    return `arn:aws:ec2${stack.region}:${stack.account}:instance/${instanceId}`;
+    return `arn:aws:ec2:${stack.region}:${stack.account}:instance/${instanceId}`;
   }
 }
