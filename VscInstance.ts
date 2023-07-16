@@ -15,7 +15,7 @@ export class VscInstance extends Construct {
     super(scope, id);
     this.instance = new Instance(this, "Instance", props);
     this.instance.instance.hibernationOptions = {
-      configured: true
+      configured: true,
     };
     this.monitoring = new MonitoringFacade(
       this,

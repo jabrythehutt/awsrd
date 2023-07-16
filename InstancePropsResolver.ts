@@ -82,7 +82,7 @@ export class InstancePropsResolver {
       blockDevices: [
         {
           deviceName,
-          volume: BlockDeviceVolume.ebs(rootVolumeSizeGb, {encrypted: true}),
+          volume: BlockDeviceVolume.ebs(rootVolumeSizeGb, { encrypted: true }),
         },
       ],
       init,
