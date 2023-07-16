@@ -3,6 +3,7 @@ import {
   StartInstancesCommand,
   StopInstancesCommand,
   InstanceStateName,
+  EC2ServiceException
 } from "@aws-sdk/client-ec2";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { AwsClientFactory } from "./AwsClientFactory";
@@ -83,11 +84,25 @@ export class InstanceStarter {
 
   async stopInstance(instanceId: string): Promise<void> {
     const client = await this.serviceFactory.createAwsClientPromise(EC2Client);
-    await client.send(
-      new StopInstancesCommand({
-        Hibernate: true,
-        InstanceIds: [instanceId],
-      })
-    );
+    const request = {
+      InstanceIds: [instanceId],
+    };
+    try {
+      await client.send(
+        new StopInstancesCommand({
+          ...request,
+          Hibernate: true
+        })
+      );
+    } catch (err) {
+      if ((err as EC2ServiceException).name === "UnsupportedHibernationConfiguration") {
+        await client.send(
+          new StopInstancesCommand(request)
+        );
+      } else {
+        throw err;
+      }
+    }
+
   }
 }
