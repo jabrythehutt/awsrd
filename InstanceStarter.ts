@@ -85,6 +85,7 @@ export class InstanceStarter {
     const client = await this.serviceFactory.createAwsClientPromise(EC2Client);
     await client.send(
       new StopInstancesCommand({
+        Hibernate: true,
         InstanceIds: [instanceId],
       })
     );
