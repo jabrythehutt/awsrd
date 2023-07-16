@@ -3,7 +3,7 @@ import {
   StartInstancesCommand,
   StopInstancesCommand,
   InstanceStateName,
-  EC2ServiceException
+  EC2ServiceException,
 } from "@aws-sdk/client-ec2";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { AwsClientFactory } from "./AwsClientFactory";
@@ -91,18 +91,18 @@ export class InstanceStarter {
       await client.send(
         new StopInstancesCommand({
           ...request,
-          Hibernate: true
+          Hibernate: true,
         })
       );
     } catch (err) {
-      if ((err as EC2ServiceException).name === "UnsupportedHibernationConfiguration") {
-        await client.send(
-          new StopInstancesCommand(request)
-        );
+      if (
+        (err as EC2ServiceException).name ===
+        "UnsupportedHibernationConfiguration"
+      ) {
+        await client.send(new StopInstancesCommand(request));
       } else {
         throw err;
       }
     }
-
   }
 }
