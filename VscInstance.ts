@@ -6,7 +6,7 @@ import {
 import { Instance } from "aws-cdk-lib/aws-ec2";
 import { VscInstanceProps } from "./VscInstanceProps";
 import { MetricStatistic, MonitoringFacade } from "cdk-monitoring-constructs";
-import { Duration, Fn } from "aws-cdk-lib";
+import { Duration, Stack } from "aws-cdk-lib";
 import { StopAlarmActionStrategy } from "./StopAlarmActionStrategy";
 import { Topic } from "aws-cdk-lib/aws-sns";
 import { StopperEnvVar } from "./StopperEnvVar";
@@ -52,15 +52,11 @@ export class VscInstance extends Construct {
     });
     this.stopperSource = new SnsEventSource(this.topic);
     this.stopper.addEventSource(this.stopperSource);
-    const instanceArn = Fn.getAtt(
-      this.instance.instance.logicalId,
-      "Arn"
-    ).toString();
     this.stopper.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ["ec2:StopInstances"],
-        resources: [instanceArn],
+        resources: [this.toArn(this.instance.instanceId)],
       })
     );
 
@@ -84,5 +80,10 @@ export class VscInstance extends Construct {
       period: Duration.minutes(30),
       treatMissingData: TreatMissingData.NOT_BREACHING,
     });
+  }
+
+  toArn(instanceId: string): string {
+    const stack = Stack.of(this);
+    return `arn:aws:ec2${stack.region}:${stack.account}:instance/${instanceId}`;
   }
 }
