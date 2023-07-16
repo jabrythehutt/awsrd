@@ -13,6 +13,7 @@ import { StopperEnvVar } from "./StopperEnvVar";
 import { Runtime, Function, Code } from "aws-cdk-lib/aws-lambda";
 import { SnsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
+import { join } from "path";
 export class VscInstance extends Construct {
   public readonly topic: Topic;
   public readonly instance: Instance;
@@ -46,7 +47,7 @@ export class VscInstance extends Construct {
     this.stopper = new Function(this, "Stopper", {
       runtime: Runtime.NODEJS_18_X,
       environment: stopperEnv,
-      code: Code.fromAsset(process.env.STOPPER_ZIP as string),
+      code: Code.fromAsset(join(__dirname, process.env.STOPPER_ZIP as string)),
       handler: process.env.STOPPER_HANDLER as string,
     });
     this.stopperSource = new SnsEventSource(this.topic);
