@@ -1,3 +1,3 @@
 export enum StopperEnvVar {
-    InstanceId = "INSTANCE_ID"
+  InstanceId = "INSTANCE_ID",
 }

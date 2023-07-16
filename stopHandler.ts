@@ -7,5 +7,5 @@ const client = new EC2Client({});
 const instanceId = process.env[StopperEnvVar.InstanceId];
 
 export const handler: Handler<void, void> = async () => {
-    await stopInstance(client, instanceId as string);
-}
+  await stopInstance(client, instanceId as string);
+};
