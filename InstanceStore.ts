@@ -18,8 +18,8 @@ import {
 } from "rxjs";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { toPromise } from "./toPromise";
-import { flatten } from "./flatten";
-import { isEqual } from "lodash";
+import flatten from "lodash/flatten";
+import isEqual from "lodash/isEqual";
 
 export class InstanceStore {
   public readonly changes: Observable<string[]>;
