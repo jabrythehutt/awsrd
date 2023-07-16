@@ -90,22 +90,24 @@ export class InstancePropsResolver {
       initOptions,
       role: this.toRole(request.stackName as string, construct),
       hibernationOptions: {
-        configured: await this.isHibernationSupported(instanceType)
-      }
+        configured: await this.isHibernationSupported(instanceType),
+      },
     };
   }
 
   async isHibernationSupported(instanceType: InstanceType): Promise<boolean> {
     const instanceTypeString = instanceType.toString();
     const ec2 = await this.clientFactory.createAwsClientPromise(EC2Client);
-    const response = await ec2.send(new DescribeInstanceTypesCommand({
-        InstanceTypes: [
-          instanceTypeString
-        ]
-    }));
-    const instanceInfo = response.InstanceTypes?.find(i => i.InstanceType === instanceTypeString);
+    const response = await ec2.send(
+      new DescribeInstanceTypesCommand({
+        InstanceTypes: [instanceTypeString],
+      })
+    );
+    const instanceInfo = response.InstanceTypes?.find(
+      (i) => i.InstanceType === instanceTypeString
+    );
     return !!instanceInfo?.HibernationSupported;
-}
+  }
 
   toRole(stackName: string, construct: Construct): IRole {
     const roleName = `${stackName}InstanceRole`;
