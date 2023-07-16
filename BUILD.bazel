@@ -9,6 +9,7 @@ load("@npm//:@vscode/vsce/package_json.bzl", "bin")
 load("@aspect_rules_js//npm:defs.bzl", "stamped_package_json")
 load("@npm//:ttypescript/package_json.bzl", ttsc_bin = "bin")
 load("ts_project.bzl", "ts_project")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
 
 platforms()
 
@@ -45,6 +46,7 @@ deps = [
     "//:node_modules/validator",
     "//:node_modules/yargs",
     "//:node_modules/ts-transformer-keys",
+    "//:node_modules/@types/aws-lambda",
 ]
 
 tests = ["*.test.ts"]
@@ -118,7 +120,27 @@ session_manager(
 cdk_app_file_name = "app.cjs"
 
 cjs_bundle(
+    name = "stop_handler",
+    entry_point = "stopHandler.js",
+    external_libs = ["@aws-sdk/*"],
+    minify = minify,
+    output = "stopHandler.cjs",
+    sourcemap = sourcemap,
+)
+
+pkg_zip(
+    name = "stopper_bundle",
+    srcs = [
+        "stop_handler",
+    ],
+)
+
+cjs_bundle(
     name = "cdk_app",
+    define = {
+        "process.env.STOPPER_ZIP": '"stopper_bundle.zip"',
+        "process.env.STOPPER_HANDLER": '"stopHandler.handler"',
+    },
     entry_point = "app.js",
     external_libs = external_libs,
     minify = minify,
@@ -154,6 +176,7 @@ npm_package(
         "cdk_app",
         "package",
         "extension",
+        "stopper_bundle",
         "ssm_proxy_script",
         "README.md",
         "LICENSE.txt",

@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "aws-cdk": "2.87.0",
+    "@types/aws-lambda": "8.10.119",
     "@types/validator": "13.7.14",
     "@types/lodash": "4.14.192",
     "@types/vscode": "1.76.0",

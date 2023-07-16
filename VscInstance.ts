@@ -6,21 +6,32 @@ import {
 import { Instance } from "aws-cdk-lib/aws-ec2";
 import { VscInstanceProps } from "./VscInstanceProps";
 import { MetricStatistic, MonitoringFacade } from "cdk-monitoring-constructs";
-import { Duration } from "aws-cdk-lib";
+import { Duration, Fn } from "aws-cdk-lib";
 import { StopAlarmActionStrategy } from "./StopAlarmActionStrategy";
+import { Topic } from "aws-cdk-lib/aws-sns";
+import { StopperEnvVar } from "./StopperEnvVar";
+import { Runtime, Function, Code } from "aws-cdk-lib/aws-lambda";
+import { SnsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
+import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
 export class VscInstance extends Construct {
+  public readonly topic: Topic;
   public readonly instance: Instance;
   public readonly monitoring: MonitoringFacade;
+  public readonly stopper: Function;
+  public readonly stopperSource: SnsEventSource;
   constructor(scope: Construct, id: string, props: VscInstanceProps) {
     super(scope, id);
     this.instance = new Instance(this, "Instance", props);
+    this.topic = new Topic(this, "InactivityTopic", {
+      displayName: `Inactivity topic for ${this.instance.instanceId}`,
+    });
     this.instance.instance.hibernationOptions = props.hibernationOptions;
     this.monitoring = new MonitoringFacade(
       this,
       `${props.alarmNamePrefix}Monitoring`,
       {
         alarmFactoryDefaults: {
-          action: new StopAlarmActionStrategy(),
+          action: new StopAlarmActionStrategy(this.topic),
           alarmNamePrefix: props.alarmNamePrefix,
           actionsEnabled: true,
         },
@@ -29,6 +40,29 @@ export class VscInstance extends Construct {
       instanceIds: [this.instance.instanceId],
     });
     const alarmFactory = this.monitoring.createAlarmFactory(`InactivityAlarm`);
+    const stopperEnv: Record<StopperEnvVar, string> = {
+      [StopperEnvVar.InstanceId]: this.instance.instanceId,
+    };
+    this.stopper = new Function(this, "Stopper", {
+      runtime: Runtime.NODEJS_18_X,
+      environment: stopperEnv,
+      code: Code.fromAsset(process.env.STOPPER_ZIP as string),
+      handler: process.env.STOPPER_HANDLER as string,
+    });
+    this.stopperSource = new SnsEventSource(this.topic);
+    this.stopper.addEventSource(this.stopperSource);
+    const instanceArn = Fn.getAtt(
+      this.instance.instance.logicalId,
+      "Arn"
+    ).toString();
+    this.stopper.addToRolePolicy(
+      new PolicyStatement({
+        effect: Effect.ALLOW,
+        actions: ["ec2:StopInstances"],
+        resources: [instanceArn],
+      })
+    );
+
     const metricFactory = this.monitoring.createMetricFactory();
     const cpuUtilisationMetric = metricFactory.createMetric(
       "CPUUtilization",
