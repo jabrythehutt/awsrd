@@ -20,6 +20,9 @@ dependencies:
   '@aws-sdk/credential-providers':
     specifier: 3.433.0
     version: 3.433.0
+  '@aws-sdk/region-config-resolver':
+    specifier: 3.433.0
+    version: 3.433.0
   '@aws-sdk/types':
     specifier: 3.433.0
     version: 3.433.0
@@ -29,6 +32,9 @@ dependencies:
   '@smithy/smithy-client':
     specifier: 2.1.12
     version: 2.1.12
+  '@smithy/util-stream':
+    specifier: 2.0.17
+    version: 2.0.17
   aws-cdk-lib:
     specifier: 2.100.0
     version: 2.100.0(constructs@10.2.69)
