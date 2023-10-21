@@ -1,4 +1,4 @@
-import { loadSharedConfigFiles } from "@aws-sdk/shared-ini-file-loader";
+import { loadSharedConfigFiles } from "@smithy/shared-ini-file-loader";
 
 /**
  * List the AWS profiles from the CLI AWS config and credential files

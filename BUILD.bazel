@@ -27,7 +27,7 @@ deps = [
     "//:node_modules/@aws-sdk/client-ssm",
     "//:node_modules/@aws-sdk/client-sts",
     "//:node_modules/@aws-sdk/credential-providers",
-    "//:node_modules/@aws-sdk/shared-ini-file-loader",
+    "//:node_modules/@smithy/shared-ini-file-loader",
     "//:node_modules/@smithy/smithy-client",
     "//:node_modules/@aws-sdk/types",
     "//:node_modules/@types/lodash",
