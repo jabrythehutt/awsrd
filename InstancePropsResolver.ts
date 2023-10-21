@@ -4,6 +4,7 @@ import {
   EC2Client,
   Image,
   PlatformValues,
+  _InstanceType,
 } from "@aws-sdk/client-ec2";
 import { VscInstanceProps } from "./VscInstanceProps";
 import {
@@ -96,7 +97,7 @@ export class InstancePropsResolver {
   }
 
   async isHibernationSupported(instanceType: InstanceType): Promise<boolean> {
-    const instanceTypeString = instanceType.toString();
+    const instanceTypeString = instanceType.toString() as _InstanceType;
     const ec2 = await this.clientFactory.createAwsClientPromise(EC2Client);
     const response = await ec2.send(
       new DescribeInstanceTypesCommand({
