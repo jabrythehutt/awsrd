@@ -13,8 +13,8 @@ import { existsSync } from "node:fs";
 import { instanceTagName } from "./instanceTagName";
 import { instanceTagValue } from "./instanceTagValue";
 import { toInstanceName } from "./toInstanceName";
-import { keys } from "ts-transformer-keys";
 import { IconPaths } from "./IconPaths";
+import { DisplayMode } from "./DisplayMode";
 
 export class InstanceTreeProvider implements TreeDataProvider<string> {
   readonly eventEmitter = new EventEmitter<string | undefined>();
@@ -31,9 +31,16 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
         this.eventEmitter.fire(change);
       }
     });
-    this.iconPaths = this.toIconPaths(
-      keys<Record<InstanceStateName, unknown>>()
-    );
+    const states: Record<InstanceStateName, undefined> = {
+      pending: undefined,
+      running: undefined,
+      "shutting-down": undefined,
+      stopped: undefined,
+      stopping: undefined,
+      terminated: undefined,
+    };
+    const stateNames = Object.keys(states) as InstanceStateName[];
+    this.iconPaths = this.toIconPaths(stateNames);
   }
 
   protected toIconPaths(
@@ -42,7 +49,7 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
     return states.reduce(
       (result, instanceStateName) => ({
         ...result,
-        [instanceStateName]: keys<IconPaths>().reduce(
+        [instanceStateName]: Object.values(DisplayMode).reduce(
           (iconPaths, iconType) => ({
             ...iconPaths,
             [iconType]: this.toIconPath(iconType, instanceStateName),

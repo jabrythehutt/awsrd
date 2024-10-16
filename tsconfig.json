@@ -13,8 +13,7 @@
     "noFallthroughCasesInSwitch": true,
     "module": "ES2022",
     "moduleResolution": "node",
-    "isolatedModules": true,
-    "plugins": [{ "transform": "ts-transformer-keys/transformer" }]
+    "isolatedModules": true
   },
   "exclude": ["node_modules", "bazel-*", "dist"]
 }

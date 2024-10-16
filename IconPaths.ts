@@ -1,1 +1,3 @@
-export type IconPaths = Record<"light" | "dark", string>;
+import { DisplayMode } from "./DisplayMode";
+
+export type IconPaths = Record<DisplayMode, string>;
