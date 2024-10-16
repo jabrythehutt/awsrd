@@ -32,17 +32,15 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
       }
     });
     const states: Record<InstanceStateName, undefined> = {
-      "pending": undefined,
-      "running": undefined,
+      pending: undefined,
+      running: undefined,
       "shutting-down": undefined,
-      "stopped": undefined,
-      "stopping": undefined,
-      "terminated": undefined
-    }
+      stopped: undefined,
+      stopping: undefined,
+      terminated: undefined,
+    };
     const stateNames = Object.keys(states) as InstanceStateName[];
-    this.iconPaths = this.toIconPaths(
-      stateNames
-    );
+    this.iconPaths = this.toIconPaths(stateNames);
   }
 
   protected toIconPaths(

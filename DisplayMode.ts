@@ -1,4 +1,4 @@
 export enum DisplayMode {
-    Light = "light",
-    Dark = "dark"
+  Light = "light",
+  Dark = "dark",
 }
