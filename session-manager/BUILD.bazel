@@ -1,0 +1,7 @@
+load("index.bzl", "session_manager")
+
+session_manager_bin_name = "session_manager_bin"
+
+session_manager(
+    name = session_manager_bin_name,
+)

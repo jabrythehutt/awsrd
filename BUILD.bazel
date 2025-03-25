@@ -1,7 +1,7 @@
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("index.bzl", "cjs_bundle", "cli", "to_package_args_choice")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
-load("session_manager.bzl", "session_manager")
+load("//session-manager:index.bzl", "session_manager")
 load("platforms.bzl", "platforms")
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
@@ -9,6 +9,7 @@ load("@npm//:@vscode/vsce/package_json.bzl", "bin")
 load("@aspect_rules_js//npm:defs.bzl", "stamped_package_json")
 load("ts_project.bzl", "ts_project")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
+load("@npm//:tsconfig-to-swcconfig/package_json.bzl", swcrc_bin = "bin")
 
 platforms()
 
@@ -39,7 +40,6 @@ deps = [
     "//:node_modules/lodash",
     "//:node_modules/rxjs",
     "//:node_modules/sshpk",
-    "//:node_modules/tslib",
     "//:node_modules/validator",
     "//:node_modules/yargs",
     "//:node_modules/@types/aws-lambda",
@@ -216,5 +216,19 @@ bin.vsce_binary(
     ],
     data = [
         "vsc_package",
+    ],
+)
+
+swcrc_bin.tsconfig_to_swcconfig(
+    name = ".swcrc",
+    srcs = [
+        "tsconfig",
+    ],
+    outs = [
+        ".swcrc",
+    ],
+    args = [
+        "-o",
+        ".swcrc",
     ],
 )
