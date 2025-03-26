@@ -226,7 +226,7 @@ bin.vsce_binary(
 )
 
 swcrc_bin.tsconfig_to_swcconfig(
-    name = ".swcrc",
+    name = "swcrc",
     srcs = [
         "tsconfig",
     ],
