@@ -6,53 +6,9 @@ load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
 load("//:platforms.bzl", "to_config_name")
 
 def session_manager(name):
-    workdir = "/session-manager-plugin"
-    base_name = name + "_base"
-    # container_image(
-    #     name = base_name,
-    #     base = "@session_manager_image//image:dockerfile_image.tar",
-    #     directory = workdir,
-    #     files = [
-    #         "@session_manager_repo//:all_srcs",
-    #     ],
-    #     mode = "7777",
-    # )
 
-    image_dist_path = workdir + "/bin"
+   
 
-    release_name = name + "_release"
-    # container_run_and_extract(
-    #     name = release_name,
-    #     commands = [
-    #         "cd " + workdir,
-    #         "make release",
-    #     ],
-    #     extract_file = image_dist_path,
-    #     image = base_name + ".tar",
-    # )
-
-    run_binary(
-        name = release_name,
-        srcs = ["@session_manager_repo//:all_srcs", "@session_manager_repo//:src"],
-        args = [
-            "build",
-            "$(location @session_manager_repo//:src)/../",
-        ],
-        execution_requirements = {"local": "1"},
-        mnemonic = "BuildDocker",
-        out_dirs = [release_name],
-        tool = "@multitool//tools/docker",
-    )
-
-
-    release_dir = release_name + "_dir"
-    output_files(
-        name = release_dir,
-        target = release_name,
-        paths = [
-            release_name + image_dist_path,
-        ],
-    )
 
     archs = {
         "amd64": "x86_64",
@@ -73,11 +29,11 @@ def session_manager(name):
             cmd = "cp $(SRCS){bin_path} $@".format(bin_path = bin_path)
             copy_commands[config_name] = cmd
 
-    native.genrule(
-        name = name,
-        srcs = [
-            release_dir,
-        ],
-        outs = [name],
-        cmd = select(copy_commands),
-    )
+    # native.genrule(
+    #     name = name,
+    #     srcs = [
+    #         release_dir,
+    #     ],
+    #     outs = [name],
+    #     cmd = select(copy_commands),
+    # )

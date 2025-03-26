@@ -1,7 +1,50 @@
 load("index.bzl", "session_manager")
 
-session_manager_bin_name = "session_manager_bin"
-
-session_manager(
-    name = session_manager_bin_name,
+genrule(
+    name = "release_dockerfile",
+    srcs = [
+        "@session_manager_repo//:Dockerfile",
+    ],
+    outs = [
+        "Dockerfile"
+    ],
+    cmd = 'cp $(SRCS) $@ && echo "\nADD . .\nRUN make release" >> $@'
 )
+
+workdir = "session-manager-plugin"
+
+genrule(
+    name = "image",
+    srcs = [
+        "@session_manager_repo//:src",
+        "@session_manager_repo//:all_srcs",
+        "@multitool//tools/docker",
+        "release_dockerfile"
+    ],
+    outs = [
+        "image_id.txt"
+    ],
+    cmd = " && ".join([
+        # "mkdir -p $$TMPDIR/{}".format(workdir),
+        # "cp $(location release_dockerfile) $$TMPDIR/{}/Dockerfile".format(workdir),
+        # "$(location @multitool//tools/docker) build $(location @session_manager_repo//:src)/../ -f $$TMPDIR/{}/Dockerfile -q &> $@".format(workdir)
+        "$(location @multitool//tools/docker) build $(location @session_manager_repo//:src)/../ -f $$(readlink -f $(location release_dockerfile)) -q &> $@".format(workdir)
+    ])
+)
+
+genrule(
+    name = "dist",
+    srcs = [
+        "image",
+        "@multitool//tools/docker"
+    ],
+    outs = [
+        "dist"
+    ],
+    cmd = " && ".join([
+        "cid=$$($(location @multitool//tools/docker) create $$(cat $(location image)))",
+        "$(location @multitool//tools/docker) cp $$cid:/{}/bin $@".format(workdir),
+        "$(location @multitool//tools/docker) rm $$cid"
+    ])
+)
+
