@@ -22,8 +22,8 @@
     "https://bcr.bazel.build/modules/aspect_rules_js/2.0.0/MODULE.bazel": "b45b507574aa60a92796e3e13c195cd5744b3b8aff516a9c0cb5ae6a048161c5",
     "https://bcr.bazel.build/modules/aspect_rules_js/2.3.2/MODULE.bazel": "bd7d875acf70d177b67bc989b6ff99d65bf950ba4a988dff627f03adceee1513",
     "https://bcr.bazel.build/modules/aspect_rules_js/2.3.2/source.json": "54dc1d3d1d602ec88cffb26f023c8ab0eddd75daaf4a24dadd331096fc59e138",
-    "https://bcr.bazel.build/modules/aspect_rules_swc/2.3.0/MODULE.bazel": "df2f4fed67ab86340eda1fbb4af9bba3f9791f3032fa92fe4c18d8c8d020484f",
-    "https://bcr.bazel.build/modules/aspect_rules_swc/2.3.0/source.json": "87f7c902f8106b18ef4ab5d14562cd2c23992bf6f6e973c6972d0f2557f07090",
+    "https://bcr.bazel.build/modules/aspect_rules_swc/2.0.1/MODULE.bazel": "35e0c95698ecb59454ea2ca0de5dd4550afe23aaa0853c313024651ce3f1464e",
+    "https://bcr.bazel.build/modules/aspect_rules_swc/2.0.1/source.json": "f52f91ab97db89b1e60067585104be37f05fa6f7c999e0156a1e6151d17c49b3",
     "https://bcr.bazel.build/modules/aspect_rules_ts/3.5.1/MODULE.bazel": "1bfe5fabcfbd3caa8b47973c418d14dc3f6da14c623f038ed7c71a757774ea63",
     "https://bcr.bazel.build/modules/aspect_rules_ts/3.5.1/source.json": "9471f6d6320d36cdbb2e879fbe8c58e1d3aac8eea077ba081ff144d9ba8b326f",
     "https://bcr.bazel.build/modules/bazel_features/1.1.1/MODULE.bazel": "27b8c79ef57efe08efccbd9dd6ef70d61b4798320b8d3c134fd571f78963dbcd",
@@ -422,8 +422,8 @@
     },
     "@@aspect_rules_swc+//swc:extensions.bzl%swc": {
       "general": {
-        "bzlTransitiveDigest": "1rj9VvXgoeeHULdiG3D2hqopLJ3rHtpJIeDAJ2xpjp8=",
-        "usagesDigest": "tDN/VIFm38f6//LKC8ODhVYb7a/hMlkC4wqQOK8V5JQ=",
+        "bzlTransitiveDigest": "3apbvYWdvAuuh7WuuMR7QSBcZYajPR7jtSA8iESt50s=",
+        "usagesDigest": "NnPEzuev/J1U31STpvs+LXvz/lX1WrDUaUpAJSVvYuc=",
         "recordedFileInputs": {},
         "recordedDirentsInputs": {},
         "envVariables": {},
@@ -432,49 +432,49 @@
             "repoRuleId": "@@aspect_rules_swc+//swc:repositories.bzl%swc_repositories",
             "attributes": {
               "platform": "darwin-arm64",
-              "swc_version": "v1.7.40"
+              "swc_version": "v1.6.6"
             }
           },
           "swc_darwin-x64": {
             "repoRuleId": "@@aspect_rules_swc+//swc:repositories.bzl%swc_repositories",
             "attributes": {
               "platform": "darwin-x64",
-              "swc_version": "v1.7.40"
+              "swc_version": "v1.6.6"
             }
           },
           "swc_linux-arm64-gnu": {
             "repoRuleId": "@@aspect_rules_swc+//swc:repositories.bzl%swc_repositories",
             "attributes": {
               "platform": "linux-arm64-gnu",
-              "swc_version": "v1.7.40"
+              "swc_version": "v1.6.6"
             }
           },
           "swc_linux-x64-gnu": {
             "repoRuleId": "@@aspect_rules_swc+//swc:repositories.bzl%swc_repositories",
             "attributes": {
               "platform": "linux-x64-gnu",
-              "swc_version": "v1.7.40"
+              "swc_version": "v1.6.6"
             }
           },
           "swc_win32-arm64-msvc": {
             "repoRuleId": "@@aspect_rules_swc+//swc:repositories.bzl%swc_repositories",
             "attributes": {
               "platform": "win32-arm64-msvc",
-              "swc_version": "v1.7.40"
+              "swc_version": "v1.6.6"
             }
           },
           "swc_win32-ia32-msvc": {
             "repoRuleId": "@@aspect_rules_swc+//swc:repositories.bzl%swc_repositories",
             "attributes": {
               "platform": "win32-ia32-msvc",
-              "swc_version": "v1.7.40"
+              "swc_version": "v1.6.6"
             }
           },
           "swc_win32-x64-msvc": {
             "repoRuleId": "@@aspect_rules_swc+//swc:repositories.bzl%swc_repositories",
             "attributes": {
               "platform": "win32-x64-msvc",
-              "swc_version": "v1.7.40"
+              "swc_version": "v1.6.6"
             }
           },
           "swc_toolchains": {
@@ -489,6 +489,41 @@
             "aspect_rules_swc+",
             "bazel_skylib",
             "bazel_skylib+"
+          ]
+        ]
+      }
+    },
+    "@@aspect_rules_ts+//ts:extensions.bzl%ext": {
+      "general": {
+        "bzlTransitiveDigest": "NmIg3aT0HCpU245kZoPb+TSBOktXmt7j9HoltcCIi8M=",
+        "usagesDigest": "lo08ysCIqOVkEKXQ2LrCGRdj0ak5GNGGaExsQp4fCWI=",
+        "recordedFileInputs": {},
+        "recordedDirentsInputs": {},
+        "envVariables": {},
+        "generatedRepoSpecs": {
+          "npm_typescript": {
+            "repoRuleId": "@@aspect_rules_ts+//ts/private:npm_repositories.bzl%http_archive_version",
+            "attributes": {
+              "bzlmod": true,
+              "version": "",
+              "version_from": "@@//:package.json",
+              "integrity": "",
+              "build_file": "@@aspect_rules_ts+//ts:BUILD.typescript",
+              "build_file_substitutions": {
+                "bazel_worker_version": "5.4.2",
+                "google_protobuf_version": "3.20.1"
+              },
+              "urls": [
+                "https://registry.npmjs.org/typescript/-/typescript-{}.tgz"
+              ]
+            }
+          }
+        },
+        "recordedRepoMappingEntries": [
+          [
+            "aspect_rules_ts+",
+            "bazel_tools",
+            "bazel_tools"
           ]
         ]
       }

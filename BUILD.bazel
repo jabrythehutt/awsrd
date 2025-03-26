@@ -1,7 +1,6 @@
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("index.bzl", "cjs_bundle", "cli", "to_package_args_choice")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
-load("//session-manager:index.bzl", "session_manager")
 load("platforms.bzl", "platforms")
 load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
@@ -9,9 +8,14 @@ load("@npm//:@vscode/vsce/package_json.bzl", "bin")
 load("@aspect_rules_js//npm:defs.bzl", "stamped_package_json")
 load("ts_project.bzl", "ts_project")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
+load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
 load("@npm//:tsconfig-to-swcconfig/package_json.bzl", swcrc_bin = "bin")
 
+package(default_visibility = ["//visibility:public"])
+
 platforms()
+
+session_manager_bin_name = "//session-manager:bin"
 
 npm_link_all_packages(
     name = "node_modules",
@@ -46,6 +50,12 @@ deps = [
 ]
 
 tests = ["*.test.ts"]
+
+ts_config(
+    name = "tsconfig",
+    src = "tsconfig.json",
+    visibility = ["//visibility:public"],
+)
 
 stamped_package_json(
     name = "package",
@@ -107,12 +117,6 @@ cjs_bundle(
     ],
 )
 
-session_manager_bin_name = "session_manager_bin"
-
-session_manager(
-    name = session_manager_bin_name,
-)
-
 cdk_app_file_name = "app.cjs"
 
 cjs_bundle(
@@ -165,6 +169,8 @@ cjs_bundle(
         "ssm_proxy_script",
     ],
 )
+
+
 
 npm_package(
     name = "dist",

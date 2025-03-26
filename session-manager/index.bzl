@@ -17,68 +17,18 @@ oss = {
 workdir = "session-manager-plugin"
 
 def dist_files():
-    dist_files = []
+    dist_files = {}
     for arch in archs.keys():
         for os in oss.keys():
             suffix = os + "_" + arch
             bin_path = "{suffix}_plugin/{workdir}".format(suffix = suffix, workdir = workdir)
-            dist_files.append(bin_path)
+            config_name = "//:" + to_config_name(oss[os], archs[arch])
+            dist_files[config_name] = bin_path
     return dist_files
 
-def session_manager_dist(name, image_id_file):
-
-    file_name = "session-manager-plugin"
-    copy_commands = {}
-    for arch in archs.keys():
-        for os in oss.keys():
-            suffix = os + "_" + arch
-            dir_name = name + "_" + suffix
-            config_name = to_config_name(oss[os], archs[arch])
-            bin_path = "/{suffix}_plugin/{file_name}".format(suffix = suffix, file_name = file_name)
-            cmd = "cp $(SRCS){bin_path} $@".format(bin_path = bin_path)
-            copy_commands[config_name] = cmd
-
-    native.genrule(
-        name = name,
-        srcs = [
-            image_id_file,
-            "@multitool//tools/docker"
-        ],
-        outs = [
-            "dist"
-        ],
-        cmd = " && ".join([
-            "cid=$$($(location @multitool//tools/docker) create $$(cat $(location {})))".format(image_id_file),
-            "$(location @multitool//tools/docker) cp $$cid:/{}/bin $@".format(workdir),
-            "$(location @multitool//tools/docker) rm $$cid"
-        ])
-    )
-
-
-    archs = {
-        "amd64": "x86_64",
-        "arm64": "arm64",
-    }
-    oss = {
-        "linux": "linux",
-        "darwin": "macos",
-    }
-    file_name = "session-manager-plugin"
-    copy_commands = {}
-    for arch in archs.keys():
-        for os in oss.keys():
-            suffix = os + "_" + arch
-            dir_name = name + "_" + suffix
-            config_name = to_config_name(oss[os], archs[arch])
-            bin_path = "/{suffix}_plugin/{file_name}".format(suffix = suffix, file_name = file_name)
-            cmd = "cp $(SRCS){bin_path} $@".format(bin_path = bin_path)
-            copy_commands[config_name] = cmd
-
-    # native.genrule(
-    #     name = name,
-    #     srcs = [
-    #         release_dir,
-    #     ],
-    #     outs = [name],
-    #     cmd = select(copy_commands),
-    # )
+def to_sub_files(prefix):
+    sub_files = {}
+    files = dist_files()
+    for key in files.keys():
+        sub_files[key] = prefix + files[key]
+    return sub_files

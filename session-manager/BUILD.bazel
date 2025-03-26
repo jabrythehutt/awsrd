@@ -1,4 +1,7 @@
-load("index.bzl", "workdir", "dist_files")
+load("index.bzl", "workdir", "dist_files", "to_sub_files")
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
+
+package(default_visibility = ["//visibility:public"])
 
 genrule(
     name = "release_dockerfile",
@@ -23,18 +26,15 @@ genrule(
         "image_id.txt"
     ],
     cmd = " && ".join([
-        # "mkdir -p $$TMPDIR/{}".format(workdir),
-        # "cp $(location release_dockerfile) $$TMPDIR/{}/Dockerfile".format(workdir),
-        # "$(location @multitool//tools/docker) build $(location @session_manager_repo//:src)/../ -f $$TMPDIR/{}/Dockerfile -q &> $@".format(workdir)
         "$(location @multitool//tools/docker) build $(location @session_manager_repo//:src)/../ -f $$(readlink -f $(location release_dockerfile)) -q &> $@".format(workdir)
     ])
 )
 
 dist_name = "dist"
 
-outs = [dist_name + "/" + f for f in dist_files()]
+outs = [dist_name + "/" + f for f in dist_files().values()]
 
-copy_commands = ["$(location @multitool//tools/docker) cp $$cid:/{workdir}/bin/{f} $(RULEDIR)/{dist_name}/{f}".format(workdir = workdir, f=f, dist_name = dist_name) for f in dist_files()]
+copy_commands = ["$(location @multitool//tools/docker) cp $$cid:/{workdir}/bin/{f} $(RULEDIR)/{dist_name}/{f}".format(workdir = workdir, f=f, dist_name = dist_name) for f in dist_files().values()]
 
 genrule(
     name = dist_name,
@@ -48,6 +48,12 @@ genrule(
     ] + copy_commands + [
         "$(location @multitool//tools/docker) rm $$cid"
     ])
+)
+
+select_file(
+    name = "bin",
+    srcs = dist_name,
+    subpath = select(to_sub_files(dist_name + "/"))
 )
 
 
