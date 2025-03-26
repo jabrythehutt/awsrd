@@ -1,4 +1,4 @@
-load("index.bzl", "session_manager")
+load("index.bzl", "workdir", "dist_files")
 
 genrule(
     name = "release_dockerfile",
@@ -10,8 +10,6 @@ genrule(
     ],
     cmd = 'cp $(SRCS) $@ && echo "\nADD . .\nRUN make release" >> $@'
 )
-
-workdir = "session-manager-plugin"
 
 genrule(
     name = "image",
@@ -32,19 +30,24 @@ genrule(
     ])
 )
 
+dist_name = "dist"
+
+outs = [dist_name + "/" + f for f in dist_files()]
+
+copy_commands = ["$(location @multitool//tools/docker) cp $$cid:/{workdir}/bin/{f} $(RULEDIR)/{dist_name}/{f}".format(workdir = workdir, f=f, dist_name = dist_name) for f in dist_files()]
+
 genrule(
-    name = "dist",
+    name = dist_name,
     srcs = [
         "image",
         "@multitool//tools/docker"
     ],
-    outs = [
-        "dist"
-    ],
+    outs = outs,
     cmd = " && ".join([
-        "cid=$$($(location @multitool//tools/docker) create $$(cat $(location image)))",
-        "$(location @multitool//tools/docker) cp $$cid:/{}/bin $@".format(workdir),
+        "cid=$$($(location @multitool//tools/docker) create $$(cat $(location image)))"
+    ] + copy_commands + [
         "$(location @multitool//tools/docker) rm $$cid"
     ])
 )
+
 

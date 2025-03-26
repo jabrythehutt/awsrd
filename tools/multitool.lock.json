@@ -1,37 +1,5 @@
 {
     "$schema": "https://raw.githubusercontent.com/theoremlp/rules_multitool/main/lockfile.schema.json",
-    "buildx": {
-      "binaries": [
-        {
-          "kind": "file",
-          "url": "https://github.com/docker/buildx/releases/download/v0.22.0/buildx-v0.22.0.linux-arm64",
-          "sha256": "6e9e455b5ec1c7ac708f2640a86c5cecce38c72e48acff6cb219dfdfa2dda781",
-          "os": "linux",
-          "cpu": "arm64"
-        },
-        {
-          "kind": "file",
-          "url": "https://github.com/docker/buildx/releases/download/v0.22.0/buildx-v0.22.0.linux-amd64",
-          "sha256": "805195386fba0cea5a1487cf0d47da82a145ea0a792bd3fb477583e2dbcdcc2f",
-          "os": "linux",
-          "cpu": "x86_64"
-        },
-        {
-          "kind": "file",
-          "url": "https://github.com/docker/buildx/releases/download/v0.22.0/buildx-v0.22.0.darwin-arm64",
-          "sha256": "71f4908472358e87b510497a82c5af2de1e48cfb7964116ab5dd8cb7e241b76b",
-          "os": "macos",
-          "cpu": "arm64"
-        },
-        {
-          "kind": "file",
-          "url": "https://github.com/docker/buildx/releases/download/v0.22.0/buildx-v0.22.0.darwin-amd64",
-          "sha256": "53fe0bc2326e29afe9d1dc7ae5b8ea8d7b663c2f7129af11f67b1bab3fee14ce",
-          "os": "macos",
-          "cpu": "x86_64"
-        }
-      ]
-    },
     "docker": {
       "binaries": [
         {
@@ -46,7 +14,7 @@
           "kind": "archive",
           "url": "https://download.docker.com/linux/static/stable/x86_64/docker-28.0.2.tgz",
           "file": "docker/docker",
-          "sha256": "6a03bbda96845b7451be2f6aba69c3816c60a97de318e83fd1b39d1be262d8af",
+          "sha256": "7046fce4bc2db1a9f4d13e60accd2584136d5e4d053932fa52a707b8f36f0734",
           "os": "linux",
           "cpu": "x86_64"
         },
@@ -54,7 +22,7 @@
           "kind": "archive",
           "url": "https://download.docker.com/mac/static/stable/aarch64/docker-28.0.2.tgz",
           "file": "docker/docker",
-          "sha256": "9da5c51771bf0f76bc5e278791dd9c9b6f7f4877617ac952dd5c88efb7a9ff10",
+          "sha256": "b858fd7d8576e0fa1d2841b64922620ac866cf321f2fa42f7f07898e87f9c6c5",
           "os": "macos",
           "cpu": "arm64"
         },
@@ -62,57 +30,7 @@
           "kind": "archive",
           "url": "https://download.docker.com/mac/static/stable/x86_64/docker-28.0.2.tgz",
           "file": "docker/docker",
-          "sha256": "e793fa4531d5216107b84b87f191c582ee9378254f17b5aabcf0fa3010293ae7",
-          "os": "macos",
-          "cpu": "x86_64"
-        }
-      ]
-    },
-    "docker-compose": {
-      "binaries": [
-        {
-          "kind": "file",
-          "url": "https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-linux-aarch64",
-          "sha256": "0c4591cf3b1ed039adcd803dbbeddf757375fc08c11245b0154135f838495a2f",
-          "os": "linux",
-          "cpu": "arm64"
-        },
-        {
-          "kind": "file",
-          "url": "https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-linux-x86_64",
-          "sha256": "ed1917fb54db184192ea9d0717bcd59e3662ea79db48bff36d3475516c480a6b",
-          "os": "linux",
-          "cpu": "x86_64"
-        },
-        {
-          "kind": "file",
-          "url": "https://github.com/docker/compose/releases/download/v2.32.4/docker-compose-darwin-aarch64",
-          "sha256": "dc30b0276c0ba45857eef021b677d4fb2bbf13bcf809f99b691db9512bca47cc",
-          "os": "macos",
-          "cpu": "arm64"
-        }
-      ]
-    },
-    "jd": {
-      "binaries": [
-        {
-          "kind": "file",
-          "url": "https://github.com/josephburnett/jd/releases/download/v1.9.1/jd-amd64-linux",
-          "sha256": "382a69c0720a94515cb07bf8e0b89fbfa577140fc92e23b128455b5ae682e523",
-          "os": "linux",
-          "cpu": "x86_64"
-        },
-        {
-          "kind": "file",
-          "url": "https://github.com/josephburnett/jd/releases/download/v1.9.1/jd-arm64-darwin",
-          "sha256": "8f34988fc77c577157b57ad22b8e3624f033396715cae208cc368eeb7f6d6823",
-          "os": "macos",
-          "cpu": "arm64"
-        },
-        {
-          "kind": "file",
-          "url": "https://github.com/josephburnett/jd/releases/download/v1.9.1/jd-amd64-darwin",
-          "sha256": "7cda0be31188f8388ba537161a4f3aaaaba58bca5707be86980de759ae90c2b7",
+          "sha256": "2bb2594348cdc44052bef3859c2bec9b7c1363f51cba7f6b41db079931cd8dcb",
           "os": "macos",
           "cpu": "x86_64"
         }
