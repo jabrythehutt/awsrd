@@ -16,7 +16,7 @@ export class KeyAuthoriser {
         InstanceId: request.instanceId,
         InstanceOSUser: request.user,
         SSHPublicKey: request.publicKey,
-      })
+      }),
     );
   }
 }

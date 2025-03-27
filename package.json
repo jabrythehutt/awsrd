@@ -61,6 +61,7 @@
     "jest-junit": "16.0.0",
     "@vscode/vsce": "3.3.1",
     "@swc/helpers": "0.5.15",
+    "prettier": "3.5.3",
     "tsconfig-to-swcconfig": "2.8.1"
   },
   "extensionDependencies": [

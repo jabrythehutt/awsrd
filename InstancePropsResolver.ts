@@ -42,7 +42,7 @@ export class InstancePropsResolver {
     }),
     InitService.enable("docker", {
       ensureRunning: true,
-    })
+    }),
   );
 
   defaultBlockDeviceName = "/dev/xvda";
@@ -51,7 +51,7 @@ export class InstancePropsResolver {
 
   async resolve(
     request: Record<StackArg | ContextArg, string | undefined>,
-    construct: Construct
+    construct: Construct,
   ): Promise<VscInstanceProps> {
     const image = request.imageId
       ? await this.describeImage(request.imageId)
@@ -102,10 +102,10 @@ export class InstancePropsResolver {
     const response = await ec2.send(
       new DescribeInstanceTypesCommand({
         InstanceTypes: [instanceTypeString],
-      })
+      }),
     );
     const instanceInfo = response.InstanceTypes?.find(
-      (i) => i.InstanceType === instanceTypeString
+      (i) => i.InstanceType === instanceTypeString,
     );
     return !!instanceInfo?.HibernationSupported;
   }
@@ -117,7 +117,7 @@ export class InstancePropsResolver {
       assumedBy: new ServicePrincipal("ec2.amazonaws.com"),
     });
     role.addManagedPolicy(
-      ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore")
+      ManagedPolicy.fromAwsManagedPolicyName("AmazonSSMManagedInstanceCore"),
     );
     return role;
   }
@@ -127,26 +127,24 @@ export class InstancePropsResolver {
       `/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-6.1-${instanceType.architecture}`,
       {
         os: OperatingSystemType.LINUX,
-      }
+      },
     );
   }
 
   async describeImage(imageId: string): Promise<Image | undefined> {
-    const ec2Client = await this.clientFactory.createAwsClientPromise(
-      EC2Client
-    );
+    const ec2Client =
+      await this.clientFactory.createAwsClientPromise(EC2Client);
     const response = await ec2Client.send(
       new DescribeImagesCommand({
         ImageIds: [imageId],
-      })
+      }),
     );
     return response.Images?.find((image) => image.ImageId === imageId);
   }
 
   async toMachineImage(image: Image): Promise<MachineImage> {
-    const ec2Client = await this.clientFactory.createAwsClientPromise(
-      EC2Client
-    );
+    const ec2Client =
+      await this.clientFactory.createAwsClientPromise(EC2Client);
     const region = await ec2Client.config.region();
     const amiMap = {
       [region]: image.ImageId as string,

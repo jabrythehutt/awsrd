@@ -6,7 +6,7 @@ export class ConfigStore<T> {
   public readonly value: Observable<T>;
   constructor(
     protected readonly configKey: ConfigurationKey,
-    protected readonly valueSource: Subject<T> = new ReplaySubject(1)
+    protected readonly valueSource: Subject<T> = new ReplaySubject(1),
   ) {
     this.value = this.valueSource.asObservable();
     this.valueSource.next(this.currentValue);

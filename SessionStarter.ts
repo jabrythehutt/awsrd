@@ -10,7 +10,7 @@ import { AwsClientFactory } from "./AwsClientFactory";
 export class SessionStarter {
   constructor(
     private serviceFactory: AwsClientFactory,
-    private sessionManagerBinPath: string
+    private sessionManagerBinPath: string,
   ) {}
 
   async start(request: {
@@ -25,11 +25,10 @@ export class SessionStarter {
         portNumber: [`${request.port}`],
       },
     };
-    const ssmClient = await this.serviceFactory.createAwsClientPromise(
-      SSMClient
-    );
+    const ssmClient =
+      await this.serviceFactory.createAwsClientPromise(SSMClient);
     const response = await ssmClient.send(
-      new StartSessionCommand(startSessionParams)
+      new StartSessionCommand(startSessionParams),
     );
 
     const profile = request.profile;

@@ -23,10 +23,10 @@ export class InstanceStateResolver {
             Values: [instanceId],
           },
         ],
-      })
+      }),
     );
     const instanceInfo = response?.InstanceInformationList?.find(
-      (info) => info.InstanceId === instanceId
+      (info) => info.InstanceId === instanceId,
     );
     return instanceInfo?.PingStatus as PingStatus;
   }
@@ -37,14 +37,14 @@ export class InstanceStateResolver {
       new DescribeInstanceStatusCommand({
         InstanceIds: [instanceId],
         IncludeAllInstances: true,
-      })
+      }),
     );
     const status = instanceStatusResponse.InstanceStatuses?.find(
-      (s) => s.InstanceId === instanceId
+      (s) => s.InstanceId === instanceId,
     );
     if (!status) {
       throw new Error(
-        `Couldn't find instance status for instance with ID: ${instanceId}`
+        `Couldn't find instance status for instance with ID: ${instanceId}`,
       );
     }
     return status;

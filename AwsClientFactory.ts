@@ -6,27 +6,27 @@ import { toPromise } from "./toPromise";
 export class AwsClientFactory {
   constructor(
     private credentialStore: Observable<AwsCredentialIdentityProvider>,
-    private region$: Observable<string | undefined>
+    private region$: Observable<string | undefined>,
   ) {}
 
   createAwsClient<T extends Client<any, any, any, any>>(
     clientConstructor: new (arg: {
       credentials: AwsCredentialIdentityProvider;
       region: string | undefined;
-    }) => T
+    }) => T,
   ): Observable<T> {
     return combineLatest([this.credentialStore, this.region$]).pipe(
       map(
         ([credentials, region]) =>
-          new clientConstructor({ credentials, region })
-      )
+          new clientConstructor({ credentials, region }),
+      ),
     );
   }
 
   createAwsClientPromise<T extends Client<any, any, any, any>>(
     clientConstructor: new (arg: {
       credentials: AwsCredentialIdentityProvider;
-    }) => T
+    }) => T,
   ): Promise<T> {
     return toPromise(this.createAwsClient(clientConstructor));
   }

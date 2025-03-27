@@ -40,17 +40,17 @@ export class OpenCommandProvider
     private profileStore: Observable<string>,
     private context: ExtensionContext,
     private instanceStarter: InstanceStarter,
-    private awsContextResolver: AwsContextResolver
+    private awsContextResolver: AwsContextResolver,
   ) {}
 
   protected async createSshConfig(storageDir: string): Promise<string> {
     const proxyScriptPath = resolve(
       __dirname,
-      process.env.PROXY_SCRIPT_FILENAME as string
+      process.env.PROXY_SCRIPT_FILENAME as string,
     );
     const sessionManagerBinPath = resolve(
       __dirname,
-      process.env.SESSION_MANAGER_BIN as string
+      process.env.SESSION_MANAGER_BIN as string,
     );
 
     const keyPairPaths = await this.generateKeyPair(storageDir);
@@ -66,7 +66,7 @@ export class OpenCommandProvider
   }
 
   protected async generateKeyPair(
-    destinationDir: string
+    destinationDir: string,
   ): Promise<{ privateKeyPath: string; publicKeyPath: string }> {
     const keyPair = createKeyPair();
     const privateKeyFileName = "id_rsa";
@@ -86,11 +86,10 @@ export class OpenCommandProvider
   }
 
   async requestInstanceInfo(
-    instanceId: string
+    instanceId: string,
   ): Promise<InstanceInformation | undefined> {
-    const ssmClient = await this.serviceFactory.createAwsClientPromise(
-      SSMClient
-    );
+    const ssmClient =
+      await this.serviceFactory.createAwsClientPromise(SSMClient);
     const instanceInfoResponse = await ssmClient.send(
       new DescribeInstanceInformationCommand({
         Filters: [
@@ -99,16 +98,16 @@ export class OpenCommandProvider
             Values: [instanceId],
           },
         ],
-      })
+      }),
     );
     return instanceInfoResponse.InstanceInformationList?.find(
-      (info) => info.InstanceId === instanceId
+      (info) => info.InstanceId === instanceId,
     );
   }
 
   protected async requestUsername(
     instanceInfo: InstanceInformation | undefined,
-    label: string
+    label: string,
   ): Promise<string | undefined> {
     const options = instanceInfo ? guessUsernames(instanceInfo) : [];
     const guess = options[0];
@@ -128,7 +127,7 @@ export class OpenCommandProvider
     port: number;
   }): string {
     const encodedhost = Buffer.from(JSON.stringify(request), "utf8").toString(
-      "hex"
+      "hex",
     );
     return `vscode-remote://ssh-remote+${encodedhost}/home/${request.user}`;
   }
@@ -156,12 +155,12 @@ export class OpenCommandProvider
           .update(
             "remote.SSH.configFile",
             sshConfigPath,
-            ConfigurationTarget.Global
+            ConfigurationTarget.Global,
           );
         progress.report({ message: "Waiting for instance to be reachable..." });
         for await (const _ of this.instanceStarter.waitForStatus(
           instanceId,
-          PingStatus.ONLINE
+          PingStatus.ONLINE,
         )) {
           if (token.isCancellationRequested) {
             return;
@@ -176,13 +175,13 @@ export class OpenCommandProvider
         const user = await this.requestUsername(instanceInfo, label);
         if (user) {
           const uri = Uri.parse(
-            this.toConnectionString({ hostName: instanceId, user, port: 22 })
+            this.toConnectionString({ hostName: instanceId, user, port: 22 }),
           );
           await commands.executeCommand("vscode.openFolder", uri, {
             forceNewWindow: true,
           });
         }
-      }
+      },
     );
   }
 }

@@ -2,7 +2,7 @@ import { Terminal, TerminalExitStatus, window } from "vscode";
 
 export function executeTerminalCommands(
   terminal: Terminal,
-  commands: string[]
+  commands: string[],
 ): Promise<TerminalExitStatus | undefined> {
   const commandsWithExit = [...commands];
   const lastCommand = commandsWithExit.pop();

@@ -1,8 +1,8 @@
-load("@aspect_bazel_lib//lib:directory_path.bzl", "directory_path")
-load("@aspect_bazel_lib//lib:run_binary.bzl", "run_binary")
-load("@aspect_bazel_lib//lib:output_files.bzl", "output_files")
-load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
 load("@aspect_bazel_lib//lib:copy_file.bzl", "copy_file")
+load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
+load("@aspect_bazel_lib//lib:directory_path.bzl", "directory_path")
+load("@aspect_bazel_lib//lib:output_files.bzl", "output_files")
+load("@aspect_bazel_lib//lib:run_binary.bzl", "run_binary")
 load("//:platforms.bzl", "to_config_name")
 
 archs = {

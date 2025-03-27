@@ -48,7 +48,7 @@ export async function activate(context: ExtensionContext) {
   context.subscriptions.push(treeView);
   const deleteCommandProvider = new DeleteCommandProvider(
     instanceStore,
-    new InstanceDeleter(instanceStore, cdkCommander)
+    new InstanceDeleter(instanceStore, cdkCommander),
   );
   const openCommandProvider = new OpenCommandProvider(
     serviceFactory,
@@ -56,11 +56,11 @@ export async function activate(context: ExtensionContext) {
     profileStore.value,
     context,
     instanceStarter,
-    awsContextResolver
+    awsContextResolver,
   );
   const createCommandProvider = new CreateCommandProvider(
     instanceCreator,
-    instanceStore
+    instanceStore,
   );
   const regionCommandProvider = new RegionCommandProvider();
   const profileCommandProvider = new ProfileCommandProvider();
@@ -77,19 +77,19 @@ export async function activate(context: ExtensionContext) {
     start: new InstanceStateCommandProvider(
       CommandSuffix.Start,
       instanceStore,
-      instanceStarter
+      instanceStarter,
     ),
     stop: new InstanceStateCommandProvider(
       CommandSuffix.Stop,
       instanceStore,
-      instanceStarter
+      instanceStarter,
     ),
   };
 
   Object.entries(commandProviders).forEach(([commandSuffix, provider]) => {
     commands.registerCommand(
       CommandName[commandSuffix as CommandSuffix],
-      (arg1) => provider.execute(arg1)
+      (arg1) => provider.execute(arg1),
     );
   });
 }

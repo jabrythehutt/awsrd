@@ -36,7 +36,7 @@ export class VscInstance extends Construct {
           alarmNamePrefix: props.alarmNamePrefix,
           actionsEnabled: true,
         },
-      }
+      },
     ).monitorEC2Instances({
       instanceIds: [this.instance.instanceId],
     });
@@ -57,7 +57,7 @@ export class VscInstance extends Construct {
         effect: Effect.ALLOW,
         actions: ["ec2:StopInstances"],
         resources: [this.toArn(this.instance.instanceId)],
-      })
+      }),
     );
 
     const metricFactory = this.monitoring.createMetricFactory();
@@ -70,7 +70,7 @@ export class VscInstance extends Construct {
       },
       undefined,
       "AWS/EC2",
-      Duration.minutes(1)
+      Duration.minutes(1),
     );
     alarmFactory.addAlarm(cpuUtilisationMetric, {
       alarmDescription: "Instance inactivity",

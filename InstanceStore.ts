@@ -31,30 +31,32 @@ export class InstanceStore {
     this.ec2Client = clientFactory.createAwsClient(EC2Client);
     this.instances = combineLatest([this.ec2Client, this.refreshSubject]).pipe(
       switchMap(([client]) => this.listAll(client)),
-      shareReplay(1)
+      shareReplay(1),
     );
     const toInstanceId = (instance: Instance) => instance.InstanceId as string;
 
     this.instanceIds = this.instances.pipe(
       map((instances) => instances.map(toInstanceId)),
       map((instanceIds) => instanceIds.sort()),
-      distinctUntilChanged(isEqual)
+      distinctUntilChanged(isEqual),
     );
     this.changes = this.instances.pipe(
       map((instances) =>
         instances.sort((i1, i2) =>
-          toInstanceId(i1).localeCompare(toInstanceId(i2))
-        )
+          toInstanceId(i1).localeCompare(toInstanceId(i2)),
+        ),
       ),
       pairwise(),
       filter(([previous, current]) =>
-        isEqual(previous.map(toInstanceId), current.map(toInstanceId))
+        isEqual(previous.map(toInstanceId), current.map(toInstanceId)),
       ),
       map(([previous, current]) =>
-        current.filter((instance, index) => !isEqual(instance, previous[index]))
+        current.filter(
+          (instance, index) => !isEqual(instance, previous[index]),
+        ),
       ),
       map((instances) => instances.map(toInstanceId)),
-      filter((changes) => changes.length > 0)
+      filter((changes) => changes.length > 0),
     );
     this.refresh();
   }
@@ -79,7 +81,7 @@ export class InstanceStore {
 
   protected toInstances(response: DescribeInstancesCommandOutput): Instance[] {
     return flatten(
-      response.Reservations?.map((r) => r.Instances) as Instance[][]
+      response.Reservations?.map((r) => r.Instances) as Instance[][],
     );
   }
 

@@ -22,7 +22,7 @@ export class CreateCommandProvider
 
   constructor(
     private instanceCreator: InstanceCreator,
-    private instanceStore: InstanceStore
+    private instanceStore: InstanceStore,
   ) {}
 
   protected async requestImageId(): Promise<string | undefined> {
@@ -101,10 +101,10 @@ export class CreateCommandProvider
     }
     const stackName = request.stackName;
     const terminalCommands = await this.instanceCreator.toTerminalCommands(
-      this.parse(request)
+      this.parse(request),
     );
     const terminal = window.createTerminal(
-      `Create developer instance ${stackName}`
+      `Create developer instance ${stackName}`,
     );
     terminal.show();
     await executeTerminalCommands(terminal, terminalCommands);

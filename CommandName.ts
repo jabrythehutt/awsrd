@@ -8,5 +8,5 @@ export const CommandName: CommandName = Object.values(CommandSuffix).reduce(
     ...values,
     [commandSuffix]: `${packageJson.name}.${commandSuffix}`,
   }),
-  {} as CommandName
+  {} as CommandName,
 );

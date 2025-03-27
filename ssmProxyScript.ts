@@ -35,25 +35,25 @@ async function run() {
   const credentialsStore = createCredentialStore(of(profile));
   const serviceFactory = new AwsClientFactory(credentialsStore, of(region));
   const instanceConnectClient = await serviceFactory.createAwsClientPromise(
-    EC2InstanceConnectClient
+    EC2InstanceConnectClient,
   );
   const stateResolver = new InstanceStateResolver(serviceFactory);
   const keyAuthoriser = new KeyAuthoriser(instanceConnectClient);
   const sessionStarter = new SessionStarter(
     serviceFactory,
-    args.sessionManagerBinPath
+    args.sessionManagerBinPath,
   );
   const starter = new InstanceStarter(
     serviceFactory,
     stateResolver,
-    args.pollPeriod
+    args.pollPeriod,
   );
   await starter.startInstance(args.instanceId);
   for await (const _ of starter.waitForState(args.instanceId, "running")) {
   }
   for await (const _ of starter.waitForStatus(
     args.instanceId,
-    PingStatus.ONLINE
+    PingStatus.ONLINE,
   )) {
   }
   const publicKey = (await readFile(args.publicKeyPath)).toString();

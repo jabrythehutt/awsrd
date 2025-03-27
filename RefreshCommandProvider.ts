@@ -18,7 +18,7 @@ export class RefreshCommandProvider
       },
       async () => {
         await toPromise(this.instanceStore.instanceIds);
-      }
+      },
     );
   }
 }

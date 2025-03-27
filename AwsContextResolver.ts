@@ -9,10 +9,10 @@ export class AwsContextResolver {
   constructor(private clientFactory: AwsClientFactory) {
     const stsClient = this.clientFactory.createAwsClient(STSClient);
     this.region$ = stsClient.pipe(
-      switchMap((client) => client.config.region())
+      switchMap((client) => client.config.region()),
     );
     this.account$ = stsClient.pipe(
-      switchMap((client) => this.toAccount(client))
+      switchMap((client) => this.toAccount(client)),
     );
   }
 

@@ -8,7 +8,7 @@ import { ContextArg } from "./ContextArg";
 export class CdkCommander {
   constructor(
     private contextResolver: AwsContextResolver,
-    private profileStore: Observable<string>
+    private profileStore: Observable<string>,
   ) {}
 
   get cdkBinPath(): string {
@@ -30,7 +30,7 @@ export class CdkCommander {
 
   toContextArgs<T extends object>(context: T): string[] {
     return Object.entries(context).map(
-      ([key, value]) => `-c ${key}="${value}"`
+      ([key, value]) => `-c ${key}="${value}"`,
     );
   }
 
@@ -72,7 +72,7 @@ export class CdkCommander {
 
   async toDefaultCommand<T extends object>(
     cdkCommand: "deploy" | "destroy" | "synth",
-    context: T
+    context: T,
   ): Promise<string> {
     const defaultOptions = await this.resolveCommonOptionArgs();
     const defaultContext = await this.resolveDefaultContext();

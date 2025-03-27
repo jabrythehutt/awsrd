@@ -25,7 +25,7 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
   constructor(private instanceStore: InstanceStore) {
     this.onDidChangeTreeData = this.eventEmitter.event;
     instanceStore.instanceIds.subscribe(() =>
-      this.eventEmitter.fire(undefined)
+      this.eventEmitter.fire(undefined),
     );
     instanceStore.changes.subscribe(async (changes) => {
       for (const change of changes) {
@@ -45,23 +45,30 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
   }
 
   protected toIconPaths(
-    states: InstanceStateName[]
+    states: InstanceStateName[],
   ): Record<InstanceStateName, IconPath> {
-    return Object.fromEntries(states.map(instanceStateName => [
-      instanceStateName,
-      Object.fromEntries(Object.values(DisplayMode).map(iconType => [iconType, this.toIconPath(iconType, instanceStateName)]))
-    ])) as Record<InstanceStateName, IconPath>;
+    return Object.fromEntries(
+      states.map((instanceStateName) => [
+        instanceStateName,
+        Object.fromEntries(
+          Object.values(DisplayMode).map((iconType) => [
+            iconType,
+            this.toIconPath(iconType, instanceStateName),
+          ]),
+        ),
+      ]),
+    ) as Record<InstanceStateName, IconPath>;
   }
 
   protected toIconPath(
     type: DisplayMode,
-    instanceStateName: InstanceStateName
+    instanceStateName: InstanceStateName,
   ): Uri {
     const mediaDir = join(__dirname, "media");
     const iconPrefix = "vm_";
     const iconPath = join(
       mediaDir,
-      `${iconPrefix}${instanceStateName}_${type}.svg`
+      `${iconPrefix}${instanceStateName}_${type}.svg`,
     );
     if (!existsSync(iconPath)) {
       return Uri.file(join(mediaDir, `${iconPrefix}${type}.svg`));
@@ -73,7 +80,7 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
     const instance = (await this.instanceStore.describe(id)) as Instance;
     const tags = instance.Tags || [];
     const managedTag = tags.find(
-      (t) => t.Key === instanceTagName && t.Value === instanceTagValue
+      (t) => t.Key === instanceTagName && t.Value === instanceTagValue,
     );
     const instanceStateName = instance.State?.Name as InstanceStateName;
     const contextValue = instanceStateName + (managedTag ? ".managed" : "");

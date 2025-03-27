@@ -8,7 +8,7 @@ export class InstanceCreator {
     const bootstrapCommand = await this.cdkCommander.resolveBootstrapCommand();
     const deployAppCommand = await this.cdkCommander.toDefaultCommand(
       "deploy",
-      request
+      request,
     );
     return [bootstrapCommand, deployAppCommand];
   }

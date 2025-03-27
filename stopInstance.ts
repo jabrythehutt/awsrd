@@ -6,7 +6,7 @@ import {
 
 export async function stopInstance(
   client: EC2Client,
-  instanceId: string
+  instanceId: string,
 ): Promise<void> {
   const request = {
     InstanceIds: [instanceId],
@@ -16,7 +16,7 @@ export async function stopInstance(
       new StopInstancesCommand({
         ...request,
         Hibernate: true,
-      })
+      }),
     );
   } catch (err) {
     if (

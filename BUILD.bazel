@@ -1,15 +1,14 @@
-load("@npm//:defs.bzl", "npm_link_all_packages")
-load("index.bzl", "cjs_bundle", "cli", "to_package_args_choice")
-load("@aspect_rules_js//npm:defs.bzl", "npm_package")
-load("platforms.bzl", "platforms")
-load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
 load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
-load("@npm//:@vscode/vsce/package_json.bzl", "bin")
-load("@aspect_rules_js//npm:defs.bzl", "stamped_package_json")
-load("ts_project.bzl", "ts_project")
-load("@rules_pkg//:pkg.bzl", "pkg_zip")
+load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
+load("@aspect_rules_js//npm:defs.bzl", "npm_package", "stamped_package_json")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
+load("@npm//:@vscode/vsce/package_json.bzl", "bin")
+load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@npm//:tsconfig-to-swcconfig/package_json.bzl", swcrc_bin = "bin")
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
+load("index.bzl", "cjs_bundle", "cli", "to_package_args_choice")
+load("platforms.bzl", "platforms")
+load("ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -90,7 +89,7 @@ jest_test(
     node_options = [
         "--experimental-vm-modules",
         "--experimental-print-required-tla",
-        "--no-experimental-require-module"
+        "--no-experimental-require-module",
     ],
 )
 
@@ -109,6 +108,9 @@ external_libs = [
 
 cjs_bundle(
     name = "ssm_proxy_script",
+    srcs = [
+        "package",
+    ],
     entry_point = entry_base + ".js",
     minify = minify,
     output = proxy_script_file_name,
@@ -116,26 +118,23 @@ cjs_bundle(
     deps = [
         "lib",
     ],
-    srcs = [
-        "package"
-    ]
 )
 
 cdk_app_file_name = "app.cjs"
 
 cjs_bundle(
     name = "stop_handler",
+    srcs = [
+        "package",
+    ],
     entry_point = "stopHandler.js",
     external_libs = ["@aws-sdk/*"],
     minify = minify,
     output = "stopHandler.cjs",
     sourcemap = sourcemap,
     deps = [
-        "lib"
+        "lib",
     ],
-    srcs = [
-        "package"
-    ]
 )
 
 pkg_zip(
@@ -147,6 +146,9 @@ pkg_zip(
 
 cjs_bundle(
     name = "cdk_app",
+    srcs = [
+        "package",
+    ],
     define = {
         "process.env.STOPPER_ZIP": '"stopper_bundle.zip"',
         "process.env.STOPPER_HANDLER": '"stopHandler.handler"',
@@ -159,13 +161,13 @@ cjs_bundle(
     deps = [
         "lib",
     ],
-    srcs = [
-        "package"
-    ]
 )
 
 cjs_bundle(
     name = "extension",
+    srcs = [
+        "package",
+    ],
     define = {
         "process.env.PROXY_SCRIPT_FILENAME": '"{proxy_script_file_name}"'.format(proxy_script_file_name = proxy_script_file_name),
         "process.env.SESSION_MANAGER_BIN": '"{session_manager_bin_name}"'.format(session_manager_bin_name = session_manager_bin_name),
@@ -181,24 +183,19 @@ cjs_bundle(
         "lib",
         "ssm_proxy_script",
     ],
-    srcs = [
-        "package"
-    ]
 )
-
-
 
 npm_package(
     name = "dist",
     srcs = [
-        "cdk_app",
-        "package",
-        "extension",
-        "stopper_bundle",
-        "ssm_proxy_script",
-        "README.md",
-        "LICENSE.txt",
         ".vscodeignore",
+        "LICENSE.txt",
+        "README.md",
+        "cdk_app",
+        "extension",
+        "package",
+        "ssm_proxy_script",
+        "stopper_bundle",
         session_manager_bin_name,
     ] + glob(["media/*.*"]),
     exclude_srcs_patterns = [],
@@ -253,4 +250,9 @@ swcrc_bin.tsconfig_to_swcconfig(
         "-o",
         ".swcrc",
     ],
+)
+
+alias(
+    name = "format",
+    actual = "//tools/format",
 )

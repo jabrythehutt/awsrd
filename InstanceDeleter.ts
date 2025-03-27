@@ -8,20 +8,20 @@ import { defaultRootVolumeSizeGb } from "./defaultRootVolumeSizeGb";
 export class InstanceDeleter {
   constructor(
     private instanceStore: InstanceStore,
-    private cdkCommander: CdkCommander
+    private cdkCommander: CdkCommander,
   ) {}
 
   async toTerminalCommands(instanceId: string): Promise<string[]> {
     const stackName = await this.resolveStackName(instanceId);
     if (!stackName) {
       throw new Error(
-        `No associated stack was found for instance: ${instanceId}`
+        `No associated stack was found for instance: ${instanceId}`,
       );
     }
     const context = this.toContext(stackName);
     const destroyCommand = await this.cdkCommander.toDefaultCommand(
       "destroy",
-      context
+      context,
     );
     return [await this.cdkCommander.resolveBootstrapCommand(), destroyCommand];
   }
@@ -29,7 +29,7 @@ export class InstanceDeleter {
   async resolveStackName(instanceId: string): Promise<string | undefined> {
     const instance = await this.instanceStore.describe(instanceId);
     return instance?.Tags?.find(
-      (tag) => tag.Key === "aws:cloudformation:stack-name"
+      (tag) => tag.Key === "aws:cloudformation:stack-name",
     )?.Value;
   }
 

@@ -7,13 +7,13 @@ import { ProgressLocation, window } from "vscode";
 import { InstanceStarter } from "./InstanceStarter";
 
 export class InstanceStateCommandProvider<
-  T extends CommandSuffix.Start | CommandSuffix.Stop
+  T extends CommandSuffix.Start | CommandSuffix.Stop,
 > implements CommandProvider<T, string>
 {
   constructor(
     private commandSuffix: T,
     private instanceStore: InstanceStore,
-    private instanceStarter: InstanceStarter
+    private instanceStarter: InstanceStarter,
   ) {}
 
   get targetState(): InstanceStateName {
@@ -35,12 +35,12 @@ export class InstanceStateCommandProvider<
       async (progress, token) => {
         await this.instanceStarter.requestInstanceState(
           instanceId,
-          this.targetState
+          this.targetState,
         );
         this.instanceStore.refresh();
         for await (const state of this.instanceStarter.waitForState(
           instanceId,
-          this.targetState
+          this.targetState,
         )) {
           progress.report({ message: state });
           if (token.isCancellationRequested) {
@@ -48,7 +48,7 @@ export class InstanceStateCommandProvider<
           }
         }
         this.instanceStore.refresh();
-      }
+      },
     );
   }
 }

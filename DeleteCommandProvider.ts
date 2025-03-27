@@ -12,7 +12,7 @@ export class DeleteCommandProvider
 {
   constructor(
     private instanceStore: InstanceStore,
-    private instanceDeleter: InstanceDeleter
+    private instanceDeleter: InstanceDeleter,
   ) {}
   async execute(instanceId: string): Promise<void> {
     const instance = await this.instanceStore.describe(instanceId);
@@ -21,12 +21,11 @@ export class DeleteCommandProvider
     const answer = await window.showInformationMessage(
       `Are you sure you want to delete ${label} and its associated CloudFormation stack?`,
       accept,
-      "No"
+      "No",
     );
     if (answer === accept) {
-      const terminalCommands = await this.instanceDeleter.toTerminalCommands(
-        instanceId
-      );
+      const terminalCommands =
+        await this.instanceDeleter.toTerminalCommands(instanceId);
       const terminal = window.createTerminal(`Deleting ${label}`);
       terminal.show();
       await executeTerminalCommands(terminal, terminalCommands);

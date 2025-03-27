@@ -21,12 +21,12 @@ export class InstanceStarter {
   constructor(
     private serviceFactory: AwsClientFactory,
     private stateResolver: InstanceStateResolver,
-    private pollPeriod: number = defaultPollPeriod
+    private pollPeriod: number = defaultPollPeriod,
   ) {}
 
   async requestInstanceState(
     instanceId: string,
-    targetState: InstanceStateName
+    targetState: InstanceStateName,
   ): Promise<void> {
     const command = this.commands[targetState];
     if (!command) {
@@ -38,7 +38,7 @@ export class InstanceStarter {
   }
 
   async toCurrentState(
-    instanceId: string
+    instanceId: string,
   ): Promise<InstanceStateName | undefined> {
     const instanceState = await this.stateResolver.describeInstance(instanceId);
     return instanceState.InstanceState?.Name as InstanceStateName;
@@ -46,10 +46,10 @@ export class InstanceStarter {
 
   waitForState(
     instanceId: string,
-    targetState: InstanceStateName
+    targetState: InstanceStateName,
   ): AsyncIterable<InstanceStateName | undefined> {
     return this.waitFor<InstanceStateName | undefined>(targetState, () =>
-      this.toCurrentState(instanceId)
+      this.toCurrentState(instanceId),
     );
   }
 
@@ -58,16 +58,16 @@ export class InstanceStarter {
     await client.send(
       new StartInstancesCommand({
         InstanceIds: [instanceId],
-      })
+      }),
     );
   }
 
   waitForStatus(
     instanceId: string,
-    targetStatus: PingStatus
+    targetStatus: PingStatus,
   ): AsyncIterable<PingStatus | undefined> {
     return this.waitFor<PingStatus | undefined>(targetStatus, () =>
-      this.stateResolver.ping(instanceId)
+      this.stateResolver.ping(instanceId),
     );
   }
 
