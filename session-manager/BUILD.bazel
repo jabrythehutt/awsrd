@@ -14,22 +14,6 @@ genrule(
     cmd = 'cp $(SRCS) $@ && echo "\nADD . .\nRUN make release" >> $@',
 )
 
-genrule(
-    name = "image",
-    srcs = [
-        "@session_manager_repo//:src",
-        "@session_manager_repo//:all_srcs",
-        "@multitool//tools/buildx",
-        "release_dockerfile",
-    ],
-    outs = [
-        "image_id.txt",
-    ],
-    cmd = " && ".join([
-        "$(location @multitool//tools/buildx) build $(location @session_manager_repo//:src)/../ -f $$(readlink -f $(location release_dockerfile)) -q &> $@".format(workdir),
-    ]),
-)
-
 dist_name = "dist"
 
 outs = [dist_name + "/" + f for f in dist_files().values()]
@@ -43,12 +27,16 @@ copy_commands = ["$(location @multitool//tools/docker) cp $$cid:/{workdir}/bin/{
 genrule(
     name = dist_name,
     srcs = [
-        "image",
+        "@session_manager_repo//:src",
+        "@session_manager_repo//:all_srcs",
+        "@multitool//tools/buildx",
         "@multitool//tools/docker",
+        "release_dockerfile",
     ],
     outs = outs,
     cmd = " && ".join([
-        "cid=$$($(location @multitool//tools/docker) create $$(cat $(location image)))",
+        "image_id=$$($(location @multitool//tools/buildx) build $(location @session_manager_repo//:src)/../ -f $$(readlink -f $(location release_dockerfile)) -q)",
+        "cid=$$($(location @multitool//tools/docker) create $$image_id)",
     ] + copy_commands + [
         "$(location @multitool//tools/docker) rm $$cid",
     ]),
