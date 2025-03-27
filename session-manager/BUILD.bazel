@@ -34,7 +34,7 @@ dist_name = "dist"
 
 outs = [dist_name + "/" + f for f in dist_files().values()]
 
-copy_commands = ["$(location @multitool//tools/docker) cp $$cid:/{workdir}/bin/{f} $(RULEDIR)/{dist_name}/{f}".format(
+copy_commands = ["$(location @multitool//tools/buildx) cp $$cid:/{workdir}/bin/{f} $(RULEDIR)/{dist_name}/{f}".format(
     dist_name = dist_name,
     f = f,
     workdir = workdir,
@@ -44,13 +44,13 @@ genrule(
     name = dist_name,
     srcs = [
         "image",
-        "@multitool//tools/docker",
+        "@multitool//tools/buildx",
     ],
     outs = outs,
     cmd = " && ".join([
-        "cid=$$($(location @multitool//tools/docker) create $$(cat $(location image)))",
+        "cid=$$($(location @multitool//tools/buildx) create $$(cat $(location image)))",
     ] + copy_commands + [
-        "$(location @multitool//tools/docker) rm $$cid",
+        "$(location @multitool//tools/buildx) rm $$cid",
     ]),
 )
 
