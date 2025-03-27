@@ -29,8 +29,6 @@ genrule(
     srcs = [
         "@session_manager_repo//:src",
         "@session_manager_repo//:all_srcs",
-        "@multitool//tools/buildx",
-        "@multitool//tools/docker",
         "release_dockerfile",
     ],
     outs = outs,
@@ -40,6 +38,11 @@ genrule(
     ] + copy_commands + [
         "$(location @multitool//tools/docker) rm $$cid",
     ]),
+    local = True,
+    tools = [
+        "@multitool//tools/buildx",
+        "@multitool//tools/docker",
+    ],
 )
 
 select_file(
