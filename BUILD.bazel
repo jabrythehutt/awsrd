@@ -115,6 +115,9 @@ cjs_bundle(
     deps = [
         "lib",
     ],
+    srcs = [
+        "package"
+    ]
 )
 
 cdk_app_file_name = "app.cjs"
@@ -128,6 +131,9 @@ cjs_bundle(
     sourcemap = sourcemap,
     deps = [
         "lib"
+    ],
+    srcs = [
+        "package"
     ]
 )
 
@@ -174,6 +180,9 @@ cjs_bundle(
         "lib",
         "ssm_proxy_script",
     ],
+    srcs = [
+        "package"
+    ]
 )
 
 
