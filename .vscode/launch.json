@@ -10,10 +10,10 @@
       "type": "extensionHost",
       "request": "launch",
       "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}/bazel-bin/dist",
+        "--extensionDevelopmentPath=${workspaceFolder}/dist/bin/dist",
         "--profile-temp"
       ],
-      "outFiles": ["${workspaceFolder}/bazel-bin/dist"],
+      "outFiles": ["${workspaceFolder}/bazel-bin/dist/bin/dist"],
       "preLaunchTask": "${defaultBuildTask}"
     }
   ]
