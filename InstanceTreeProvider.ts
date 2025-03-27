@@ -4,6 +4,8 @@ import {
   TreeDataProvider,
   TreeItem,
   Event,
+  IconPath,
+  Uri,
 } from "vscode";
 import { Instance, InstanceStateName } from "@aws-sdk/client-ec2";
 import { join } from "path";
@@ -13,13 +15,12 @@ import { existsSync } from "node:fs";
 import { instanceTagName } from "./instanceTagName";
 import { instanceTagValue } from "./instanceTagValue";
 import { toInstanceName } from "./toInstanceName";
-import { IconPaths } from "./IconPaths";
 import { DisplayMode } from "./DisplayMode";
 
 export class InstanceTreeProvider implements TreeDataProvider<string> {
   readonly eventEmitter = new EventEmitter<string | undefined>();
   readonly onDidChangeTreeData: Event<string | undefined>;
-  protected iconPaths: Record<InstanceStateName, IconPaths>;
+  protected iconPaths: Record<InstanceStateName, IconPath>;
 
   constructor(private instanceStore: InstanceStore) {
     this.onDidChangeTreeData = this.eventEmitter.event;
@@ -45,26 +46,17 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
 
   protected toIconPaths(
     states: InstanceStateName[]
-  ): Record<InstanceStateName, IconPaths> {
-    return states.reduce(
-      (result, instanceStateName) => ({
-        ...result,
-        [instanceStateName]: Object.values(DisplayMode).reduce(
-          (iconPaths, iconType) => ({
-            ...iconPaths,
-            [iconType]: this.toIconPath(iconType, instanceStateName),
-          }),
-          {} as IconPaths
-        ),
-      }),
-      {} as Record<InstanceStateName, IconPaths>
-    );
+  ): Record<InstanceStateName, IconPath> {
+    return Object.fromEntries(states.map(instanceStateName => [
+      instanceStateName,
+      Object.fromEntries(Object.values(DisplayMode).map(iconType => [iconType, this.toIconPath(iconType, instanceStateName)]))
+    ])) as Record<InstanceStateName, IconPath>;
   }
 
   protected toIconPath(
-    type: keyof IconPaths,
+    type: DisplayMode,
     instanceStateName: InstanceStateName
-  ): string {
+  ): Uri {
     const mediaDir = join(__dirname, "media");
     const iconPrefix = "vm_";
     const iconPath = join(
@@ -72,9 +64,9 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
       `${iconPrefix}${instanceStateName}_${type}.svg`
     );
     if (!existsSync(iconPath)) {
-      return join(mediaDir, `${iconPrefix}${type}.svg`);
+      return Uri.file(join(mediaDir, `${iconPrefix}${type}.svg`));
     }
-    return iconPath;
+    return Uri.file(iconPath);
   }
 
   async getTreeItem(id: string): Promise<TreeItem> {

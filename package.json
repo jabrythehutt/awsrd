@@ -29,7 +29,7 @@
     "@aws-sdk/client-ec2": "3.775.0",
     "@aws-sdk/client-ssm": "3.775.0",
     "@aws-sdk/types": "3.775.0",
-    "@smithy/smithy-client": "3.4.0",
+    "@smithy/smithy-client": "4.2.0",
     "@aws-sdk/client-sts": "3.775.0",
     "@aws-sdk/region-config-resolver": "3.775.0",
     "@aws-sdk/client-ec2-instance-connect": "3.775.0",
