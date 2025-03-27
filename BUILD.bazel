@@ -89,6 +89,8 @@ jest_test(
     node_modules = "//:node_modules",
     node_options = [
         "--experimental-vm-modules",
+        "--experimental-print-required-tla",
+        "--no-experimental-require-module"
     ],
 )
 

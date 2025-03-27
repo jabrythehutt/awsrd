@@ -67,7 +67,7 @@
     "ms-vscode-remote.remote-ssh"
   ],
   "engines": {
-    "vscode": "^1.76.0"
+    "vscode": "^1.98.0"
   },
   "badges": [
     {
