@@ -126,6 +126,9 @@ cjs_bundle(
     minify = minify,
     output = "stopHandler.cjs",
     sourcemap = sourcemap,
+    deps = [
+        "lib"
+    ]
 )
 
 pkg_zip(
@@ -149,6 +152,9 @@ cjs_bundle(
     deps = [
         "lib",
     ],
+    srcs = [
+        "package"
+    ]
 )
 
 cjs_bundle(
