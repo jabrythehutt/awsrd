@@ -33,14 +33,13 @@ genrule(
     ],
     outs = outs,
     cmd = " && ".join([
-        "image_id=$$($(location @multitool//tools/buildx) build $(location @session_manager_repo//:src)/../ -f $$(readlink -f $(location release_dockerfile)) -q)",
+        "image_id=$$($(location @multitool//tools/docker) build $(location @session_manager_repo//:src)/../ -f $$(readlink -f $(location release_dockerfile)) -q)",
         "cid=$$($(location @multitool//tools/docker) create $$image_id)",
     ] + copy_commands + [
         "$(location @multitool//tools/docker) rm $$cid",
     ]),
     local = True,
     tools = [
-        "@multitool//tools/buildx",
         "@multitool//tools/docker",
     ],
 )
