@@ -1,5 +1,3 @@
-import { CommandSuffix } from "./CommandSuffix";
-
-export interface CommandProvider<T extends `${CommandSuffix}`, A = void> {
+export interface CommandProvider<A = void> {
   execute(args: A): Promise<void>;
 }

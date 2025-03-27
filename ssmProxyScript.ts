@@ -49,11 +49,14 @@ async function run() {
     args.pollPeriod,
   );
   await starter.startInstance(args.instanceId);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
   for await (const _ of starter.waitForState(args.instanceId, "running")) {
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for await (const _ of starter.waitForStatus(
     args.instanceId,
     PingStatus.ONLINE,
+    // eslint-disable-next-line no-empty
   )) {
   }
   const publicKey = (await readFile(args.publicKeyPath)).toString();

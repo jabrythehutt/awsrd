@@ -1,6 +1,5 @@
 import { _InstanceType } from "@aws-sdk/client-ec2";
 import { CommandProvider } from "./CommandProvider";
-import { CommandSuffix } from "./CommandSuffix";
 import { window } from "vscode";
 import validator from "validator";
 import { executeTerminalCommands } from "./executeTerminalCommands";
@@ -10,9 +9,7 @@ import { StackArg } from "./StackArg";
 import { CreateInstanceRequest } from "./CreateInstanceRequest";
 import { defaultRootVolumeSizeGb } from "./defaultRootVolumeSizeGb";
 
-export class CreateCommandProvider
-  implements CommandProvider<CommandSuffix.Create>
-{
+export class CreateCommandProvider implements CommandProvider {
   pickers: Record<StackArg, () => Promise<string | undefined>> = {
     [StackArg.InstanceType]: () => this.requestInstanceType(),
     [StackArg.RootVolumeSizeGb]: () => this.requestRootVolumeSize(),

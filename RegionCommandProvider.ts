@@ -1,12 +1,9 @@
 import { ConfigurationTarget, commands, workspace, window } from "vscode";
 import { CommandProvider } from "./CommandProvider";
-import { CommandSuffix } from "./CommandSuffix";
 import { contributes } from "./package.json";
 import { CommandName } from "./CommandName";
 
-export class RegionCommandProvider
-  implements CommandProvider<CommandSuffix.SelectRegion>
-{
+export class RegionCommandProvider implements CommandProvider {
   async execute(): Promise<void> {
     const configPath = `awsrd.region`;
     const regionsList =

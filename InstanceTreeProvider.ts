@@ -108,7 +108,7 @@ export class InstanceTreeProvider implements TreeDataProvider<string> {
     return element ? [] : this.getRootChildren();
   }
 
-  getParent?(element: string): ProviderResult<string> {
+  getParent?(): ProviderResult<string> {
     return undefined;
   }
 }

@@ -9,6 +9,7 @@ export class AwsClientFactory {
     private region$: Observable<string | undefined>,
   ) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createAwsClient<T extends Client<any, any, any, any>>(
     clientConstructor: new (arg: {
       credentials: AwsCredentialIdentityProvider;
@@ -23,6 +24,7 @@ export class AwsClientFactory {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createAwsClientPromise<T extends Client<any, any, any, any>>(
     clientConstructor: new (arg: {
       credentials: AwsCredentialIdentityProvider;

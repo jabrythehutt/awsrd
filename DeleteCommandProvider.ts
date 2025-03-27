@@ -1,15 +1,12 @@
 import { Instance } from "@aws-sdk/client-ec2";
 import { CommandProvider } from "./CommandProvider";
-import { CommandSuffix } from "./CommandSuffix";
 import { InstanceStore } from "./InstanceStore";
 import { toInstanceLabel } from "./toInstanceLabel";
 import { window } from "vscode";
 import { InstanceDeleter } from "./InstanceDeleter";
 import { executeTerminalCommands } from "./executeTerminalCommands";
 
-export class DeleteCommandProvider
-  implements CommandProvider<CommandSuffix.Delete, string>
-{
+export class DeleteCommandProvider implements CommandProvider<string> {
   constructor(
     private instanceStore: InstanceStore,
     private instanceDeleter: InstanceDeleter,

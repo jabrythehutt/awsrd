@@ -8,7 +8,7 @@ import { InstanceStarter } from "./InstanceStarter";
 
 export class InstanceStateCommandProvider<
   T extends CommandSuffix.Start | CommandSuffix.Stop,
-> implements CommandProvider<T, string>
+> implements CommandProvider<string>
 {
   constructor(
     private commandSuffix: T,

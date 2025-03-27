@@ -1,7 +1,6 @@
 import { ExtensionContext, commands, window } from "vscode";
 import { contributes } from "./package.json";
 import { InstanceTreeProvider } from "./InstanceTreeProvider";
-import { _InstanceType } from "@aws-sdk/client-ec2";
 import { InstanceStarter } from "./InstanceStarter";
 import { InstanceStateResolver } from "./InstanceStateResolver";
 import { ProfileStore } from "./ProfileStore";
@@ -66,7 +65,7 @@ export async function activate(context: ExtensionContext) {
   const profileCommandProvider = new ProfileCommandProvider();
   const refreshCommandProvider = new RefreshCommandProvider(instanceStore);
   const commandProviders: {
-    [C in `${CommandSuffix}`]: CommandProvider<C, any>;
+    [C in `${CommandSuffix}`]: CommandProvider<unknown>;
   } = {
     delete: deleteCommandProvider,
     open: openCommandProvider,

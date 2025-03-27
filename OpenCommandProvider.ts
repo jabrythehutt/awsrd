@@ -6,7 +6,6 @@ import {
 } from "@aws-sdk/client-ssm";
 import { AwsClientFactory } from "./AwsClientFactory";
 import { CommandProvider } from "./CommandProvider";
-import { CommandSuffix } from "./CommandSuffix";
 import { toPromise } from "./toPromise";
 import { InstanceStore } from "./InstanceStore";
 import { Observable } from "rxjs";
@@ -31,9 +30,7 @@ import { toSshConfig } from "./toSshConfig";
 import { InstanceStarter } from "./InstanceStarter";
 import { AwsContextResolver } from "./AwsContextResolver";
 
-export class OpenCommandProvider
-  implements CommandProvider<CommandSuffix.Open, string>
-{
+export class OpenCommandProvider implements CommandProvider<string> {
   constructor(
     private serviceFactory: AwsClientFactory,
     private instanceStore: InstanceStore,
@@ -158,6 +155,7 @@ export class OpenCommandProvider
             ConfigurationTarget.Global,
           );
         progress.report({ message: "Waiting for instance to be reachable..." });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         for await (const _ of this.instanceStarter.waitForStatus(
           instanceId,
           PingStatus.ONLINE,

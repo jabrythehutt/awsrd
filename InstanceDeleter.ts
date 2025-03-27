@@ -1,4 +1,3 @@
-import { _InstanceType } from "@aws-sdk/client-ec2";
 import { CdkCommander } from "./CdkCommander";
 import { CreateInstanceRequest } from "./CreateInstanceRequest";
 import { InstanceStore } from "./InstanceStore";
