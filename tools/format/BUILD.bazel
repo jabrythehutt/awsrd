@@ -24,5 +24,4 @@ format_multirun(
     starlark = "@buildifier_prebuilt//:buildifier",
     visibility = ["//:__subpackages__"],
     xml = ":prettier",
-    yaml = "@aspect_rules_lint//format:yamlfmt",
 )

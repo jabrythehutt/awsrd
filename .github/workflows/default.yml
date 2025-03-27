@@ -21,6 +21,6 @@ jobs:
       - name: Workaround for failing to find lint dependencies
         run: bazel build lib
       - name: Check for linting errors
-        run: bazel run @aspect_rules_format//format -- --mode check
+        run: bazel lint //...
       - name: Build all targets and run all tests
         run: bazel test //...

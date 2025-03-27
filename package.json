@@ -62,7 +62,10 @@
     "@vscode/vsce": "3.3.1",
     "@swc/helpers": "0.5.15",
     "prettier": "3.5.3",
-    "tsconfig-to-swcconfig": "2.8.1"
+    "tsconfig-to-swcconfig": "2.8.1",
+    "@eslint/js": "9.23.0",
+    "typescript-eslint": "8.28.0",
+    "eslint": "9.23.0"
   },
   "extensionDependencies": [
     "ms-vscode-remote.remote-ssh"

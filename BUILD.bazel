@@ -1,12 +1,13 @@
 load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
-load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary")
+load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package", "stamped_package_json")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
 load("@npm//:@vscode/vsce/package_json.bzl", "bin")
 load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@npm//:eslint/package_json.bzl", eslint_bin = "bin")
 load("@npm//:tsconfig-to-swcconfig/package_json.bzl", swcrc_bin = "bin")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
-load("index.bzl", "cjs_bundle", "cli", "to_package_args_choice")
+load("index.bzl", "cjs_bundle", "to_package_args_choice")
 load("platforms.bzl", "platforms")
 load("ts_project.bzl", "ts_project")
 
@@ -256,3 +257,14 @@ alias(
     name = "format",
     actual = "//tools/format",
 )
+
+js_library(
+    name = "eslint_config",
+    srcs = ["eslint.config.mjs"],
+    deps = [
+        ":node_modules/@eslint/js",
+        ":node_modules/typescript-eslint",
+    ],
+)
+
+eslint_bin.eslint_binary(name = "eslint")
