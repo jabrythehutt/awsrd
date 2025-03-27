@@ -18,8 +18,6 @@ jobs:
             ~/.cache/bazel
           key: ${{ runner.os }}-bazel-${{ hashFiles('WORKSPACE', 'environment.yml', '**/*.bazel', '**/*.bzl') }}
           restore-keys: ${{ runner.os }}-bazel-
-      - name: Workaround for failing to find lint dependencies
-        run: bazel build lib
       - name: Check for linting errors
         run: bazel lint //...
       - name: Build all targets and run all tests

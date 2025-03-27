@@ -6,8 +6,3 @@ repos:
         language: system
         entry: bazel run //:format
         files: .*
-      - id: lint
-        name: Lint
-        language: system
-        entry: bazel lint --fix //...
-        files: .*

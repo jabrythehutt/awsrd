@@ -13,8 +13,6 @@ load("ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
-exports_files([".pre-commit-config.yaml"])
-
 platforms()
 
 session_manager_bin_name = "//session-manager:bin"
