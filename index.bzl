@@ -11,7 +11,7 @@ def to_externals(external_libs):
         output.append(to_module_name(l))
     return output
 
-default_target = "es2020"
+default_target = "es2022"
 
 def cjs_bundle(name, external_libs = [], format = "cjs", output = None, sourcemap = "external", sources_content = True, target = default_target, **kwargs):
     output = output or name + ".cjs"

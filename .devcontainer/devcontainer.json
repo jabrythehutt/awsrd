@@ -10,6 +10,14 @@
   "hostRequirements": {
     "memory": "16gb"
   },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "BazelBuild.vscode-bazel",
+        "amazonwebservices.aws-toolkit-vscode"
+      ]
+    }
+  },
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
 
