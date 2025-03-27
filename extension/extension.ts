@@ -1,31 +1,26 @@
 import { ExtensionContext, commands, window } from "vscode";
 import { contributes } from "../package.json";
-import { InstanceTreeProvider } from "./InstanceTreeProvider";
-import { InstanceStarter } from "./InstanceStarter";
-import { InstanceStateResolver } from "./InstanceStateResolver";
-import { ProfileStore } from "./ProfileStore";
-import { RegionStore } from "./RegionStore";
 import {
   createCredentialStore,
   AwsClientFactory,
   AwsContextResolver,
 } from "../aws-client";
-import { InstanceStore } from "./InstanceStore";
-import { InstanceCreator } from "./InstanceCreator";
-import { CdkCommander } from "./CdkCommander";
-import { InstanceDeleter } from "./InstanceDeleter";
-import { CommandSuffix } from "./CommandSuffix";
-import { CommandProvider } from "./CommandProvider";
-import { DeleteCommandProvider } from "./DeleteCommandProvider";
-import { OpenCommandProvider } from "./OpenCommandProvider";
-import { CreateCommandProvider } from "./CreateCommandProvider";
-import { RegionCommandProvider } from "./RegionCommandProvider";
-import { ProfileCommandProvider } from "./ProfileCommandProvider";
-import { RefreshCommandProvider } from "./RefreshCommandProvider";
-import { InstanceStateCommandProvider } from "./InstanceStateCommandProvider";
-import { CommandName } from "./CommandName";
 import { combineLatest, map } from "rxjs";
-import { toExplorerTitle } from "./toExplorerTitle";
+import { ProfileCommandProvider, ProfileStore } from "../profile";
+import { RegionCommandProvider, RegionStore } from "../region";
+import { InstanceStarter, InstanceStateResolver, InstanceStore } from "../ec2";
+import { InstanceTreeProvider, toExplorerTitle } from "../explorer";
+import {
+  CdkCommander,
+  CommandName,
+  CommandProvider,
+  CommandSuffix,
+} from "../command";
+import { CreateCommandProvider, InstanceCreator } from "../create";
+import { DeleteCommandProvider, InstanceDeleter } from "../delete";
+import { OpenCommandProvider } from "../open";
+import { RefreshCommandProvider } from "../refresh";
+import { InstanceStateCommandProvider } from "../state";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = contributes.views["ec2-explorer"];
