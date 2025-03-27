@@ -1,0 +1,16 @@
+load("//:ts_project.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = package_name(),
+    srcs = glob(["*.ts"]),
+    deps = [
+        "//:node_modules/@aws-sdk/client-sts",
+        "//:node_modules/@aws-sdk/credential-providers",
+        "//:node_modules/@aws-sdk/types",
+        "//:node_modules/@smithy/smithy-client",
+        "//:node_modules/rxjs",
+        "//rxjs",
+    ],
+)

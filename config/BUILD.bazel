@@ -1,0 +1,14 @@
+load("//:ts_project.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+ts_project(
+    name = package_name(),
+    srcs = glob(["*.ts"]),
+    deps = [
+        "//:node_modules/@types/vscode",
+        "//:node_modules/rxjs",
+        "//:package",
+        "//rxjs",
+    ],
+)

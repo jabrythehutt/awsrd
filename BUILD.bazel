@@ -61,23 +61,23 @@ stamped_package_json(
     stamp_var = "STABLE_GIT_VERSION",
 )
 
-ts_project(
-    name = "lib",
-    srcs = glob(
-        ["*.ts"],
-        exclude = tests,
-    ) + ["package"],
-    deps = deps,
-)
+# ts_project(
+#     name = "lib",
+#     srcs = glob(
+#         ["*.ts"],
+#         exclude = tests,
+#     ) + ["package"],
+#     deps = deps,
+# )
 
-ts_project(
-    name = "test_lib",
-    srcs = glob(tests) + ["package"],
-    deps = [
-        "lib",
-        "//:node_modules/@types/jest",
-    ],
-)
+# ts_project(
+#     name = "test_lib",
+#     srcs = glob(tests) + ["package"],
+#     deps = [
+#         "lib",
+#         "//:node_modules/@types/jest",
+#     ],
+# )
 
 jest_test(
     name = "test",
