@@ -1,5 +1,5 @@
-load("//:index.bzl", "cjs_bundle")
 load("//:ts_project.bzl", "ts_project")
+load("//bundle:index.bzl", "cjs_bundle")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -27,7 +27,7 @@ ts_project(
 )
 
 cjs_bundle(
-    name = "ssm_proxy_script",
+    name = "script",
     srcs = [
         "//:package",
     ],

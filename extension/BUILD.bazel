@@ -1,11 +1,17 @@
+load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("@npm//:@vscode/vsce/package_json.bzl", "bin")
 load("//:ts_project.bzl", "ts_project")
+load("//bundle:index.bzl", "cjs_bundle")
+load("index.bzl", "to_package_args_choice")
 
 package(default_visibility = ["//visibility:public"])
 
 test_srcs = ["*.test.ts"]
 
+lib_name = package_name()
+
 ts_project(
-    name = package_name(),
+    name = lib_name,
     srcs = glob(
         ["*.ts"],
         exclude = test_srcs,
@@ -26,5 +32,83 @@ ts_project(
         "//region",
         "//rxjs",
         "//state",
+    ],
+)
+
+cjs_bundle(
+    name = "extension_bundle",
+    srcs = [
+        "//:package",
+        "//deployer:cdk_app",
+        "//session-manager:bin",
+        "//ssm-proxy:script",
+    ],
+    define = {
+        "process.env.PROXY_SCRIPT_FILENAME": '"$(rootpath //ssm-proxy:script)"',
+        "process.env.SESSION_MANAGER_BIN": '"$(rootpath //session-manager:bin)"',
+        "process.env.CDK_APP_FILENAME": '"$(rootpath //deployer:cdk_app)"',
+    },
+    entry_point = "extension.js",
+    external_libs = [
+        "vscode",
+    ],
+    output = "extension.cjs",
+    deps = [
+        lib_name,
+    ],
+)
+
+npm_package(
+    name = "dist",
+    srcs = [
+        "extension_bundle",
+        "//:extension_assets",
+        "//:package",
+        "//deployer:cdk_app",
+        "//deployer:stopper_bundle",
+        "//media",
+        "//session-manager:bin",
+        "//ssm-proxy:script",
+    ],
+    exclude_srcs_packages = [],
+    include_srcs_packages = [
+        "**",
+    ],
+)
+
+package_file = "package.vsix"
+
+base_args = [
+    "package",
+    "--no-git-tag-version",
+    "--no-update-package-json",
+    "--no-dependencies",
+    "-o",
+    "../" + package_file,
+]
+
+bin.vsce(
+    name = "vsc_package",
+    srcs = [
+        "dist",
+    ],
+    outs = [
+        package_file,
+    ],
+    args = select(to_package_args_choice(base_args)),
+    chdir = "$(rootpath dist)",
+)
+
+bin.vsce_binary(
+    name = "publish",
+    args = [
+        "publish",
+        "--no-git-tag-version",
+        "--no-update-package-json",
+        "--packagePath",
+        "$(rootpath vsc_package)",
+    ],
+    data = [
+        "vsc_package",
     ],
 )

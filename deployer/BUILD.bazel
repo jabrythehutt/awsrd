@@ -1,6 +1,6 @@
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
-load("//:index.bzl", "cjs_bundle")
 load("//:ts_project.bzl", "ts_project")
+load("//bundle:index.bzl", "cjs_bundle")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -32,7 +32,7 @@ cdk_app_file_name = "app.cjs"
 cjs_bundle(
     name = "stop_handler",
     srcs = [
-        "package",
+        "//:package",
     ],
     entry_point = "stopHandler.js",
     external_libs = ["@aws-sdk/*"],

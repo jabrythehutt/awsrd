@@ -1,19 +1,15 @@
 load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 load("@aspect_rules_js//js:defs.bzl", "js_library")
-load("@aspect_rules_js//npm:defs.bzl", "npm_package", "stamped_package_json")
+load("@aspect_rules_js//npm:defs.bzl", "stamped_package_json")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
-load("@npm//:@vscode/vsce/package_json.bzl", "bin")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@npm//:eslint/package_json.bzl", eslint_bin = "bin")
 load("@npm//:tsconfig-to-swcconfig/package_json.bzl", swcrc_bin = "bin")
-load("index.bzl", "cjs_bundle", "to_package_args_choice")
 load("platforms.bzl", "platforms")
 
 package(default_visibility = ["//visibility:public"])
 
 platforms()
-
-session_manager_bin_name = "//session-manager:bin"
 
 npm_link_all_packages(
     name = "node_modules",
@@ -38,90 +34,11 @@ copy_to_bin(
 )
 
 copy_to_bin(
-    name = "build_config",
+    name = "extension_assets",
     srcs = [
-        "buildConfig.mjs",
-    ],
-)
-
-external_libs = [
-    "vscode",
-    "aws-cdk",
-]
-
-# cjs_bundle(
-#     name = "extension",
-#     srcs = [
-#         "package",
-#         session_manager_bin_name,
-#     ],
-#     define = {
-#         "process.env.PROXY_SCRIPT_FILENAME": '"{proxy_script_file_name}"'.format(proxy_script_file_name = proxy_script_file_name),
-#         "process.env.SESSION_MANAGER_BIN": '"{session_manager_bin_name}"'.format(session_manager_bin_name = "$(rootpath {})".format(session_manager_bin_name)),
-#         "process.env.CDK_APP_FILENAME": '"{cdk_app_file_name}"'.format(cdk_app_file_name = cdk_app_file_name),
-#     },
-#     entry_point = "extension.js",
-#     external_libs = external_libs,
-#     minify = minify,
-#     output = "extension.cjs",
-#     sourcemap = sourcemap,
-#     deps = [
-#         "cdk_app",
-#         "lib",
-#         "ssm_proxy_script",
-#     ],
-# )
-
-# npm_package(
-#     name = "dist",
-#     srcs = [
-#         ".vscodeignore",
-#         "LICENSE.txt",
-#         "README.md",
-#         "cdk_app",
-#         "extension",
-#         "package",
-#         "ssm_proxy_script",
-#         "stopper_bundle",
-#         session_manager_bin_name,
-#     ] + glob(["media/*.*"]),
-#     exclude_srcs_patterns = [],
-# )
-
-package_file = "package.vsix"
-
-base_args = [
-    "package",
-    "--no-git-tag-version",
-    "--no-update-package-json",
-    "--no-dependencies",
-    "-o",
-    "../" + package_file,
-]
-
-bin.vsce(
-    name = "vsc_package",
-    srcs = [
-        "dist",
-    ],
-    outs = [
-        package_file,
-    ],
-    args = select(to_package_args_choice(base_args)),
-    chdir = "$(rootpath dist)",
-)
-
-bin.vsce_binary(
-    name = "publish",
-    args = [
-        "publish",
-        "--no-git-tag-version",
-        "--no-update-package-json",
-        "--packagePath",
-        "$(rootpath vsc_package)",
-    ],
-    data = [
-        "vsc_package",
+        ".vscodeignore",
+        "LICENSE.txt",
+        "README.md",
     ],
 )
 
