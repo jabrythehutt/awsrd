@@ -9,9 +9,6 @@
     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
     "ghcr.io/balazs23/devcontainers-features/bazel:1": {}
   },
-  "hostRequirements": {
-    "memory": "16gb"
-  },
   "customizations": {
     "vscode": {
       "extensions": [
