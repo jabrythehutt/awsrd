@@ -1,5 +1,6 @@
 load("@aspect_rules_js//npm:defs.bzl", "npm_package")
 load("@npm//:@vscode/vsce/package_json.bzl", "bin")
+load("@npm//:aws-cdk/package_json.bzl", cdk_bin = "bin")
 load("//:ts_project.bzl", "ts_project")
 load("//bundle:index.bzl", "cjs_bundle")
 load("index.bzl", "to_package_args_choice")
@@ -58,9 +59,14 @@ cjs_bundle(
     ],
 )
 
+cdk_bin.cdk_binary(
+    name = "cdk",
+)
+
 npm_package(
     name = "dist",
     srcs = [
+        "cdk",
         "extension_bundle",
         "//:extension_assets",
         "//:package",

@@ -45,7 +45,7 @@ export class VscInstance extends Construct {
       [StopperEnvVar.InstanceId]: this.instance.instanceId,
     };
     this.stopper = new Function(this, "Stopper", {
-      runtime: Runtime.NODEJS_18_X,
+      runtime: Runtime.NODEJS_22_X,
       environment: stopperEnv,
       code: Code.fromAsset(join(__dirname, process.env.STOPPER_ZIP as string)),
       handler: process.env.STOPPER_HANDLER as string,

@@ -34,6 +34,7 @@
     "@aws-sdk/region-config-resolver": "3.775.0",
     "@aws-sdk/client-ec2-instance-connect": "3.775.0",
     "@aws-sdk/credential-providers": "3.775.0",
+    "@aws-cdk/toolkit-lib": "0.1.7",
     "@smithy/shared-ini-file-loader": "4.0.2",
     "aws-cdk-lib": "2.186.0",
     "cdk-monitoring-constructs": "9.5.0",

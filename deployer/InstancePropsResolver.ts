@@ -22,7 +22,7 @@ import {
 import { PlatformName, defaultUsernames } from "../ec2";
 import { Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { ContextArg, StackArg } from "../command";
+import { StackArg } from "../command";
 import { AwsClientFactory } from "../aws-client";
 import {
   IRole,
@@ -48,7 +48,7 @@ export class InstancePropsResolver {
   constructor(private clientFactory: AwsClientFactory) {}
 
   async resolve(
-    request: Record<StackArg | ContextArg, string | undefined>,
+    request: Record<StackArg, string | undefined>,
     construct: Construct,
   ): Promise<VscInstanceProps> {
     const image = request.imageId
