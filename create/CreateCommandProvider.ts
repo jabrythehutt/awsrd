@@ -1,11 +1,10 @@
 import { _InstanceType } from "@aws-sdk/client-ec2";
-import { CommandProvider } from "../command";
+import { CommandProvider, StackArg } from "../command";
 import { window } from "vscode";
 import validator from "validator";
-import { executeTerminalCommands } from "../command";
+import { executeTerminalCommands } from "./executeTerminalCommands";
 import { InstanceCreator } from "./InstanceCreator";
 import { InstanceStore } from "../ec2";
-import { StackArg } from "./StackArg";
 import { CreateInstanceRequest } from "./CreateInstanceRequest";
 import { defaultRootVolumeSizeGb } from "./defaultRootVolumeSizeGb";
 

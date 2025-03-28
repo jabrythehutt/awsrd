@@ -19,11 +19,10 @@ import {
   OperatingSystemType,
   Vpc,
 } from "aws-cdk-lib/aws-ec2";
-import { StackArg } from "../create";
 import { PlatformName, defaultUsernames } from "../ec2";
 import { Duration } from "aws-cdk-lib";
 import { Construct } from "constructs";
-import { ContextArg } from "../command";
+import { ContextArg, StackArg } from "../command";
 import { AwsClientFactory } from "../aws-client";
 import {
   IRole,

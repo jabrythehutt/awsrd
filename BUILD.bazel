@@ -6,7 +6,6 @@ load("@npm//:@vscode/vsce/package_json.bzl", "bin")
 load("@npm//:defs.bzl", "npm_link_all_packages")
 load("@npm//:eslint/package_json.bzl", eslint_bin = "bin")
 load("@npm//:tsconfig-to-swcconfig/package_json.bzl", swcrc_bin = "bin")
-load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("index.bzl", "cjs_bundle", "to_package_args_choice")
 load("platforms.bzl", "platforms")
 
@@ -45,10 +44,6 @@ copy_to_bin(
     ],
 )
 
-entry_base = "ssmProxyScript"
-
-proxy_script_file_name = entry_base + ".cjs"
-
 sourcemap = None
 
 minify = True
@@ -58,87 +53,44 @@ external_libs = [
     "aws-cdk",
 ]
 
-cdk_app_file_name = "app.cjs"
+# cjs_bundle(
+#     name = "extension",
+#     srcs = [
+#         "package",
+#         session_manager_bin_name,
+#     ],
+#     define = {
+#         "process.env.PROXY_SCRIPT_FILENAME": '"{proxy_script_file_name}"'.format(proxy_script_file_name = proxy_script_file_name),
+#         "process.env.SESSION_MANAGER_BIN": '"{session_manager_bin_name}"'.format(session_manager_bin_name = "$(rootpath {})".format(session_manager_bin_name)),
+#         "process.env.CDK_APP_FILENAME": '"{cdk_app_file_name}"'.format(cdk_app_file_name = cdk_app_file_name),
+#     },
+#     entry_point = "extension.js",
+#     external_libs = external_libs,
+#     minify = minify,
+#     output = "extension.cjs",
+#     sourcemap = sourcemap,
+#     deps = [
+#         "cdk_app",
+#         "lib",
+#         "ssm_proxy_script",
+#     ],
+# )
 
-cjs_bundle(
-    name = "stop_handler",
-    srcs = [
-        "package",
-    ],
-    entry_point = "stopHandler.js",
-    external_libs = ["@aws-sdk/*"],
-    minify = minify,
-    output = "stopHandler.cjs",
-    sourcemap = sourcemap,
-    deps = [
-        "lib",
-    ],
-)
-
-pkg_zip(
-    name = "stopper_bundle",
-    srcs = [
-        "stop_handler",
-    ],
-)
-
-cjs_bundle(
-    name = "cdk_app",
-    srcs = [
-        "package",
-    ],
-    define = {
-        "process.env.STOPPER_ZIP": '"stopper_bundle.zip"',
-        "process.env.STOPPER_HANDLER": '"stopHandler.handler"',
-    },
-    entry_point = "app.js",
-    external_libs = external_libs,
-    minify = minify,
-    output = cdk_app_file_name,
-    sourcemap = sourcemap,
-    deps = [
-        "lib",
-    ],
-)
-
-cjs_bundle(
-    name = "extension",
-    srcs = [
-        "package",
-        session_manager_bin_name,
-    ],
-    define = {
-        "process.env.PROXY_SCRIPT_FILENAME": '"{proxy_script_file_name}"'.format(proxy_script_file_name = proxy_script_file_name),
-        "process.env.SESSION_MANAGER_BIN": '"{session_manager_bin_name}"'.format(session_manager_bin_name = "$(rootpath {})".format(session_manager_bin_name)),
-        "process.env.CDK_APP_FILENAME": '"{cdk_app_file_name}"'.format(cdk_app_file_name = cdk_app_file_name),
-    },
-    entry_point = "extension.js",
-    external_libs = external_libs,
-    minify = minify,
-    output = "extension.cjs",
-    sourcemap = sourcemap,
-    deps = [
-        "cdk_app",
-        "lib",
-        "ssm_proxy_script",
-    ],
-)
-
-npm_package(
-    name = "dist",
-    srcs = [
-        ".vscodeignore",
-        "LICENSE.txt",
-        "README.md",
-        "cdk_app",
-        "extension",
-        "package",
-        "ssm_proxy_script",
-        "stopper_bundle",
-        session_manager_bin_name,
-    ] + glob(["media/*.*"]),
-    exclude_srcs_patterns = [],
-)
+# npm_package(
+#     name = "dist",
+#     srcs = [
+#         ".vscodeignore",
+#         "LICENSE.txt",
+#         "README.md",
+#         "cdk_app",
+#         "extension",
+#         "package",
+#         "ssm_proxy_script",
+#         "stopper_bundle",
+#         session_manager_bin_name,
+#     ] + glob(["media/*.*"]),
+#     exclude_srcs_patterns = [],
+# )
 
 package_file = "package.vsix"
 

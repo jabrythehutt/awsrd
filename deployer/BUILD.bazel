@@ -1,11 +1,19 @@
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
+load("//:index.bzl", "cjs_bundle")
 load("//:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
 test_srcs = ["*.test.ts"]
 
+lib_name = package_name()
+
+minify = True
+
+sourcemap = None
+
 ts_project(
-    name = package_name(),
+    name = lib_name,
     srcs = glob(
         ["*.ts"],
         exclude = test_srcs,
@@ -15,9 +23,52 @@ ts_project(
         "//:node_modules/@types/aws-lambda",
         "//:node_modules/@types/node",
         "//:node_modules/aws-cdk-lib",
+        "//:node_modules/cdk-monitoring-constructs",
         "//:node_modules/constructs",
         "//aws-client",
         "//command",
         "//ec2",
+    ],
+)
+
+cdk_app_file_name = "app.cjs"
+
+cjs_bundle(
+    name = "stop_handler",
+    srcs = [
+        "package",
+    ],
+    entry_point = "stopHandler.js",
+    external_libs = ["@aws-sdk/*"],
+    minify = minify,
+    output = "stopHandler.cjs",
+    sourcemap = sourcemap,
+    deps = [
+        lib_name,
+    ],
+)
+
+pkg_zip(
+    name = "stopper_bundle",
+    srcs = [
+        "stop_handler",
+    ],
+)
+
+cjs_bundle(
+    name = "cdk_app",
+    srcs = [
+        "//:package",
+    ],
+    define = {
+        "process.env.STOPPER_ZIP": '"stopper_bundle.zip"',
+        "process.env.STOPPER_HANDLER": '"stopHandler.handler"',
+    },
+    entry_point = "app.js",
+    minify = minify,
+    output = cdk_app_file_name,
+    sourcemap = sourcemap,
+    deps = [
+        lib_name,
     ],
 )

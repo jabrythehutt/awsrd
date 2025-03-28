@@ -1,8 +1,7 @@
 import { App, Stack, CfnOutput } from "aws-cdk-lib";
 import { VscInstance } from "./VscInstance";
-import { StackArg } from "../create";
 import { InstancePropsResolver } from "./InstancePropsResolver";
-import { ContextArg } from "../command";
+import { ContextArg, StackArg } from "../command";
 import { of } from "rxjs";
 import { AwsClientFactory, createCredentialStore } from "../aws-client";
 import { resolveFromCdkContext } from "./resolveFromCdkContext";

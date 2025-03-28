@@ -1,8 +1,10 @@
 import { Instance } from "@aws-sdk/client-ec2";
-import { CommandProvider, executeTerminalCommands } from "../command";
+import { CommandProvider } from "../command";
+
 import { InstanceStore, toInstanceLabel } from "../ec2";
 import { window } from "vscode";
 import { InstanceDeleter } from "./InstanceDeleter";
+import { executeTerminalCommands } from "../create";
 
 export class DeleteCommandProvider implements CommandProvider<string> {
   constructor(

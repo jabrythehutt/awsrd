@@ -13,7 +13,6 @@ ts_project(
     ) + ["//:package"],
     deps = [
         "//:node_modules/@types/node",
-        "//:node_modules/@types/vscode",
         "//:node_modules/rxjs",
         "//aws-client",
         "//rxjs",

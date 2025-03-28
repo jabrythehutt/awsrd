@@ -1,5 +1,6 @@
 import { _InstanceType } from "@aws-sdk/client-ec2";
-import { StackArg } from "./StackArg";
+import { StackArg } from "../command";
+
 export interface CreateInstanceRequest {
   [StackArg.StackName]: string;
   [StackArg.RootVolumeSizeGb]: number;
