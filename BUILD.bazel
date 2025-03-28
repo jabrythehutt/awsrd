@@ -44,10 +44,6 @@ copy_to_bin(
     ],
 )
 
-sourcemap = None
-
-minify = True
-
 external_libs = [
     "vscode",
     "aws-cdk",

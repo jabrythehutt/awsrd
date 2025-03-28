@@ -32,9 +32,7 @@ cjs_bundle(
         "//:package",
     ],
     entry_point = "ssmProxyScript.js",
-    minify = True,
     output = "ssmProxyScript.cjs",
-    sourcemap = None,
     deps = [
         lib_name,
     ],

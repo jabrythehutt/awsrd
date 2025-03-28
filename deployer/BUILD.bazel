@@ -8,10 +8,6 @@ test_srcs = ["*.test.ts"]
 
 lib_name = package_name()
 
-minify = True
-
-sourcemap = None
-
 ts_project(
     name = lib_name,
     srcs = glob(
@@ -40,9 +36,7 @@ cjs_bundle(
     ],
     entry_point = "stopHandler.js",
     external_libs = ["@aws-sdk/*"],
-    minify = minify,
     output = "stopHandler.cjs",
-    sourcemap = sourcemap,
     deps = [
         lib_name,
     ],
@@ -65,9 +59,7 @@ cjs_bundle(
         "process.env.STOPPER_HANDLER": '"stopHandler.handler"',
     },
     entry_point = "app.js",
-    minify = minify,
     output = cdk_app_file_name,
-    sourcemap = sourcemap,
     deps = [
         lib_name,
     ],
