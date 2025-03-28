@@ -3,16 +3,14 @@ import { of } from "rxjs";
 import { EC2InstanceConnectClient } from "@aws-sdk/client-ec2-instance-connect";
 import { readFile } from "fs/promises";
 import { hideBin } from "yargs/helpers";
-import { KeyAuthoriser } from "./KeyAuthoriser";
-import { SessionStarter } from "./SessionStarter";
 import { PingStatus } from "@aws-sdk/client-ssm";
-import { SsmProxyScriptArg } from "../open";
 import {
   defaultPollPeriod,
   InstanceStarter,
   InstanceStateResolver,
 } from "../ec2";
 import { AwsClientFactory, createCredentialStore } from "../aws-client";
+import { KeyAuthoriser, SessionStarter, SsmProxyScriptArg } from "../session";
 
 async function run() {
   const args = await yargs(hideBin(process.argv))

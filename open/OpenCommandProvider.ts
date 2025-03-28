@@ -20,11 +20,11 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { guessUsernames } from "./guessUsernames";
 import { createKeyPair } from "./createKeyPair";
-import { toSshConfig } from "./toSshConfig";
 import { CommandName, CommandProvider } from "../command";
 import { AwsClientFactory, AwsContextResolver } from "../aws-client";
 import { InstanceStarter, InstanceStore, toInstanceLabel } from "../ec2";
 import { toPromise } from "../rxjs";
+import { toSshConfig } from "../session";
 
 export class OpenCommandProvider implements CommandProvider<string> {
   constructor(

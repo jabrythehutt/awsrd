@@ -18,7 +18,7 @@ def cjs_bundle(name, external_libs = [], format = "cjs", output = None, sourcema
     esbuild(
         name = name,
         platform = "node",
-        config = "buildConfig.mjs",
+        config = "//:build_config",
         external = to_externals(external_libs),
         format = format,
         output = output,

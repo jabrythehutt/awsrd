@@ -1,3 +1,4 @@
+load("//:index.bzl", "cjs_bundle")
 load("//:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
@@ -16,8 +17,25 @@ ts_project(
         "//:node_modules/@aws-sdk/client-ec2-instance-connect",
         "//:node_modules/@aws-sdk/client-ssm",
         "//:node_modules/@types/node",
+        "//:node_modules/rxjs",
+        "//:node_modules/yargs",
         "//aws-client",
-        "//config",
+        "//command",
         "//ec2",
+        "//session",
+    ],
+)
+
+cjs_bundle(
+    name = "ssm_proxy_script",
+    srcs = [
+        "//:package",
+    ],
+    entry_point = "ssmProxyScript.js",
+    minify = True,
+    output = "ssmProxyScript.cjs",
+    sourcemap = None,
+    deps = [
+        lib_name,
     ],
 )

@@ -22,5 +22,6 @@ ts_project(
         "//command",
         "//ec2",
         "//rxjs",
+        "//session",
     ],
 )

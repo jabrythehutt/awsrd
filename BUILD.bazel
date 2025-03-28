@@ -38,6 +38,13 @@ copy_to_bin(
     ],
 )
 
+copy_to_bin(
+    name = "build_config",
+    srcs = [
+        "buildConfig.mjs",
+    ],
+)
+
 entry_base = "ssmProxyScript"
 
 proxy_script_file_name = entry_base + ".cjs"
@@ -50,20 +57,6 @@ external_libs = [
     "vscode",
     "aws-cdk",
 ]
-
-cjs_bundle(
-    name = "ssm_proxy_script",
-    srcs = [
-        "package",
-    ],
-    entry_point = entry_base + ".js",
-    minify = minify,
-    output = proxy_script_file_name,
-    sourcemap = sourcemap,
-    deps = [
-        "lib",
-    ],
-)
 
 cdk_app_file_name = "app.cjs"
 
