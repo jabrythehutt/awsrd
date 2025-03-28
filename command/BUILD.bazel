@@ -1,3 +1,4 @@
+load("//:jest_test.bzl", "jest_test")
 load("//:ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
@@ -9,13 +10,28 @@ ts_project(
     srcs = glob(
         ["*.ts"],
         exclude = test_srcs,
-    ),
+    ) + ["//:package"],
     deps = [
         "//:node_modules/@types/node",
         "//:node_modules/@types/vscode",
         "//:node_modules/rxjs",
-        "//:package",
         "//aws-client",
         "//rxjs",
+    ],
+)
+
+ts_project(
+    name = "test_lib",
+    srcs = glob(test_srcs) + [":package"],
+    deps = [
+        package_name(),
+        "//:node_modules/@types/jest",
+    ],
+)
+
+jest_test(
+    name = "test",
+    data = [
+        "test_lib",
     ],
 )

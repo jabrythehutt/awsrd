@@ -1,5 +1,5 @@
 load("@aspect_rules_esbuild//esbuild:defs.bzl", "esbuild")
-load("@aspect_rules_js//js:defs.bzl", "js_binary", "js_run_binary", "js_test")
+load("@aspect_rules_js//js:defs.bzl", "js_binary")
 load("platforms.bzl", "to_config_name")
 
 def to_module_name(lib, prefix = "//:node_modules/"):

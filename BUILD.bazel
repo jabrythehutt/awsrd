@@ -1,4 +1,4 @@
-load("@aspect_rules_jest//jest:defs.bzl", "jest_test")
+load("@aspect_bazel_lib//lib:copy_to_bin.bzl", "copy_to_bin")
 load("@aspect_rules_js//js:defs.bzl", "js_library")
 load("@aspect_rules_js//npm:defs.bzl", "npm_package", "stamped_package_json")
 load("@aspect_rules_ts//ts:defs.bzl", "ts_config")
@@ -9,7 +9,6 @@ load("@npm//:tsconfig-to-swcconfig/package_json.bzl", swcrc_bin = "bin")
 load("@rules_pkg//:pkg.bzl", "pkg_zip")
 load("index.bzl", "cjs_bundle", "to_package_args_choice")
 load("platforms.bzl", "platforms")
-load("ts_project.bzl", "ts_project")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -20,35 +19,6 @@ session_manager_bin_name = "//session-manager:bin"
 npm_link_all_packages(
     name = "node_modules",
 )
-
-deps = [
-    "//:node_modules/@aws-sdk/client-ec2",
-    "//:node_modules/@aws-sdk/client-ec2-instance-connect",
-    "//:node_modules/@aws-sdk/client-ssm",
-    "//:node_modules/@aws-sdk/client-sts",
-    "//:node_modules/@aws-sdk/credential-providers",
-    "//:node_modules/@smithy/shared-ini-file-loader",
-    "//:node_modules/@smithy/smithy-client",
-    "//:node_modules/@aws-sdk/region-config-resolver",
-    "//:node_modules/@aws-sdk/types",
-    "//:node_modules/@types/lodash",
-    "//:node_modules/@types/node",
-    "//:node_modules/@types/sshpk",
-    "//:node_modules/@types/validator",
-    "//:node_modules/@types/vscode",
-    "//:node_modules/@types/yargs",
-    "//:node_modules/aws-cdk-lib",
-    "//:node_modules/cdk-monitoring-constructs",
-    "//:node_modules/constructs",
-    "//:node_modules/lodash",
-    "//:node_modules/rxjs",
-    "//:node_modules/sshpk",
-    "//:node_modules/validator",
-    "//:node_modules/yargs",
-    "//:node_modules/@types/aws-lambda",
-]
-
-tests = ["*.test.ts"]
 
 ts_config(
     name = "tsconfig",
@@ -61,36 +31,10 @@ stamped_package_json(
     stamp_var = "STABLE_GIT_VERSION",
 )
 
-# ts_project(
-#     name = "lib",
-#     srcs = glob(
-#         ["*.ts"],
-#         exclude = tests,
-#     ) + ["package"],
-#     deps = deps,
-# )
-
-# ts_project(
-#     name = "test_lib",
-#     srcs = glob(tests) + ["package"],
-#     deps = [
-#         "lib",
-#         "//:node_modules/@types/jest",
-#     ],
-# )
-
-jest_test(
-    name = "test",
-    config = "jest.config.mjs",
-    data = [
-        "package",
-        "test_lib",
-    ],
-    node_modules = "//:node_modules",
-    node_options = [
-        "--experimental-vm-modules",
-        "--experimental-print-required-tla",
-        "--no-experimental-require-module",
+copy_to_bin(
+    name = "jest_config",
+    srcs = [
+        "jest.config.mjs",
     ],
 )
 

@@ -9,12 +9,11 @@ ts_project(
     srcs = glob(
         ["*.ts"],
         exclude = test_srcs,
-    ),
+    ) + ["//:package"],
     deps = [
         "//:node_modules/@aws-sdk/client-ec2",
         "//:node_modules/@types/node",
         "//:node_modules/@types/vscode",
-        "//:package",
         "//command",
         "//create",
         "//ec2",

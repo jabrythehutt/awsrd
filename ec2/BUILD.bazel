@@ -4,14 +4,15 @@ package(default_visibility = ["//visibility:public"])
 
 ts_project(
     name = package_name(),
-    srcs = glob(["*.ts"]),
+    srcs = glob(["*.ts"]) + [
+        "//:package",
+    ],
     deps = [
         "//:node_modules/@aws-sdk/client-ec2",
         "//:node_modules/@aws-sdk/client-ssm",
         "//:node_modules/@types/lodash",
         "//:node_modules/lodash",
         "//:node_modules/rxjs",
-        "//:package",
         "//aws-client",
         "//rxjs",
     ],
