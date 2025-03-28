@@ -13,14 +13,18 @@ import { StopperEnvVar } from "./StopperEnvVar";
 import { Runtime, Function, Code } from "aws-cdk-lib/aws-lambda";
 import { SnsEventSource } from "aws-cdk-lib/aws-lambda-event-sources";
 import { Effect, PolicyStatement } from "aws-cdk-lib/aws-iam";
-import { join } from "path";
+import { LambdaProps } from "./LambdaProps";
 export class VscInstance extends Construct {
   public readonly topic: Topic;
   public readonly instance: Instance;
   public readonly monitoring: MonitoringFacade;
   public readonly stopper: Function;
   public readonly stopperSource: SnsEventSource;
-  constructor(scope: Construct, id: string, props: VscInstanceProps) {
+  constructor(
+    scope: Construct,
+    id: string,
+    props: VscInstanceProps & { lambdaProps: LambdaProps },
+  ) {
     super(scope, id);
     this.instance = new Instance(this, "Instance", props);
     this.topic = new Topic(this, "InactivityTopic", {
@@ -47,8 +51,8 @@ export class VscInstance extends Construct {
     this.stopper = new Function(this, "Stopper", {
       runtime: Runtime.NODEJS_22_X,
       environment: stopperEnv,
-      code: Code.fromAsset(join(__dirname, process.env.STOPPER_ZIP as string)),
-      handler: process.env.STOPPER_HANDLER as string,
+      code: Code.fromAsset(props.lambdaProps.bundlePath),
+      handler: "handler.handler",
     });
     this.stopperSource = new SnsEventSource(this.topic);
     this.stopper.addEventSource(this.stopperSource);

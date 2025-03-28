@@ -28,16 +28,14 @@ ts_project(
     ],
 )
 
-cdk_app_file_name = "app.cjs"
-
 cjs_bundle(
     name = "stop_handler",
     srcs = [
         "//:package",
     ],
-    entry_point = "stopHandler.js",
+    entry_point = "handler.js",
     external_libs = ["@aws-sdk/*"],
-    output = "stopHandler.cjs",
+    output = "handler.cjs",
     deps = [
         lib_name,
     ],
@@ -47,21 +45,5 @@ pkg_zip(
     name = "stopper_bundle",
     srcs = [
         "stop_handler",
-    ],
-)
-
-cjs_bundle(
-    name = "cdk_app",
-    srcs = [
-        "//:package",
-    ],
-    define = {
-        "process.env.STOPPER_ZIP": '"stopper_bundle.zip"',
-        "process.env.STOPPER_HANDLER": '"stopHandler.handler"',
-    },
-    entry_point = "app.js",
-    output = cdk_app_file_name,
-    deps = [
-        lib_name,
     ],
 )

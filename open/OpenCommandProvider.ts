@@ -34,27 +34,22 @@ export class OpenCommandProvider implements CommandProvider<string> {
     private context: ExtensionContext,
     private instanceStarter: InstanceStarter,
     private awsContextResolver: AwsContextResolver,
+    private props: {
+      proxyScriptPath: string;
+      sessionManagerPath: string;
+    },
   ) {}
 
   protected async createSshConfig(storageDir: string): Promise<string> {
-    const proxyScriptPath = resolve(
-      __dirname,
-      process.env.PROXY_SCRIPT_FILENAME as string,
-    );
-    const sessionManagerBinPath = resolve(
-      __dirname,
-      process.env.SESSION_MANAGER_BIN as string,
-    );
-
     const keyPairPaths = await this.generateKeyPair(storageDir);
     const profile = await toPromise(this.profileStore);
     const region = await toPromise(this.awsContextResolver.region$);
     return toSshConfig({
       ...keyPairPaths,
-      proxyScriptPath,
+      proxyScriptPath: this.props.proxyScriptPath,
       region,
       profile,
-      sessionManagerBinPath,
+      sessionManagerBinPath: this.props.sessionManagerPath,
     });
   }
 

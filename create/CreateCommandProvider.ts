@@ -2,11 +2,13 @@ import { _InstanceType } from "@aws-sdk/client-ec2";
 import { CommandProvider, StackArg } from "../command";
 import { window } from "vscode";
 import validator from "validator";
-import { executeTerminalCommands } from "./executeTerminalCommands";
-import { InstanceCreator } from "./InstanceCreator";
 import { InstanceStore } from "../ec2";
-import { CreateInstanceRequest } from "./CreateInstanceRequest";
 import { defaultRootVolumeSizeGb } from "./defaultRootVolumeSizeGb";
+import { Deployer } from "../deployer";
+import { ProfileStore } from "../profile";
+import { toPromise } from "../rxjs";
+import { combineLatest } from "rxjs";
+import { AwsContextResolver } from "../aws-client";
 
 export class CreateCommandProvider implements CommandProvider {
   pickers: Record<StackArg, () => Promise<string | undefined>> = {
@@ -17,8 +19,10 @@ export class CreateCommandProvider implements CommandProvider {
   };
 
   constructor(
-    private instanceCreator: InstanceCreator,
+    private deployer: Deployer,
     private instanceStore: InstanceStore,
+    private profileStore: ProfileStore,
+    private contextResolver: AwsContextResolver,
   ) {}
 
   protected async requestImageId(): Promise<string | undefined> {
@@ -78,15 +82,6 @@ export class CreateCommandProvider implements CommandProvider {
     }
   }
 
-  parse(request: Record<StackArg, string>): CreateInstanceRequest {
-    return {
-      stackName: request.stackName,
-      rootVolumeSizeGb: parseInt(request.rootVolumeSizeGb),
-      instanceType: request.instanceType as _InstanceType,
-      imageId: request.imageId,
-    };
-  }
-
   async execute(): Promise<void> {
     const request = {} as Record<StackArg, string>;
     for await (const [stackArg, response] of this.requestArgs()) {
@@ -95,15 +90,14 @@ export class CreateCommandProvider implements CommandProvider {
       }
       request[stackArg] = response as string;
     }
-    const stackName = request.stackName;
-    const terminalCommands = await this.instanceCreator.toTerminalCommands(
-      this.parse(request),
+    const [profile, region, account] = await toPromise(
+      combineLatest([
+        this.profileStore.value,
+        this.contextResolver.region$,
+        this.contextResolver.account$,
+      ]),
     );
-    const terminal = window.createTerminal(
-      `Create developer instance ${stackName}`,
-    );
-    terminal.show();
-    await executeTerminalCommands(terminal, terminalCommands);
+    this.deployer.deploy({ profile, region, account, props: request });
     this.instanceStore.refresh();
   }
 }

@@ -1,28 +1,20 @@
-import { CdkCommander } from "../command";
-import { CreateInstanceRequest, defaultRootVolumeSizeGb } from "../create";
+import { combineLatest } from "rxjs";
+import { AwsContextResolver } from "../aws-client";
+import { defaultRootVolumeSizeGb } from "../create";
+import { Deployer } from "../deployer";
 import { InstanceStore } from "../ec2";
+import { ProfileStore } from "../profile";
+import { toPromise } from "../rxjs";
 import { defaultInstanceType } from "./defaultInstanceType";
+import { StackArg } from "../command";
 
 export class InstanceDeleter {
   constructor(
     private instanceStore: InstanceStore,
-    private cdkCommander: CdkCommander,
+    private deployer: Deployer,
+    private profileStore: ProfileStore,
+    private contextResolver: AwsContextResolver,
   ) {}
-
-  async toTerminalCommands(instanceId: string): Promise<string[]> {
-    const stackName = await this.resolveStackName(instanceId);
-    if (!stackName) {
-      throw new Error(
-        `No associated stack was found for instance: ${instanceId}`,
-      );
-    }
-    const context = this.toContext(stackName);
-    const destroyCommand = await this.cdkCommander.toDefaultCommand(
-      "destroy",
-      context,
-    );
-    return [await this.cdkCommander.resolveBootstrapCommand(), destroyCommand];
-  }
 
   async resolveStackName(instanceId: string): Promise<string | undefined> {
     const instance = await this.instanceStore.describe(instanceId);
@@ -31,13 +23,36 @@ export class InstanceDeleter {
     )?.Value;
   }
 
-  toContext(stackName: string): CreateInstanceRequest {
+  async destroy(instanceId: string): Promise<void> {
+    const stackName = await this.resolveStackName(instanceId);
+    if (!stackName) {
+      throw new Error(
+        `No associated stack was found for instance: ${instanceId}`,
+      );
+    }
+    const props = this.toContext(stackName);
+    const [profile, region, account] = await toPromise(
+      combineLatest([
+        this.profileStore.value,
+        this.contextResolver.region$,
+        this.contextResolver.account$,
+      ]),
+    );
+    await this.deployer.destroy({
+      profile,
+      region,
+      account,
+      props,
+    });
+  }
+
+  toContext(stackName: string): Record<StackArg, string> {
     return {
       stackName,
       // The instance request values don't matter since we're attempting to delete the stack
       imageId: "",
       instanceType: defaultInstanceType,
-      rootVolumeSizeGb: defaultRootVolumeSizeGb,
+      rootVolumeSizeGb: `${defaultRootVolumeSizeGb}`,
     };
   }
 }

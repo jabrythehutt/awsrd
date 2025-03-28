@@ -10,17 +10,13 @@ import { ProfileCommandProvider, ProfileStore } from "../profile";
 import { RegionCommandProvider, RegionStore } from "../region";
 import { InstanceStarter, InstanceStateResolver, InstanceStore } from "../ec2";
 import { InstanceTreeProvider, toExplorerTitle } from "../explorer";
-import {
-  CdkCommander,
-  CommandName,
-  CommandProvider,
-  CommandSuffix,
-} from "../command";
-import { CreateCommandProvider, InstanceCreator } from "../create";
+import { CommandName, CommandProvider, CommandSuffix } from "../command";
+import { CreateCommandProvider } from "../create";
 import { DeleteCommandProvider, InstanceDeleter } from "../delete";
 import { OpenCommandProvider } from "../open";
 import { RefreshCommandProvider } from "../refresh";
 import { InstanceStateCommandProvider } from "../state";
+import { Deployer, InstancePropsResolver } from "../deployer";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = contributes.views["ec2-explorer"];
@@ -33,8 +29,6 @@ export async function activate(context: ExtensionContext) {
   const explorerView = explorerViews[0];
   const instanceStore = new InstanceStore(serviceFactory);
   const awsContextResolver = new AwsContextResolver(serviceFactory);
-  const cdkCommander = new CdkCommander(awsContextResolver, profileStore.value);
-  const instanceCreator = new InstanceCreator(cdkCommander);
   const treeView = window.createTreeView(explorerView.id, {
     treeDataProvider: new InstanceTreeProvider(instanceStore),
   });
@@ -42,9 +36,19 @@ export async function activate(context: ExtensionContext) {
     .pipe(map(([profile, region]) => toExplorerTitle({ profile, region })))
     .subscribe((title) => (treeView.title = title));
   context.subscriptions.push(treeView);
+
+  const propsResolver = new InstancePropsResolver(serviceFactory);
+  const deployer = new Deployer(propsResolver, {
+    bundlePath: process.env.STOPPER_BUNDLE_PATH as string,
+  });
   const deleteCommandProvider = new DeleteCommandProvider(
     instanceStore,
-    new InstanceDeleter(instanceStore, cdkCommander),
+    new InstanceDeleter(
+      instanceStore,
+      deployer,
+      profileStore,
+      awsContextResolver,
+    ),
   );
   const openCommandProvider = new OpenCommandProvider(
     serviceFactory,
@@ -53,10 +57,16 @@ export async function activate(context: ExtensionContext) {
     context,
     instanceStarter,
     awsContextResolver,
+    {
+      proxyScriptPath: process.env.PROXY_SCRIPT_PATH as string,
+      sessionManagerPath: process.env.SESSION_MANAGER_PATH as string,
+    },
   );
   const createCommandProvider = new CreateCommandProvider(
-    instanceCreator,
+    deployer,
     instanceStore,
+    profileStore,
+    awsContextResolver,
   );
   const regionCommandProvider = new RegionCommandProvider();
   const profileCommandProvider = new ProfileCommandProvider();

@@ -1,10 +1,8 @@
 import { Instance } from "@aws-sdk/client-ec2";
 import { CommandProvider } from "../command";
-
 import { InstanceStore, toInstanceLabel } from "../ec2";
 import { window } from "vscode";
 import { InstanceDeleter } from "./InstanceDeleter";
-import { executeTerminalCommands } from "../create";
 
 export class DeleteCommandProvider implements CommandProvider<string> {
   constructor(
@@ -21,11 +19,7 @@ export class DeleteCommandProvider implements CommandProvider<string> {
       "No",
     );
     if (answer === accept) {
-      const terminalCommands =
-        await this.instanceDeleter.toTerminalCommands(instanceId);
-      const terminal = window.createTerminal(`Deleting ${label}`);
-      terminal.show();
-      await executeTerminalCommands(terminal, terminalCommands);
+      await this.instanceDeleter.destroy(instanceId);
       this.instanceStore.refresh();
     }
   }
