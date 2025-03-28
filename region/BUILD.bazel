@@ -9,7 +9,7 @@ ts_project(
     srcs = glob(
         ["*.ts"],
         exclude = test_srcs,
-    ),
+    ) + ["//:package"],
     deps = [
         "//:node_modules/@types/node",
         "//:node_modules/@types/vscode",

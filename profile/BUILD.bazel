@@ -9,7 +9,7 @@ ts_project(
     srcs = glob(
         ["*.ts"],
         exclude = test_srcs,
-    ),
+    ) + ["//:package"],
     deps = [
         "//:node_modules/@smithy/shared-ini-file-loader",
         "//:node_modules/@types/node",
