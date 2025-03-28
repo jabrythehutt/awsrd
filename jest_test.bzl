@@ -1,6 +1,6 @@
 load("@aspect_rules_jest//jest:defs.bzl", _jest_test = "jest_test")
 
-def jest_test(name, data = [], config = "//:jest_config", node_modules = "//:node_modules", node_options = ["--experimental-vm-modules", "--experimental-print-required-tla"], **kwargs):
+def jest_test(name, data = [], config = "//:jest_config", node_modules = "//:node_modules", node_options = ["--experimental-vm-modules", "--experimental-print-required-tla", "--no-experimental-require-module"], **kwargs):
     _jest_test(
         name = name,
         config = config,
