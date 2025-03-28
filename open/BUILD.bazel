@@ -1,0 +1,26 @@
+load("//:ts_project.bzl", "ts_project")
+
+package(default_visibility = ["//visibility:public"])
+
+test_srcs = ["*.test.ts"]
+
+ts_project(
+    name = package_name(),
+    srcs = glob(
+        ["*.ts"],
+        exclude = test_srcs,
+    ),
+    deps = [
+        "//:node_modules/@aws-sdk/client-ec2",
+        "//:node_modules/@aws-sdk/client-ssm",
+        "//:node_modules/@types/node",
+        "//:node_modules/@types/sshpk",
+        "//:node_modules/@types/vscode",
+        "//:node_modules/rxjs",
+        "//:node_modules/sshpk",
+        "//aws-client",
+        "//command",
+        "//ec2",
+        "//rxjs",
+    ],
+)
