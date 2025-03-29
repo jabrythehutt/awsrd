@@ -22,6 +22,7 @@ ts_project(
         "//command",
         "//deployer",
         "//ec2",
+        "//profile",
         "//rxjs",
     ],
 )

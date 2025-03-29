@@ -18,5 +18,6 @@ ts_project(
         "//create",
         "//deployer",
         "//ec2",
+        "//profile",
     ],
 )
