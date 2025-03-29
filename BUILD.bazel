@@ -27,6 +27,13 @@ stamped_package_json(
 )
 
 copy_to_bin(
+    name = "pnpm_lock",
+    srcs = [
+        "pnpm-lock.yaml",
+    ],
+)
+
+copy_to_bin(
     name = "jest_config",
     srcs = [
         "jest.config.mjs",

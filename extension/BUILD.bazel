@@ -1,8 +1,9 @@
-load("@aspect_rules_js//npm:defs.bzl", "npm_package")
+load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
+load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
 load("@npm//:@vscode/vsce/package_json.bzl", "bin")
 load("//:ts_project.bzl", "ts_project")
 load("//bundle:index.bzl", "cjs_bundle")
-load("index.bzl", "to_package_args_choice")
+load("index.bzl", "to_install_commands", "to_package_args_choice")
 
 package(default_visibility = ["//visibility:public"])
 
@@ -36,6 +37,20 @@ ts_project(
     ],
 )
 
+# Install node modules for use on external system based on: https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda-nodejs/lib/package-manager.ts
+js_run_binary(
+    name = "node_modules",
+    srcs = [
+        "//:package",
+        "//:pnpm_lock",
+    ],
+    args = select(to_install_commands(package_name() + "/node_modules")),
+    out_dirs = [
+        "node_modules",
+    ],
+    tool = "@pnpm",
+)
+
 cjs_bundle(
     name = "extension_bundle",
     srcs = [
@@ -52,6 +67,7 @@ cjs_bundle(
     entry_point = "extension.js",
     external_libs = [
         "vscode",
+        "@aws-cdk/toolkit-lib",
     ],
     output = "extension.cjs",
     deps = [
@@ -59,10 +75,11 @@ cjs_bundle(
     ],
 )
 
-npm_package(
+copy_to_directory(
     name = "dist",
     srcs = [
         "extension_bundle",
+        "node_modules",
         "//:extension_assets",
         "//:package",
         "//deployer:stopper_bundle",
