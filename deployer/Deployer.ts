@@ -32,6 +32,14 @@ export class Deployer {
   ): Promise<[Toolkit, ICloudAssemblySource]> {
     const { profile } = request;
     const cdk = new Toolkit({
+      ioHost: {
+        async notify(msg) {
+          console.log(msg);
+        },
+        async requestResponse(msg) {
+          return msg.defaultResponse;
+        },
+      },
       sdkConfig: {
         profile,
       },

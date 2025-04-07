@@ -17,6 +17,7 @@ import { OpenCommandProvider } from "../open";
 import { RefreshCommandProvider } from "../refresh";
 import { InstanceStateCommandProvider } from "../state";
 import { Deployer, InstancePropsResolver } from "../deployer";
+import { resolve } from "path";
 
 export async function activate(context: ExtensionContext) {
   const explorerViews = contributes.views["ec2-explorer"];
@@ -39,7 +40,7 @@ export async function activate(context: ExtensionContext) {
 
   const propsResolver = new InstancePropsResolver(serviceFactory);
   const deployer = new Deployer(propsResolver, {
-    bundlePath: process.env.STOPPER_BUNDLE_PATH as string,
+    bundlePath: resolve(__dirname, process.env.STOPPER_BUNDLE_PATH as string),
   });
   const deleteCommandProvider = new DeleteCommandProvider(
     instanceStore,
@@ -58,8 +59,14 @@ export async function activate(context: ExtensionContext) {
     instanceStarter,
     awsContextResolver,
     {
-      proxyScriptPath: process.env.PROXY_SCRIPT_PATH as string,
-      sessionManagerPath: process.env.SESSION_MANAGER_PATH as string,
+      proxyScriptPath: resolve(
+        __dirname,
+        process.env.PROXY_SCRIPT_PATH as string,
+      ),
+      sessionManagerPath: resolve(
+        __dirname,
+        process.env.SESSION_MANAGER_PATH as string,
+      ),
     },
   );
   const createCommandProvider = new CreateCommandProvider(
