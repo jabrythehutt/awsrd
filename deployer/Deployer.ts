@@ -1,6 +1,7 @@
 import {
   BootstrapEnvironments,
   ICloudAssemblySource,
+  IoMessage,
   StackSelectionStrategy,
   Toolkit,
 } from "@aws-cdk/toolkit-lib";
@@ -11,6 +12,7 @@ import { VscInstance } from "./VscInstance";
 import { StackRequest } from "./StackRequest";
 import { ICloudAssembly } from "aws-cdk-lib/cloud-assembly-schema";
 import { LambdaProps } from "./LambdaProps";
+import { Observable, Subscriber } from "rxjs";
 
 export class Deployer {
   constructor(
@@ -18,23 +20,27 @@ export class Deployer {
     private stopperProps: LambdaProps,
   ) {}
 
-  async destroy(request: StackRequest): Promise<void> {
-    const [cdk, cx] = await this.toAssemblySource(request);
-    await cdk.destroy(cx, {
-      stacks: {
-        strategy: StackSelectionStrategy.ALL_STACKS,
-      },
+  destroy(request: StackRequest): Observable<IoMessage<unknown>> {
+    return new Observable((subscriber) => {
+      this.executeOperation(request, subscriber, (cdk, cx) =>
+        cdk.destroy(cx, {
+          stacks: {
+            strategy: StackSelectionStrategy.ALL_STACKS,
+          },
+        }),
+      );
     });
   }
 
   async toAssemblySource(
     request: StackRequest,
+    subscriber: Subscriber<IoMessage<unknown>>,
   ): Promise<[Toolkit, ICloudAssemblySource]> {
     const { profile } = request;
     const cdk = new Toolkit({
       ioHost: {
         async notify(msg) {
-          console.log(msg);
+          subscriber.next(msg);
         },
         async requestResponse(msg) {
           return msg.defaultResponse;
@@ -48,10 +54,28 @@ export class Deployer {
     return [cdk, cx];
   }
 
-  async deploy(request: StackRequest): Promise<void> {
-    const [cdk, cx] = await this.toAssemblySource(request);
-    await cdk.bootstrap(BootstrapEnvironments.fromCloudAssemblySource(cx), {});
-    await cdk.deploy(cx);
+  async executeOperation(
+    request: StackRequest,
+    subscriber: Subscriber<IoMessage<unknown>>,
+    operation: (cdk: Toolkit, cx: ICloudAssemblySource) => Promise<void>,
+  ): Promise<void> {
+    try {
+      const [cdk, cx] = await this.toAssemblySource(request, subscriber);
+      await cdk.bootstrap(
+        BootstrapEnvironments.fromCloudAssemblySource(cx),
+        {},
+      );
+      await operation(cdk, cx);
+      subscriber.complete();
+    } catch (err) {
+      subscriber.error(err);
+    }
+  }
+
+  deploy(request: StackRequest): Observable<IoMessage<unknown>> {
+    return new Observable((subscriber) => {
+      this.executeOperation(request, subscriber, (cdk, cx) => cdk.deploy(cx));
+    });
   }
 
   async toAssemply(request: StackRequest): Promise<ICloudAssembly> {

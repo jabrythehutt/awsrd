@@ -38,6 +38,7 @@ export class InstanceDeleter {
         this.contextResolver.account$,
       ]),
     );
+
     await this.deployer.destroy({
       profile,
       region,
