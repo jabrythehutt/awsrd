@@ -1,13 +1,16 @@
 import { Instance } from "@aws-sdk/client-ec2";
 import { CommandProvider } from "../command";
 import { InstanceStore, toInstanceLabel } from "../ec2";
-import { window } from "vscode";
+import { ProgressLocation, window } from "vscode";
 import { InstanceDeleter } from "./InstanceDeleter";
+import { Deployer } from "../deployer";
+import { lastValueFrom, tap } from "rxjs";
 
 export class DeleteCommandProvider implements CommandProvider<string> {
   constructor(
     private instanceStore: InstanceStore,
     private instanceDeleter: InstanceDeleter,
+    private deployer: Deployer,
   ) {}
   async execute(instanceId: string): Promise<void> {
     const instance = await this.instanceStore.describe(instanceId);
@@ -19,8 +22,28 @@ export class DeleteCommandProvider implements CommandProvider<string> {
       "No",
     );
     if (answer === accept) {
-      await this.instanceDeleter.destroy(instanceId);
-      this.instanceStore.refresh();
+      await window.withProgress(
+        {
+          location: ProgressLocation.Notification,
+          title: `Deleting ${label}`,
+          cancellable: false,
+        },
+        async (progress) => {
+          const request =
+            await this.instanceDeleter.toDeleteRequest(instanceId);
+          const messages = this.deployer.destroy(request);
+          await lastValueFrom(
+            messages.pipe(
+              tap((m) =>
+                progress.report({
+                  message: m.message,
+                }),
+              ),
+            ),
+          );
+          this.instanceStore.refresh();
+        },
+      );
     }
   }
 }

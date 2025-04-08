@@ -1,13 +1,13 @@
 import { _InstanceType } from "@aws-sdk/client-ec2";
 import { CommandProvider, StackArg } from "../command";
-import { window } from "vscode";
+import { ProgressLocation, window } from "vscode";
 import validator from "validator";
 import { InstanceStore } from "../ec2";
 import { defaultRootVolumeSizeGb } from "./defaultRootVolumeSizeGb";
 import { Deployer } from "../deployer";
 import { ProfileStore } from "../profile";
 import { toPromise } from "../rxjs";
-import { combineLatest } from "rxjs";
+import { combineLatest, lastValueFrom, tap } from "rxjs";
 import { AwsContextResolver } from "../aws-client";
 
 export class CreateCommandProvider implements CommandProvider {
@@ -97,7 +97,30 @@ export class CreateCommandProvider implements CommandProvider {
         this.contextResolver.account$,
       ]),
     );
-    this.deployer.deploy({ profile, region, account, props: request });
-    this.instanceStore.refresh();
+    await window.withProgress(
+      {
+        cancellable: false,
+        title: `Creating ${request.stackName}`,
+        location: ProgressLocation.Notification,
+      },
+      async (progress) => {
+        const messages = this.deployer.deploy({
+          profile,
+          region,
+          account,
+          props: request,
+        });
+        await lastValueFrom(
+          messages.pipe(
+            tap((m) =>
+              progress.report({
+                message: m.message,
+              }),
+            ),
+          ),
+        );
+        this.instanceStore.refresh();
+      },
+    );
   }
 }

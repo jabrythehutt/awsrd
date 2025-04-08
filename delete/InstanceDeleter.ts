@@ -1,7 +1,7 @@
 import { combineLatest } from "rxjs";
 import { AwsContextResolver } from "../aws-client";
 import { defaultRootVolumeSizeGb } from "../create";
-import { Deployer } from "../deployer";
+import { StackRequest } from "../deployer";
 import { InstanceStore } from "../ec2";
 import { ProfileStore } from "../profile";
 import { toPromise } from "../rxjs";
@@ -11,7 +11,6 @@ import { StackArg } from "../command";
 export class InstanceDeleter {
   constructor(
     private instanceStore: InstanceStore,
-    private deployer: Deployer,
     private profileStore: ProfileStore,
     private contextResolver: AwsContextResolver,
   ) {}
@@ -23,7 +22,7 @@ export class InstanceDeleter {
     )?.Value;
   }
 
-  async destroy(instanceId: string): Promise<void> {
+  async toDeleteRequest(instanceId: string): Promise<StackRequest> {
     const stackName = await this.resolveStackName(instanceId);
     if (!stackName) {
       throw new Error(
@@ -38,13 +37,12 @@ export class InstanceDeleter {
         this.contextResolver.account$,
       ]),
     );
-
-    await this.deployer.destroy({
+    return {
       profile,
       region,
       account,
       props,
-    });
+    };
   }
 
   toContext(stackName: string): Record<StackArg, string> {

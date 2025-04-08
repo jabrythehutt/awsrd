@@ -44,12 +44,8 @@ export async function activate(context: ExtensionContext) {
   });
   const deleteCommandProvider = new DeleteCommandProvider(
     instanceStore,
-    new InstanceDeleter(
-      instanceStore,
-      deployer,
-      profileStore,
-      awsContextResolver,
-    ),
+    new InstanceDeleter(instanceStore, profileStore, awsContextResolver),
+    deployer,
   );
   const openCommandProvider = new OpenCommandProvider(
     serviceFactory,
