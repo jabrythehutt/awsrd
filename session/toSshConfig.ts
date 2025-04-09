@@ -9,11 +9,10 @@ export function toSshConfig(request: {
   profile: string;
   region: string;
 }): string {
-  const nodeBinary = process.argv[0];
   return `
 Host i-* mi-*
     IdentityFile "${resolve(request.privateKeyPath)}"
-    ProxyCommand ${nodeBinary} ${resolve(request.proxyScriptPath)} --${
+    ProxyCommand "${process.execPath}" "${resolve(request.proxyScriptPath)}" --${
       SsmProxyScriptArg.InstanceId
     }=%h --${SsmProxyScriptArg.User}=%r --${SsmProxyScriptArg.Port}=%p --${
       SsmProxyScriptArg.PublicKeyPath
