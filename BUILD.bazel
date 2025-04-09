@@ -34,6 +34,13 @@ copy_to_bin(
 )
 
 copy_to_bin(
+    name = "patches",
+    srcs = [
+        "//:patches/@vscode__vsce.patch",
+    ],
+)
+
+copy_to_bin(
     name = "jest_config",
     srcs = [
         "jest.config.mjs",

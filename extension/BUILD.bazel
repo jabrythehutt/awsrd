@@ -42,6 +42,7 @@ js_run_binary(
     name = "node_modules",
     srcs = [
         "//:package",
+        "//:patches",
         "//:pnpm_lock",
     ],
     args = select(to_install_commands(package_name() + "/node_modules")),

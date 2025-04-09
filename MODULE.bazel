@@ -1,4 +1,4 @@
-bazel_dep(name = "aspect_rules_js", version = "2.3.3")
+bazel_dep(name = "aspect_rules_js", version = "2.3.5")
 bazel_dep(name = "rules_nodejs", version = "6.3.4")
 
 node = use_extension("@rules_nodejs//nodejs:extensions.bzl", "node", dev_dependency = True)
@@ -9,7 +9,9 @@ npm.npm_translate_lock(
     name = "npm",
     data = [
         "//:package.json",
+        "//:patches/@vscode__vsce.patch",
     ],
+    npmrc = "//:.npmrc",
     patch_args = {
         "*": ["-p1"],
     },
