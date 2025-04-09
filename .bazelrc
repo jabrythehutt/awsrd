@@ -1,3 +1,5 @@
+common --enable_bzlmod
+
 # This tells Bazel how to interact with the version control system
 # Enable this with --config=release
 build:release --stamp --workspace_status_command="bash ./bazel_stamp_vars.sh"
@@ -6,3 +8,43 @@ run:release --stamp --workspace_status_command="bash ./bazel_stamp_vars.sh"
 # By default, failing tests don't print any output, it's logged to a
 # file instead.
 test --test_output=errors
+
+build --symlink_prefix=dist/
+
+# Pass through email and stack name from environment variables
+test --test_env=FROM_EMAIL --test_env=STACK_NAME --test_env=DOMAIN --test_env=MAIL_DOMAIN --test_env=AWS_ACCESS_KEY_ID --test_env=AWS_SECRET_ACCESS_KEY --test_env=AWS_REGION --test_env=AWS_SESSION_TOKEN
+
+# Enable debugging tests with --config=debug
+test:debug --test_arg=--node_options=--inspect-brk --test_output=streamed --test_strategy=exclusive --test_timeout=9999 --nocache_test_results
+
+# Use bazel run with `--config=debug` to turn on the Node.js inspector agent.
+# The node process will break before user code starts and wait for the debugger to connect.
+run:debug --define=VERBOSE_LOGS=1 -- --node_options=--inspect-brk
+
+# The following option will change the build output of certain rules such as terser and may not be desirable in all cases
+build:debug --compilation_mode=dbg
+
+# passes an argument `--skipLibCheck` to *every* spawn of tsc
+build --@aspect_rules_ts//ts:skipLibCheck=always
+fetch --@aspect_rules_ts//ts:skipLibCheck=always
+query --@aspect_rules_ts//ts:skipLibCheck=always
+
+# Use "tsc" as the transpiler when ts_project has no `transpiler` set.
+build --@aspect_rules_ts//ts:default_to_tsc_transpiler
+fetch --@aspect_rules_ts//ts:default_to_tsc_transpiler
+query --@aspect_rules_ts//ts:default_to_tsc_transpiler
+
+# Directories used by sandboxed non-worker execution may be reused to avoid unnecessary setup costs.
+# Save time on Sandbox creation and deletion when many of the same kind of action run during the
+# build.
+# No longer experimental in Bazel 6: https://github.com/bazelbuild/bazel/commit/c1a95501a5611878e5cc43a3cc531f2b9e47835b
+# Docs: https://bazel.build/reference/command-line-reference#flag--reuse_sandbox_directories
+build --experimental_reuse_sandbox_directories
+
+# Do not build runfiles symlink forests for external repositories under
+# `.runfiles/wsname/external/repo` (in addition to `.runfiles/repo`). This reduces runfiles &
+# sandbox creation times & prevents accidentally depending on this feature which may flip to off by
+# default in the future. Note, some rules may fail under this flag, please file issues with the rule
+# author.
+# Docs: https://bazel.build/reference/command-line-reference#flag--legacy_external_runfiles
+build --nolegacy_external_runfiles

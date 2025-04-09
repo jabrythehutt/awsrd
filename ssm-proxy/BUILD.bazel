@@ -1,0 +1,40 @@
+load("//:ts_project.bzl", "ts_project")
+load("//bundle:index.bzl", "cjs_bundle")
+
+package(default_visibility = ["//visibility:public"])
+
+test_srcs = ["*.test.ts"]
+
+lib_name = package_name()
+
+ts_project(
+    name = lib_name,
+    srcs = glob(
+        ["*.ts"],
+        exclude = test_srcs,
+    ),
+    deps = [
+        "//:node_modules/@aws-sdk/client-ec2-instance-connect",
+        "//:node_modules/@aws-sdk/client-ssm",
+        "//:node_modules/@types/node",
+        "//:node_modules/@types/yargs",
+        "//:node_modules/rxjs",
+        "//:node_modules/yargs",
+        "//aws-client",
+        "//command",
+        "//ec2",
+        "//session",
+    ],
+)
+
+cjs_bundle(
+    name = "script",
+    srcs = [
+        "//:package",
+    ],
+    entry_point = "ssmProxyScript.js",
+    output = "ssmProxyScript.cjs",
+    deps = [
+        lib_name,
+    ],
+)

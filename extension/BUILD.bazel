@@ -1,0 +1,131 @@
+load("@aspect_bazel_lib//lib:copy_to_directory.bzl", "copy_to_directory")
+load("@aspect_rules_js//js:defs.bzl", "js_run_binary")
+load("@npm//:@vscode/vsce/package_json.bzl", "bin")
+load("//:ts_project.bzl", "ts_project")
+load("//bundle:index.bzl", "cjs_bundle")
+load("index.bzl", "to_install_commands", "to_package_args_choice")
+
+package(default_visibility = ["//visibility:public"])
+
+test_srcs = ["*.test.ts"]
+
+lib_name = package_name()
+
+ts_project(
+    name = lib_name,
+    srcs = glob(
+        ["*.ts"],
+        exclude = test_srcs,
+    ) + ["//:package"],
+    deps = [
+        "//:node_modules/@aws-sdk/client-ec2",
+        "//:node_modules/@types/node",
+        "//:node_modules/@types/vscode",
+        "//aws-client",
+        "//command",
+        "//create",
+        "//delete",
+        "//deployer",
+        "//ec2",
+        "//explorer",
+        "//open",
+        "//profile",
+        "//refresh",
+        "//region",
+        "//rxjs",
+        "//state",
+    ],
+)
+
+# Install node modules for use on external system based on: https://github.com/aws/aws-cdk/blob/main/packages/aws-cdk-lib/aws-lambda-nodejs/lib/package-manager.ts
+js_run_binary(
+    name = "node_modules",
+    srcs = [
+        "//:package",
+        "//:pnpm_lock",
+    ],
+    args = select(to_install_commands(package_name() + "/node_modules")),
+    out_dirs = [
+        "node_modules",
+    ],
+    tool = "@pnpm",
+)
+
+cjs_bundle(
+    name = "extension_bundle",
+    srcs = [
+        "//:package",
+        "//deployer:stopper_bundle",
+        "//session-manager:bin",
+        "//ssm-proxy:script",
+    ],
+    define = {
+        "process.env.PROXY_SCRIPT_PATH": '"$(rootpath //ssm-proxy:script)"',
+        "process.env.SESSION_MANAGER_PATH": '"$(rootpath //session-manager:bin)"',
+        "process.env.STOPPER_BUNDLE_PATH": '"$(rootpath //deployer:stopper_bundle)"',
+    },
+    entry_point = "extension.js",
+    external_libs = [
+        "vscode",
+        "@aws-cdk/toolkit-lib",
+    ],
+    output = "extension.cjs",
+    deps = [
+        lib_name,
+    ],
+)
+
+copy_to_directory(
+    name = "dist",
+    srcs = [
+        "extension_bundle",
+        "node_modules",
+        "//:extension_assets",
+        "//:package",
+        "//deployer:stopper_bundle",
+        "//media",
+        "//session-manager:bin",
+        "//ssm-proxy:script",
+    ],
+    exclude_srcs_packages = [],
+    include_srcs_packages = [
+        "**",
+    ],
+)
+
+package_file = "package.vsix"
+
+base_args = [
+    "package",
+    "--no-git-tag-version",
+    "--no-update-package-json",
+    "--no-dependencies",
+    "-o",
+    "../" + package_file,
+]
+
+bin.vsce(
+    name = "vsc_package",
+    srcs = [
+        "dist",
+    ],
+    outs = [
+        package_file,
+    ],
+    args = select(to_package_args_choice(base_args)),
+    chdir = "$(rootpath dist)",
+)
+
+bin.vsce_binary(
+    name = "publish",
+    args = [
+        "publish",
+        "--no-git-tag-version",
+        "--no-update-package-json",
+        "--packagePath",
+        "$(rootpath vsc_package)",
+    ],
+    data = [
+        "vsc_package",
+    ],
+)

@@ -1,0 +1,51 @@
+load("@bazel_skylib//rules:select_file.bzl", "select_file")
+load("index.bzl", "dist_files", "to_sub_files", "workdir")
+
+package(default_visibility = ["//visibility:public"])
+
+genrule(
+    name = "release_dockerfile",
+    srcs = [
+        "@session_manager_repo//:Dockerfile",
+    ],
+    outs = [
+        "Dockerfile",
+    ],
+    cmd = 'cp $(SRCS) $@ && echo "\nADD . .\nRUN make release" >> $@',
+)
+
+dist_name = "dist"
+
+outs = [dist_name + "/" + f for f in dist_files().values()]
+
+copy_commands = ["$(location @multitool//tools/docker) cp $$cid:/{workdir}/bin/{f} $(RULEDIR)/{dist_name}/{f}".format(
+    dist_name = dist_name,
+    f = f,
+    workdir = workdir,
+) for f in dist_files().values()]
+
+genrule(
+    name = dist_name,
+    srcs = [
+        "@session_manager_repo//:src",
+        "@session_manager_repo//:all_srcs",
+        "release_dockerfile",
+    ],
+    outs = outs,
+    cmd = " && ".join([
+        "image_id=$$($(location @multitool//tools/docker) build $(location @session_manager_repo//:src)/../ -f $$(readlink -f $(location release_dockerfile)) -q)",
+        "cid=$$($(location @multitool//tools/docker) create $$image_id)",
+    ] + copy_commands + [
+        "$(location @multitool//tools/docker) rm $$cid",
+    ]),
+    local = True,
+    tools = [
+        "@multitool//tools/docker",
+    ],
+)
+
+select_file(
+    name = "bin",
+    srcs = dist_name,
+    subpath = select(to_sub_files(dist_name + "/")),
+)

@@ -1,0 +1,8 @@
+repos:
+  - repo: local
+    hooks:
+      - id: format
+        name: Format
+        language: system
+        entry: bazel run //:format
+        files: .*

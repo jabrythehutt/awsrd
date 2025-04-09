@@ -1,3 +1,0 @@
-#!/bin/sh
-
-bazel run @aspect_rules_format//format

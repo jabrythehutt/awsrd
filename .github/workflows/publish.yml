@@ -1,10 +1,8 @@
 name: Publish
-
 on:
   push:
     tags:
       - '**'
-
 jobs:
   deploy:
     name: Deploy
@@ -16,7 +14,6 @@ jobs:
           ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-
       - name: Set up the cache
         uses: actions/cache@v3
         with:
@@ -25,7 +22,6 @@ jobs:
             ~/.cache/bazel
           key: ${{ runner.os }}-bazel-${{ hashFiles('WORKSPACE', 'environment.yml', '**/*.bazel', '**/*.bzl') }}
           restore-keys: ${{ runner.os }}-bazel-
-
       - name: Run the release procedure
         run: ./publish.sh
         env:

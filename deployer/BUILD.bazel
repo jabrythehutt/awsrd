@@ -1,0 +1,50 @@
+load("@rules_pkg//:pkg.bzl", "pkg_zip")
+load("//:ts_project.bzl", "ts_project")
+load("//bundle:index.bzl", "cjs_bundle")
+
+package(default_visibility = ["//visibility:public"])
+
+test_srcs = ["*.test.ts"]
+
+lib_name = package_name()
+
+ts_project(
+    name = lib_name,
+    srcs = glob(
+        ["*.ts"],
+        exclude = test_srcs,
+    ),
+    deps = [
+        "//:node_modules/@aws-cdk/toolkit-lib",
+        "//:node_modules/@aws-sdk/client-ec2",
+        "//:node_modules/@types/aws-lambda",
+        "//:node_modules/@types/node",
+        "//:node_modules/aws-cdk-lib",
+        "//:node_modules/cdk-monitoring-constructs",
+        "//:node_modules/constructs",
+        "//:node_modules/rxjs",
+        "//aws-client",
+        "//command",
+        "//ec2",
+    ],
+)
+
+cjs_bundle(
+    name = "stop_handler",
+    srcs = [
+        "//:package",
+    ],
+    entry_point = "handler.js",
+    external_libs = ["@aws-sdk/*"],
+    output = "handler.cjs",
+    deps = [
+        lib_name,
+    ],
+)
+
+pkg_zip(
+    name = "stopper_bundle",
+    srcs = [
+        "stop_handler",
+    ],
+)

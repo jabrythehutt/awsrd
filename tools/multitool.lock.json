@@ -1,0 +1,99 @@
+{
+  "$schema": "https://raw.githubusercontent.com/theoremlp/rules_multitool/main/lockfile.schema.json",
+  "buildx": {
+    "binaries": [
+      {
+        "kind": "file",
+        "url": "https://github.com/docker/buildx/releases/download/v0.22.0/buildx-v0.22.0.linux-arm64",
+        "sha256": "6e9e455b5ec1c7ac708f2640a86c5cecce38c72e48acff6cb219dfdfa2dda781",
+        "os": "linux",
+        "cpu": "arm64"
+      },
+      {
+        "kind": "file",
+        "url": "https://github.com/docker/buildx/releases/download/v0.22.0/buildx-v0.22.0.linux-amd64",
+        "sha256": "805195386fba0cea5a1487cf0d47da82a145ea0a792bd3fb477583e2dbcdcc2f",
+        "os": "linux",
+        "cpu": "x86_64"
+      },
+      {
+        "kind": "file",
+        "url": "https://github.com/docker/buildx/releases/download/v0.22.0/buildx-v0.22.0.darwin-arm64",
+        "sha256": "5898c338abb1f673107bc087997dc3cb63b4ea66d304ce4223472f57bd8d616e",
+        "os": "macos",
+        "cpu": "arm64"
+      },
+      {
+        "kind": "file",
+        "url": "https://github.com/docker/buildx/releases/download/v0.22.0/buildx-v0.22.0.darwin-amd64",
+        "sha256": "5221ad6b8acd2283f8fbbeebc79ae4b657e83519ca1c1e4cfbb9405230b3d933",
+        "os": "macos",
+        "cpu": "x86_64"
+      }
+    ]
+  },
+  "docker": {
+    "binaries": [
+      {
+        "kind": "archive",
+        "url": "https://download.docker.com/linux/static/stable/aarch64/docker-28.0.4.tgz",
+        "file": "docker/docker",
+        "sha256": "d3291093e8ed576ed9e237b24dc4556a9ed21ff25d4c26578df612cb6fe0480f",
+        "os": "linux",
+        "cpu": "arm64"
+      },
+      {
+        "kind": "archive",
+        "url": "https://download.docker.com/linux/static/stable/x86_64/docker-28.0.4.tgz",
+        "file": "docker/docker",
+        "sha256": "6b130fa5fb13516620d5ece0b63f63a495cede428bb2f9e24449022e9d72e0cb",
+        "os": "linux",
+        "cpu": "x86_64"
+      },
+      {
+        "kind": "archive",
+        "url": "https://download.docker.com/mac/static/stable/aarch64/docker-28.0.4.tgz",
+        "file": "docker/docker",
+        "sha256": "ce8cb345dbab05859b675c1cdf34e5b98169796f1da134de0ea62fcd424a5101",
+        "os": "macos",
+        "cpu": "arm64"
+      },
+      {
+        "kind": "archive",
+        "url": "https://download.docker.com/mac/static/stable/x86_64/docker-28.0.4.tgz",
+        "file": "docker/docker",
+        "sha256": "ec575e4c5e58aec5fade31cf2c0ce618783db87c28516d175114f0ac9cf459c1",
+        "os": "macos",
+        "cpu": "x86_64"
+      }
+    ]
+  },
+  "multitool": {
+    "binaries": [
+      {
+        "kind": "archive",
+        "url": "https://github.com/theoremlp/multitool/releases/download/v0.9.0/multitool-aarch64-unknown-linux-gnu.tar.xz",
+        "file": "multitool-aarch64-unknown-linux-gnu/multitool",
+        "sha256": "693b66def2d8dacdfcb5a011b7c32a8e89a13bdc031db8dc40c0759a38253103",
+        "os": "linux",
+        "cpu": "arm64"
+      },
+      {
+        "kind": "archive",
+        "url": "https://github.com/theoremlp/multitool/releases/download/v0.9.0/multitool-x86_64-unknown-linux-gnu.tar.xz",
+        "file": "multitool-x86_64-unknown-linux-gnu/multitool",
+        "sha256": "34dc5968dad458a4050ebde58e484ebb7c624a119e4031347683eeb80922e6df",
+        "os": "linux",
+        "cpu": "x86_64"
+      },
+      {
+        "kind": "archive",
+        "url": "https://github.com/theoremlp/multitool/releases/download/v0.9.0/multitool-aarch64-apple-darwin.tar.xz",
+        "file": "multitool-aarch64-apple-darwin/multitool",
+        "sha256": "8f5e0cd033b0fcc128c762f8d527110433523da378619cecf40e91c1df5c0686",
+        "os": "macos",
+        "cpu": "arm64"
+      }
+    ]
+  }
+}
