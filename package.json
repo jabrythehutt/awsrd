@@ -29,6 +29,7 @@
     "@aws-cdk/toolkit-lib": "0.1.7"
   },
   "devDependencies": {
+    "supports-color": "10.0.0",
     "@aws-sdk/client-ec2": "3.775.0",
     "@aws-sdk/client-ssm": "3.775.0",
     "@aws-sdk/types": "3.775.0",
@@ -269,9 +270,6 @@
     }
   },
   "pnpm": {
-    "onlyBuiltDependencies": [],
-    "patchedDependencies": {
-      "@vscode/vsce@3.3.2": "patches/@vscode__vsce.patch"
-    }
+    "onlyBuiltDependencies": []
   }
 }

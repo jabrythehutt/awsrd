@@ -21,6 +21,7 @@ ts_project(
         "//:node_modules/@aws-sdk/client-ec2",
         "//:node_modules/@types/node",
         "//:node_modules/@types/vscode",
+        "//:node_modules/supports-color",
         "//aws-client",
         "//command",
         "//create",
@@ -67,7 +68,8 @@ cjs_bundle(
     entry_point = "extension.js",
     external_libs = [
         "vscode",
-        "@aws-cdk/toolkit-lib",
+        # "@aws-cdk/toolkit-lib",
+        "fsevents",
     ],
     output = "extension.cjs",
     deps = [
@@ -79,7 +81,7 @@ copy_to_directory(
     name = "dist",
     srcs = [
         "extension_bundle",
-        "node_modules",
+        # "node_modules",
         "//:extension_assets",
         "//:package",
         "//deployer:stopper_bundle",
