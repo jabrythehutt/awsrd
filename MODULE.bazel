@@ -9,6 +9,7 @@ npm.npm_translate_lock(
     name = "npm",
     data = [
         "//:package.json",
+        "//:patches/@vscode__vsce.patch",
     ],
     npmrc = "//:.npmrc",
     patch_args = {
